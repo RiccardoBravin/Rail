@@ -1,3 +1,5 @@
+//Author: elia feltrin
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -9,6 +11,11 @@ class Railway {
         Railway();
         Railway(const Railway& rw);
         Railway(Railway&& rw);
+        ~Railway() {};
+
+        bool operator==(const Railway& rw);
+        Railway& operator=(Railway&& rw);
+        Railway operator=(const Railway& rw);
 
         Station get_beginning_station() const;
         Station get_terminal_station() const;

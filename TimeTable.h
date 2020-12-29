@@ -1,3 +1,5 @@
+//Author: elia feltrin
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -8,7 +10,6 @@ struct time_table_element{
     bool departure_from_beginning;
     int train_type;
     std::vector<int> time_at_station;
-
 };
 
 class TimeTable{
@@ -16,10 +17,15 @@ class TimeTable{
         TimeTable(std::string time_table, const Railway& reference);
         TimeTable(const TimeTable& TT);
         TimeTable(TimeTable&& TT);
+        ~TimeTable() {};
+
         bool operator==(const TimeTable& TT);
+        TimeTable& operator=(TimeTable&& TT);
+        TimeTable operator=(const TimeTable& TT);
 
         time_table_element get_time_table_element(int train_number);
         std::vector<time_table_element> time_table;
+        
 
     private:
         Railway& rw_reference;
