@@ -28,7 +28,7 @@ class Train{
          * @brief Set the delay of the train
          * @param _delay to set
          */
-        virtual void set_delay(const float _delay) = 0;
+        virtual void set_delay(const int _delay) = 0;
 
         /**
          * @brief Get the delay of the train
@@ -87,15 +87,15 @@ class Regional : public Train{
         Regional& operator=(Regional&& obj);
         ~Regional() { }
 
-        int get_number() const;
-        int get_type() const; 
-        void set_delay(const int _delay);
-        int get_delay() const;
-        void set_speed(const int _speed);
-        int get_speed() const;
-        void set_distance(const double _distance);
-        double get_distance() const;
-        double next_distance() const;
+        int get_number() const override;
+        int get_type() const override; 
+        void set_delay(const int _delay) override;
+        int get_delay() const override;
+        void set_speed(const int _speed) override;
+        int get_speed() const override;
+        void set_distance(const double _distance) override;
+        double get_distance() const override;
+        double next_distance() const override;
 
     private:
         int speed; 
