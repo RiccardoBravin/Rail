@@ -1,0 +1,8 @@
+Venezia S. Lucia
+Venezia Porto Marghera 1 100
+Venezia Mestre 0 120
+Mira-Mirano 1 195
+Dolo 1 220
+Vigonza-Pianiga 1 260
+Busa di Vigonza 0 300
+Padova 0 320
