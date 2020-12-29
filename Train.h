@@ -13,7 +13,7 @@ class Train{
          * @brief Get the identifying number of the train
          * @return int 
          */
-        virtual int get_number() const;
+        virtual int get_number() const = 0;
         
         /**
          * @brief Get the type of train that is being called upon
@@ -80,6 +80,7 @@ class Train{
 
 class Regional : public Train{
     public:
+        Regional();
         Regional(const int _number);
         Regional(const Regional& obj);
         Regional& operator=(const Regional& obj);
@@ -109,6 +110,7 @@ class Regional : public Train{
 
 class HighSpeed : public Train{
     public:
+        HighSpeed();   
         HighSpeed(const int _number);
         HighSpeed(const HighSpeed& obj);
         HighSpeed& operator=(const HighSpeed& obj);
@@ -137,6 +139,7 @@ class HighSpeed : public Train{
 
 class SuperHighSpeed : public Train{
     public:
+        SuperHighSpeed();
         SuperHighSpeed(const int _number);
         SuperHighSpeed(const SuperHighSpeed &obj);
         SuperHighSpeed& operator=(const SuperHighSpeed &obj);
