@@ -1,3 +1,5 @@
+//Author: Angelo Turris
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -9,24 +11,100 @@ class Station {
         Station& operator=(const Station&) = delete;
 
         /**
-         * @brief 
+         * @brief Add one train to the vector<train> (parking)
          * 
-         * @param t 
+         * @param 
          */
         virtual void add_train_to_park(Train t);
 
+        /**
+         * @brief Get the parking train object
+         * 
+         * @return std::vector<Train> 
+         */
         virtual std::vector<Train> get_parking_train();
+
+        /**
+         * @brief Get the count parking train object
+         * 
+         * @return int 
+         */
         virtual int get_count_parking_train();
+
+        /**
+         * @brief Remove one train from the parking
+         * 
+         * @param t 
+         */
         virtual void remove_train_from_park(Train t);
+
+        /**
+         * @brief Get the passing tracks object
+         * 
+         * @return int 
+         */
         virtual int get_passing_tracks();
+
+        /**
+         * @brief Get the stop tracks object
+         * 
+         * @return int 
+         */
         virtual int get_stop_tracks();
+
+        /**
+         * @brief Set the passing tracks object
+         * 
+         * @param _n 
+         */
         virtual void set_passing_tracks(int _n);
+
+        /**
+         * @brief Set the stop tracks object
+         * 
+         * @param _n 
+         */
         virtual void set_stop_tracks(int _n);
+
+        /**
+         * @brief Get the station name 
+         * 
+         * @return std::string 
+         */
         virtual std::string get_station_name() const = 0;
+
+        /**
+         * @brief Get the station distance
+         * 
+         * @return int 
+         */
         virtual int get_station_distance() const = 0;
+
+        /**
+         * @brief Set the station name
+         * 
+         * @param _name 
+         */
         virtual void set_station_name(const std::string _name);
+
+        /**
+         * @brief Set the station distance
+         * 
+         * @param _distance 
+         */
         virtual void set_station_distance(const int _distance);
+
+        /**
+         * @brief Get the station type Secondary Station == 1 || Principal == 0
+         * 
+         * @return int 
+         */
         virtual int get_station_type() const = 0;
+
+        /**
+         * @brief Destroy the Station object
+         * 
+         */
         virtual ~Station(){};
 
     protected:
