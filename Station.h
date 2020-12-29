@@ -8,7 +8,13 @@ class Station {
         Station (const Station&) = delete;
         Station& operator=(const Station&) = delete;
 
+        /**
+         * @brief 
+         * 
+         * @param t 
+         */
         virtual void add_train_to_park(Train t);
+
         virtual std::vector<Train> get_parking_train();
         virtual int get_count_parking_train();
         virtual void remove_train_from_park(Train t);
@@ -52,11 +58,11 @@ class Secondary : public Station {
         int get_stop_tracks();
         void set_passing_tracks(int _n);
         void set_stop_tracks(int _n);
-        std::string get_station_name() const = 0;
-        int get_station_distance() const = 0;
+        std::string get_station_name() const;
+        int get_station_distance() const;
         void set_station_name(const std::string _name);
         void set_station_distance(const int _distance);
-        int get_station_type() const = 0;
+        int get_station_type() const;
        
 
     private: 
@@ -85,11 +91,11 @@ class Principal : public Station {
         int get_stop_tracks();
         void set_passing_tracks(int _n);
         void set_stop_tracks(int _n);
-        std::string get_station_name() const = 0;
-        int get_station_distance() const = 0;
+        std::string get_station_name() const;
+        int get_station_distance() const;
         void set_station_name(const std::string _name);
         void set_station_distance(const int _distance);
-        int get_station_type() const = 0;
+        int get_station_type() const ;
 
     private: 
         std::string name; 
