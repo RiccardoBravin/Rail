@@ -71,8 +71,8 @@ class Principal : public Station {
 
     public:
         Principal(std::string _name, const int _distance);
-        Principal(const Secondary& obj);
-        Principal& operator=(const Secondary& obj);
+        Principal(const Principal& obj);
+        Principal& operator=(const Principal& obj);
         Principal(Principal&& obj);
         Principal& operator=(Principal&& obj);
         ~Principal() { }
