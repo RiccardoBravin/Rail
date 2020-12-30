@@ -112,7 +112,7 @@ class Station {
 
     private:
         std::string name; 
-        std::vector<Train> t;
+        std::vector<Train> t;               
         int distance;
         int passing_tracks;
         int stop_tracks;
