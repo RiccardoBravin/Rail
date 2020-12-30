@@ -4,6 +4,9 @@
 
 class Train{
     public:
+
+        enum state{Running, Parked, Stationary};
+
         Train(const Train&) = delete;
         Train& operator=(const Train&) = delete;
         //ci va? non utilizzo memoria nel freespace attualmente...
@@ -66,16 +69,47 @@ class Train{
          */
         virtual double get_distance() const = 0;
         
-                
+
+        /**
+         * @brief check if the train is at the station
+         * @return true if is waiting at the station 
+         */
+        virtual bool stationing() const = 0;
+
+        /**
+         * @brief check if the train is parked
+         * @return true if in the park
+         */
+        virtual bool parked() const = 0;
+
+        /**
+         * @brief check if the train is running
+         * @return true if running
+         */
+        virtual bool running() const = 0;
+
+        /**
+         * @brief Sets the train stats to stay in the parking slot and starts the time counter  
+         */
+        virtual void park(int _position) = 0;
+
+        /**
+         * @brief Sets the train stats to stay in the station and starts the time counter
+         */
+        virtual void stop(int _position) = 0;
 
     protected:
         Train() { } ///elemina il costruttore di default e rende inutilizzabile il costruttore esternamente
+        void operator++(){ }
 
     private:
         int speed; ///velocità di crociera
         int number; ///numero del treno
         int delay; ///ritardo? lo deve sapere il treno o verrà gestito altrove?
+        bool state; ///0 if parked 1 if on the platform
+        int state_timer; //keeps track of the time waiting in park or platform
         double distance; ///distanza dalla stazione di partenza
+
 };
 
 class Regional : public Train{
