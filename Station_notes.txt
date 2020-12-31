@@ -4,3 +4,11 @@
 4)per coerenza, se implementerei set_station_type, anche se secondo me non servono visto che questa e le precedenti servono solo a costruire l'oggetto
 5)come idea, io farei in modo che il parcheggio non fosse "a lato" della stazione, ma "sovrastasse" i binari. ogni treno che entra nel raggio di X km dalla stazione entra automaticamente nel parcheggio, ed eventualmente ne esce al ciclo successivo (si perde un minuto per ogni treno, ma questo semplifica un po' la gestione... è un problema secondo voi?)
 6)mancano le funzioni membro per la comunicazione fra la classe Simulation e ogni istanza di Station... ma queste in caso le aggiungiamo una volta decisa l'interfaccia di Simulation
+
+
+1.eliminare virtual e =0 dalle funzioni di station per le quali non serve
+2. eliminare add train to trainst e remove train from trainst da station
+3. eliminare trainsit_tracks da station
+4. spostare i membri private di station in protected
+5. eliminare ripetizioni da Principal e Secondary
+6. eliminare costruttore di default di Secondary e Principal
