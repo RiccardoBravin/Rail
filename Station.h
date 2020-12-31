@@ -15,28 +15,28 @@ class Station {
          * 
          * @param t - use vector parking
          */
-        virtual void add_train_to_park(Train t);
+        virtual void add_train_to_park(Train t) const = 0;
                 
         /**
          * @brief Get the parking train object
          * 
          * @return std::vector<Train> 
          */
-        virtual std::vector<Train> get_parking_train();
+        virtual std::vector<Train> get_parking_train() const = 0;
 
          /**
          * @brief Get the count parking train object
          * 
          * @return int 
          */
-        virtual int get_count_parking_train();
+        virtual int get_count_parking_train() const = 0;
 
         /**
          * @brief Remove one train from the parking
          * 
          * @param t  - use vector parking
          */
-        virtual void remove_train_from_park(Train t);
+        virtual void remove_train_from_park(Train t) const = 0;
 
         /**
          * @brief Add train to transit track 
@@ -44,14 +44,14 @@ class Station {
          * @param t 
          *
         */
-       virtual void add_train_to_transit(Train t);
+        virtual void add_train_to_transit(Train t) const = 0;
         
         /**
          * @brief Add train to stop track
          * 
          * @param t 
          */
-        virtual void add_train_to_stop(Train t);
+        virtual void add_train_to_stop(Train t ) const = 0;
 
         /**
          * @brief Remove train to transit track
@@ -59,28 +59,28 @@ class Station {
          * @param t 
          * 
          */
-        virtual void remove_train_to_transit(Train t);
+        virtual void remove_train_to_transit(Train t) const = 0;
         
         /**
          * @brief Remove train to stop track
          * 
          * @param t 
          */
-        virtual void remove_train_to_stop(Train t);
+        virtual void remove_train_to_stop(Train t) const = 0;
     
         /**
          * @brief Get the transit tracks object
          * 
          * @return int 
          */
-        virtual int get_transit_tracks();
+        virtual int get_transit_tracks() const = 0;
 
         /**
          * @brief Get the stop tracks object
          * 
          * @return int 
          */
-        virtual int get_stop_tracks();
+        virtual int get_stop_tracks() const = 0;
 
         /**
          * @brief Get the station name 
@@ -130,30 +130,29 @@ class Secondary : public Station {
         Secondary& operator=(Secondary&& obj);
         ~Secondary() { }
 
-        void add_train_to_park(Train t);
-        std::vector<Train> get_parking_train();
-        int get_count_parking_train();
-        void remove_train_from_park(Train t);
-        void add_train_to_transit(Train t);
-        void add_train_to_stop(Train t);
-        void remove_train_to_transit(Train t);
-        void remove_train_to_stop(Train t);
-        int get_transit_tracks();
-        int get_stop_tracks();
-        void set_transit_tracks(int _n);
-        void set_stop_tracks(int _n);
-        std::string get_station_name() const;
-        int get_station_distance();
-        int get_station_type() const;
+        void add_train_to_park(Train t) const override;
+        std::vector<Train> get_parking_train() const override;
+        int get_count_parking_train() const override;
+        void remove_train_from_park(Train t) const override;
+        void add_train_to_transit(Train t) const override;
+        void add_train_to_stop(Train t) const override;
+        void remove_train_to_transit(Train t) const override;
+        void remove_train_to_stop(Train t) const override;
+        int get_transit_tracks() const override;
+        int get_stop_tracks() const override;
+        std::string get_station_name() const override;
+        int get_station_distance() const override;
+        int get_station_type() const override;
        
 
     private: 
+        Secondary() {};
         std::string name; 
         int distance;
         std::vector<Train> parking;     
         std::vector<Train> transit_tracks;
         std::vector<Train> stop_tracks;
-        static constexpr int N_PASS_TRACK = 1;
+        static constexpr int N_TRANS_TRACK = 1;
         static constexpr int N_STOP_TRACK = 2;
         static constexpr int TYPE = 1;
 };
@@ -168,29 +167,28 @@ class Principal : public Station {
         Principal& operator=(Principal&& obj);
         ~Principal() { }
 
-        void add_train_to_park(Train t);
-        std::vector<Train> get_parking_train();
-        int get_count_parking_train();
-        void remove_train_from_park(Train t);
-        void add_train_to_transit(Train t);
-        void add_train_to_stop(Train t);
-        void remove_train_to_transit(Train t);
-        void remove_train_to_stop(Train t);
-        int get_transit_tracks();
-        int get_stop_tracks();
-        void set_transit_tracks(int _n);
-        void set_stop_tracks(int _n);
-        std::string get_station_name() const;
-        int get_station_distance();
-        int get_station_type() const;
+        void add_train_to_park(Train t) const override;
+        std::vector<Train> get_parking_train() const override;
+        int get_count_parking_train() const override;
+        void remove_train_from_park(Train t) const override;
+        void add_train_to_transit(Train t) const override;
+        void add_train_to_stop(Train t) const override;
+        void remove_train_to_transit(Train t) const override;
+        void remove_train_to_stop(Train t) const override;
+        int get_transit_tracks() const override;
+        int get_stop_tracks() const override;
+        std::string get_station_name() const override;
+        int get_station_distance() const override;
+        int get_station_type() const override;
 
     private: 
+        Principal() {};
         std::string name; 
         int distance;
         std::vector<Train> parking;     
         std::vector<Train> transit_tracks;
         std::vector<Train> stop_tracks;
-        static constexpr int N_PASS_TRACK = 1;
+        static constexpr int N_TRANS_TRACK = 1;
         static constexpr int N_STOP_TRACK = 2;
         static constexpr int TYPE = 1;
 };
