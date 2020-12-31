@@ -68,11 +68,10 @@ void Train::step(){
     if(running()){
         distance = next_distance();
     }else if(parked()){
-        delay++;
+        delay++; //molto probabilmente questo non andrà eseguito
     }else if(stationary()){
         station_timer++;
-    }
-         
+    } 
 }
 
 //********************      Regional      *************************//
