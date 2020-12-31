@@ -8,43 +8,59 @@
 
 using namespace std;
 
-Secondary::Secondary(string _name, const int _distance) :
-    name{_name}, distance{_distance} {}
+//*** Station ***//
 
-string Secondary::get_station_name() const{ return name;}
 
-int Secondary::get_station_distance() const{ return distance;}
+string Station::get_station_name() const{ return name;}
 
-int Secondary::get_station_type() const{ return Secondary::Secondary;}
+int Station::get_station_distance() const{ return distance;}
 
-void Secondary::add_train_to_park(Train t)
+void Station::add_train_to_park(Train t)
 {
     parking.push_back(t);
 }
 
-vector<Train> Secondary::get_parking_train() const
+vector<Train> Station::get_parking_train() const
 {
-    return parking; //ha senso? 
+    return parking; 
 }
 
-int Secondary::get_count_parking_train() const
+int Station::get_count_parking_train() const
 {
     return parking.size();
 }
 
-void Secondary::remove_train_from_park()
+void Station::remove_train_from_park()
 {
     parking.pop_back();
 }
 
+void Station::add_train_to_stop(Train t )
+{   
+    stop_tracks.push_back(t);
+}
+
+void Station::remove_train_to_stop()
+{
+    stop_tracks.pop_back();
+}
+
+int Station::get_stop_tracks() const
+{
+    return N_STOP_TRACK;
+}
+
+
+//*** Secondary ***//
+Secondary::Secondary(string _name, const int _distance) :
+    name{_name}, distance{_distance} {}
+
+int Secondary::get_station_type() const{ return Station::Secondary;}
+
+
 void Secondary::add_train_to_transit(Train t)
 {
     transit_tracks.push_back(t); 
-}
-
-void Secondary::add_train_to_stop(Train t )
-{   
-    stop_tracks.push_back(t);
 }
 
 void Secondary::remove_train_to_transit()
@@ -52,9 +68,9 @@ void Secondary::remove_train_to_transit()
     transit_tracks.pop_back();
 }
 
-void Secondary::remove_train_to_stop()
+int Secondary::get_stop_tracks() const
 {
-    stop_tracks.pop_back();
+    return N_STOP_TRACK;
 }
 
 int Secondary::get_transit_tracks() const
@@ -62,7 +78,56 @@ int Secondary::get_transit_tracks() const
     return N_TRANS_TRACK;
 }
 
-int Secondary::get_stop_tracks() const
+
+//*** Principal ***//
+
+Principal::Principal(string _name, const int _distance) :
+    name{_name}, distance{_distance} {}
+
+
+int Principal::get_station_type() const{ return Station::Principal;}
+
+void Principal::add_train_to_park(Train t)
+{
+    parking.push_back(t);
+}
+
+vector<Train> Principal::get_parking_train() const
+{
+    return parking;  
+}
+
+int Principal::get_count_parking_train() const
+{
+    return parking.size();
+}
+
+void Principal::remove_train_from_park()
+{
+    parking.pop_back();
+}
+
+void Principal::add_train_to_transit(Train t)
+{
+    stop_tracks.push_back(t);  // Lo sovrascrivo cosi? non ha treni in transito
+}
+
+void Principal::add_train_to_stop(Train t )
+{   
+    stop_tracks.push_back(t);
+}
+
+void Principal::remove_train_to_transit()
+{
+    transit_tracks.pop_back();
+}
+
+void Principal::remove_train_to_stop()
+{
+    stop_tracks.pop_back();
+}
+
+int Principal::get_stop_tracks() const
 {
     return N_STOP_TRACK;
 }
