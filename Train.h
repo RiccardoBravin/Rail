@@ -1,9 +1,25 @@
-//Riccardo Bravin
+//Author: Riccardo Bravin
+
+#ifndef Train_h
+#define Train_h
 
 #include <iostream>
 
 class Train{
     public:
+
+        enum state : int{
+            Running, 
+            Parked, 
+            Stationary
+        };
+
+        enum type : int{
+            Regional,
+            HighSpeed,
+            SuperHighSpeed
+        };
+
         Train(const Train&) = delete;
         Train& operator=(const Train&) = delete;
         //ci va? non utilizzo memoria nel freespace attualmente...
@@ -66,7 +82,50 @@ class Train{
          */
         virtual double get_distance() const = 0;
         
-                
+
+        /**
+         * @brief check if the train is at the station
+         * @return true if is waiting at the station 
+         */
+        virtual bool stationary() const = 0;
+
+        /**
+         * @brief check if the train is parked
+         * @return true if in the park
+         */
+        virtual bool parked() const = 0;
+
+        /**
+         * @brief check if the train is running
+         * @return true if running
+         */
+        virtual bool running() const = 0;
+
+        /**
+         * @brief Sets the train stats to stay in the parking slot and starts the time counter  
+         */
+        virtual void park(const double _distance) = 0;
+
+        /**
+         * @brief Sets the train stats to stay in the station and starts the time counter
+         * 
+         * @param _distance pass the position it should stop at
+         */
+        virtual void stop(const double _distance) = 0;
+
+        /**
+         * @brief returns if the train is ready so start moving
+         * 
+         * @return true the train is not waiting for something and can start
+         * @return false the train is waiting at the station and can't start
+         */
+        virtual bool can_start() const = 0;
+
+        /**
+         * @brief makes a 1 minute step in time and space
+         */
+        void step();
+
 
     protected:
         Train() { } ///elemina il costruttore di default e rende inutilizzabile il costruttore esternamente
@@ -75,12 +134,15 @@ class Train{
         int speed; ///velocità di crociera
         int number; ///numero del treno
         int delay; ///ritardo? lo deve sapere il treno o verrà gestito altrove?
+        int state; ///refer to the enum state
+        int station_timer; //keeps track of the time waiting in platform
         double distance; ///distanza dalla stazione di partenza
+
 };
 
 class Regional : public Train{
     public:
-        Regional();
+        
         Regional(const int _number);
         Regional(const Regional& obj);
         Regional& operator=(const Regional& obj);
@@ -98,10 +160,22 @@ class Regional : public Train{
         double get_distance() const override;
         double next_distance() const override;
 
+        bool stationary() const override;
+        bool parked() const override;
+        bool running() const override;
+        void park(const double _distance) override;
+        void stop(const double _distance) override;
+        bool can_start() const override;
+
+        void step();
+
     private:
+        Regional(){}
         int speed; 
         int number; 
         int delay; 
+        int state; 
+        int station_timer;
         double distance;
         static constexpr int MAXSPEED = 160;
 
@@ -110,7 +184,7 @@ class Regional : public Train{
 
 class HighSpeed : public Train{
     public:
-        HighSpeed();   
+           
         HighSpeed(const int _number);
         HighSpeed(const HighSpeed& obj);
         HighSpeed& operator=(const HighSpeed& obj);
@@ -118,20 +192,32 @@ class HighSpeed : public Train{
         HighSpeed& operator=(HighSpeed&& obj);
         ~HighSpeed() { }
 
-        int get_number() const;
-        int get_type() const; 
-        void set_delay(const int _delay);
-        int get_delay() const;
-        void set_speed(const int _speed);
-        int get_speed() const;
-        void set_distance(const double _distance);
-        double get_distance() const;
-        double next_distance() const;
+        int get_number() const override;
+        int get_type() const override; 
+        void set_delay(const int _delay) override;
+        int get_delay() const override;
+        void set_speed(const int _speed) override;
+        int get_speed() const override;
+        void set_distance(const double _distance) override;
+        double get_distance() const override;
+        double next_distance() const override;
+
+        bool stationary() const override;
+        bool parked() const override;
+        bool running() const override;
+        void park(const double _distance) override;
+        void stop(const double _distance) override;
+        bool can_start() const override;
+
+        void step();
 
     private:
+        HighSpeed(){}
         int speed; 
         int number; 
         int delay; 
+        int state; 
+        int station_timer;
         double distance;
         static constexpr int MAXSPEED = 240;
         
@@ -139,7 +225,7 @@ class HighSpeed : public Train{
 
 class SuperHighSpeed : public Train{
     public:
-        SuperHighSpeed();
+        //costruttori e distruttori
         SuperHighSpeed(const int _number);
         SuperHighSpeed(const SuperHighSpeed &obj);
         SuperHighSpeed& operator=(const SuperHighSpeed &obj);
@@ -147,20 +233,34 @@ class SuperHighSpeed : public Train{
         SuperHighSpeed& operator=(SuperHighSpeed&& obj);
         ~SuperHighSpeed() { }
 
-        int get_number() const;
-        int get_type() const; 
-        void set_delay(const int _delay);
-        int get_delay() const;
-        void set_speed(const int _speed);
-        int get_speed() const;
-        void set_distance(const double _distance);
-        double get_distance() const;
-        double next_distance() const;
+        //getter e setter
+        int get_number() const override;
+        int get_type() const override; 
+        void set_delay(const int _delay) override;
+        int get_delay() const override;
+        void set_speed(const int _speed) override;
+        int get_speed() const override;
+        void set_distance(const double _distance) override;
+        double get_distance() const override;
+        double next_distance() const override;
+
+        //funzioni pubbliche
+        bool stationary() const override;
+        bool parked() const override;
+        bool running() const override;
+        void park(const double _distance) override;
+        void stop(const double _distance) override;
+        bool can_start() const override;
+
+        void step();
 
     private:
+        SuperHighSpeed(){}
         int speed; 
-        int number;
-        int delay;
+        int number; 
+        int delay; 
+        int state; 
+        int station_timer;
         double distance;
         static constexpr int MAXSPEED = 300;
 
@@ -173,3 +273,6 @@ class SuperHighSpeed : public Train{
  * @return std::ostream& 
  */
 std::ostream& operator<<(std::ostream& os, const Train& obj);
+
+
+#endif //Train_h

@@ -13,10 +13,10 @@ class Station {
         /**
          * @brief Add one train to the vector<train> (parking)
          * 
-         * @param 
+         * @param t - use vector parking
          */
         virtual void add_train_to_park(Train t);
-
+                
         /**
          * @brief Get the parking train object
          * 
@@ -24,7 +24,7 @@ class Station {
          */
         virtual std::vector<Train> get_parking_train();
 
-        /**
+         /**
          * @brief Get the count parking train object
          * 
          * @return int 
@@ -34,16 +34,46 @@ class Station {
         /**
          * @brief Remove one train from the parking
          * 
-         * @param t 
+         * @param t  - use vector parking
          */
         virtual void remove_train_from_park(Train t);
 
         /**
-         * @brief Get the passing tracks object
+         * @brief Add train to transit track 
+         * 
+         * @param t 
+         *
+        */
+       virtual void add_train_to_transit(Train t);
+        
+        /**
+         * @brief Add train to stop track
+         * 
+         * @param t 
+         */
+        virtual void add_train_to_stop(Train t);
+
+        /**
+         * @brief Remove train to transit track
+         * 
+         * @param t 
+         * 
+         */
+        virtual void remove_train_to_transit(Train t);
+        
+        /**
+         * @brief Remove train to stop track
+         * 
+         * @param t 
+         */
+        virtual void remove_train_to_stop(Train t);
+    
+        /**
+         * @brief Get the transit tracks object
          * 
          * @return int 
          */
-        virtual int get_passing_tracks();
+        virtual int get_transit_tracks();
 
         /**
          * @brief Get the stop tracks object
@@ -51,20 +81,6 @@ class Station {
          * @return int 
          */
         virtual int get_stop_tracks();
-
-        /**
-         * @brief Set the passing tracks object
-         * 
-         * @param _n 
-         */
-        virtual void set_passing_tracks(int _n);
-
-        /**
-         * @brief Set the stop tracks object
-         * 
-         * @param _n 
-         */
-        virtual void set_stop_tracks(int _n);
 
         /**
          * @brief Get the station name 
@@ -79,20 +95,6 @@ class Station {
          * @return int 
          */
         virtual int get_station_distance() const = 0;
-
-        /**
-         * @brief Set the station name
-         * 
-         * @param _name 
-         */
-        virtual void set_station_name(const std::string _name);
-
-        /**
-         * @brief Set the station distance
-         * 
-         * @param _distance 
-         */
-        virtual void set_station_distance(const int _distance);
 
         /**
          * @brief Get the station type Secondary Station == 1 || Principal == 0
@@ -112,10 +114,10 @@ class Station {
 
     private:
         std::string name; 
-        std::vector<Train> t;               
         int distance;
-        int passing_tracks;
-        int stop_tracks;
+        std::vector<Train> parking;     
+        std::vector<Train> transit_tracks;
+        std::vector<Train> stop_tracks;
 };
 
 
@@ -132,22 +134,27 @@ class Secondary : public Station {
         std::vector<Train> get_parking_train();
         int get_count_parking_train();
         void remove_train_from_park(Train t);
-        int get_passing_tracks();
+        void add_train_to_transit(Train t);
+        void add_train_to_stop(Train t);
+        void remove_train_to_transit(Train t);
+        void remove_train_to_stop(Train t);
+        int get_transit_tracks();
         int get_stop_tracks();
-        void set_passing_tracks(int _n);
+        void set_transit_tracks(int _n);
         void set_stop_tracks(int _n);
         std::string get_station_name() const;
-        int get_station_distance() const;
-        void set_station_name(const std::string _name);
-        void set_station_distance(const int _distance);
+        int get_station_distance();
         int get_station_type() const;
        
 
     private: 
         std::string name; 
         int distance;
-        int passing_tracks;
-        int stop_tracks;
+        std::vector<Train> parking;     
+        std::vector<Train> transit_tracks;
+        std::vector<Train> stop_tracks;
+        static constexpr int N_PASS_TRACK = 1;
+        static constexpr int N_STOP_TRACK = 2;
         static constexpr int TYPE = 1;
 };
 
@@ -165,22 +172,27 @@ class Principal : public Station {
         std::vector<Train> get_parking_train();
         int get_count_parking_train();
         void remove_train_from_park(Train t);
-        int get_passing_tracks();
+        void add_train_to_transit(Train t);
+        void add_train_to_stop(Train t);
+        void remove_train_to_transit(Train t);
+        void remove_train_to_stop(Train t);
+        int get_transit_tracks();
         int get_stop_tracks();
-        void set_passing_tracks(int _n);
+        void set_transit_tracks(int _n);
         void set_stop_tracks(int _n);
         std::string get_station_name() const;
-        int get_station_distance() const;
-        void set_station_name(const std::string _name);
-        void set_station_distance(const int _distance);
-        int get_station_type() const ;
+        int get_station_distance();
+        int get_station_type() const;
 
     private: 
         std::string name; 
         int distance;
-        int passing_tracks;
-        int stop_tracks;
-        static constexpr int TYPE = 0;
+        std::vector<Train> parking;     
+        std::vector<Train> transit_tracks;
+        std::vector<Train> stop_tracks;
+        static constexpr int N_PASS_TRACK = 1;
+        static constexpr int N_STOP_TRACK = 2;
+        static constexpr int TYPE = 1;
 };
 
 std::ostream& operator<<(std::ostream& os, const Station& obj);
