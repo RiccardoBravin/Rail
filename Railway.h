@@ -21,6 +21,7 @@ class Railway {
         /**
          * @brief copy constructor
          * 
+         * @param reverse 1 to reverse the railway
          */
         Railway(const Railway& rw);
         /**
@@ -34,6 +35,14 @@ class Railway {
          */
         ~Railway() {};
 
+        
+        /**
+         * @brief reverse railway stations
+         * 
+         * @param rw 
+         * @return Railway 
+         */
+        Railway reverse (const Railway& rw);
         /**
          * @brief coparison operator
          * 
@@ -50,6 +59,18 @@ class Railway {
          */
         Railway operator=(const Railway& rw);
         /**
+         * @brief remove impossible station
+         * 
+         */
+        void verify_railway();
+        /**
+         * @brief remove station at index i
+         * 
+         * @param i 
+         * @return Station 
+         */
+        Station remove_station(int i);
+         /**
          * @brief Get the beginning station of this railway
          * 
          * @return Station 
@@ -82,6 +103,11 @@ class Railway {
          */
         int get_station_number() const;
 
+        void add_station(const Station& st);
+        void set_source_file(std::string line_description);
+        
+        std::string get_source_file_name() const;
+
     private:
         /**
          * @brief standard vector containing all station in this railway
@@ -92,12 +118,7 @@ class Railway {
          * @brief input file
          * 
          */
-        std::string line_description_file;
-        /**
-         * @brief how many station in this railway
-         * 
-         */
-        int station_number;
+        std::string line_description_file_name;
 };
 
 /**
@@ -105,3 +126,5 @@ class Railway {
  * 
  */
 std::ostream& operator<<(std::ostream& os, Railway& rw);
+
+
