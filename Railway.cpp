@@ -13,7 +13,7 @@ Railway::Railway(std::string line_description){
         std::string s;
         
         std::getline(line_description_file, s);
-        stations.push_back(Principal(s, 0));
+        stations.push_back(new Principal(s, 0));
 
         while(!line_description_file.eof()){
             std::string temp;
@@ -32,9 +32,9 @@ Railway::Railway(std::string line_description){
                 name += tokens[i];
 
             if(type == 0){
-                stations.push_back(Principal(name, distance));
+                stations.push_back(new Principal(name, distance));
             } else if(type == 1) {
-                stations.push_back(Secondary(name, distance));
+                stations.push_back(new Secondary(name, distance));
             } 
         }
     } else throw std::runtime_error("enable to open file");
@@ -50,11 +50,9 @@ Railway::Railway(const Railway& rw){
     stations.clear();
     for(int i=0; i<rw.get_station_number(); i++) {
         if(rw.get_station(i).get_station_type() == 0) {
-            Principal temp = rw.get_station(i);
-            stations.push_back(temp);
+            stations.push_back(&rw.get_station(i));
         } else {
-            Secondary temp = rw.get_station();
-            stations.push_back(temp);
+            stations.push_back(&rw.); 
         }    
     }
 }
@@ -85,7 +83,7 @@ Railway::Railway operator=(const Railway& rw){
 
 }
 
-Railway::void verify_railway(){
+void Railway::verify_railway(){
 
 }
 
