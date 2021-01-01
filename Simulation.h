@@ -10,11 +10,11 @@ class Simulation {
 
 
     private:
-        TimeTable gone_timetable;
+        TimeTable going_timetable;
         TimeTable return_timetable;
-        Railway gone_railway;
+        Railway going_railway;
         Railway return_railway;
-        std::vector<Train> gone_trains;
+        std::vector<Train> going_trains;
         std::vector<Train> return_trains;
 
         int current_time {0};
@@ -28,6 +28,11 @@ class Simulation {
         void notice_entering_station_area(Train& Tr, Station& St);
         void notice_entering_station_platform(Train& Tr, Station& St);
         void notice_leaving_station_platform(Train& Tr, Station& St);
+
+        //sarebbe meglio metterle in railway così non serve un altro parametro per sapere se si vuole effettuare il calcolo in andata o ritorno
+        int distance_check(Train& a, Train& b); 
+        int calculate_delay(Train& a);
+
 };
 
 std::string minute_to_our(int minute);
