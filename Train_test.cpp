@@ -29,11 +29,19 @@ void test(vector<Train*> &v){
 }
 
 
+void train_v_des(vector<Train*> &v){
+    for(int i = 0; i < v.size(); i++){
+        v[i]->~Train();
+    }
+}
+
 int main(int argc, char const *argv[])
 {
 
     vector<Train*> v;
     test(v);
+
+    
 
     cout << *v[0];
 
@@ -91,9 +99,8 @@ int main(int argc, char const *argv[])
         cin.get();
     }
     
+    train_v_des(v);
     
-    
-
     SetConsoleTextAttribute(hConsole, 15);
 
     return 0;
