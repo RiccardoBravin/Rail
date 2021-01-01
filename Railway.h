@@ -69,33 +69,33 @@ class Railway {
          * @param i 
          * @return Station 
          */
-        Station remove_station(int i);
+        Station& remove_station(int i);
          /**
          * @brief Get the beginning station of this railway
          * 
          * @return Station 
          */
-        Station get_beginning_station() const;
+        Station& get_beginning_station() const;
         /**
          * @brief Get the terminal station of this railway
          * 
          * @return Station 
          */
-        Station get_terminal_station() const;
+        Station& get_terminal_station() const;
         /**
          * @brief Get the station by index
          * 
          * @param i 
          * @return Station 
          */
-        Station get_station(int i) const;
+        Station& get_station(int i) const;
         /**
          * @brief Get the station by distance (rounded)
          * 
          * @param distance 
          * @return Station 
          */
-        Station get_station_at_distance(int distance) const;
+        Station& get_station_at_distance(int distance) const;
         /**
          * @brief how many station in this railway
          * 

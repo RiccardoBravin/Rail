@@ -14,7 +14,7 @@ string Station::get_station_name() const{ return name;}
 
 int Station::get_station_distance() const{ return distance;}
 
-void Station::add_train_to_park(Train t)
+void Station::add_train_to_park(Train& t)
 {
     parking.push_back(t);
 }
@@ -34,7 +34,7 @@ void Station::remove_train_from_park()
     parking.pop_back();
 }
 
-void Station::add_train_to_stop(Train t )
+void Station::add_train_to_stop(Train& t )
 {   
     stop_tracks.push_back(t);
 }
@@ -84,7 +84,7 @@ Secondary& Secondary::operator=(Secondary&& stn)
 int Secondary::get_station_type() const{ return Station::Secondary;}
 
 
-void Secondary::add_train_to_transit(Train t)
+void Secondary::add_train_to_transit(Train& t)
 {
     transit_tracks.push_back(t); 
 }
@@ -146,7 +146,7 @@ Principal& Principal::operator=(Principal&& stn)
 
 int Principal::get_station_type() const{ return Station::Principal;}
 
-void Principal::add_train_to_park(Train t)
+void Principal::add_train_to_park(Train& t)
 {
     parking.push_back(t);
 }
@@ -166,7 +166,7 @@ void Principal::remove_train_from_park()
     parking.pop_back();
 }
 
-void Principal::add_train_to_stop(Train t )
+void Principal::add_train_to_stop(Train& t )
 {   
     stop_tracks.push_back(t);
 }

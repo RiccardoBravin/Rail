@@ -13,7 +13,7 @@ Railway::Railway(std::string line_description){
         std::string s;
         
         std::getline(line_description_file, s);
-        stations.push_back(Principal(name, 0));
+        stations.push_back(Principal(s, 0));
 
         while(!line_description_file.eof()){
             std::string temp;
