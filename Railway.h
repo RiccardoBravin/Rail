@@ -42,7 +42,7 @@ class Railway {
          * @param rw 
          * @return Railway 
          */
-        Railway reverse (const Railway& rw);
+        Railway reverse (Railway& rw);
         /**
          * @brief coparison operator
          * 
@@ -69,7 +69,7 @@ class Railway {
          * @param i 
          * @return Station 
          */
-        Station& remove_station(int i);
+        void remove_station(int i);
          /**
          * @brief Get the beginning station of this railway
          * 
@@ -96,6 +96,7 @@ class Railway {
          * @return Station 
          */
         Station& get_station_at_distance(int distance) const;
+        Station& get_station(std::string name);
         /**
          * @brief how many station in this railway
          * 
@@ -110,6 +111,9 @@ class Railway {
         
         std::string get_source_file_name() const;
 
+        void set_reverse_reference(Railway* ref);
+        Railway* get_reverse_reference();
+
     private:
         /**
          * @brief standard vector containing all station in this railway
@@ -121,6 +125,10 @@ class Railway {
          * 
          */
         std::string line_description_file_name;
+
+        Railway* reverse_railway {nullptr};
+
+        int num_stations {0};
 };
 
 /**
@@ -129,4 +137,5 @@ class Railway {
  */
 std::ostream& operator<<(std::ostream& os, Railway& rw);
 
+void erase_station(int i);
 

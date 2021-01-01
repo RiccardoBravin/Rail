@@ -16,10 +16,15 @@ int Station::get_station_distance() const{ return distance;}
 
 void Station::add_train_to_park(Train& t)
 {
-    parking.push_back(t);
+    if(t.get_type() == Train::Regional)
+        parking.push_back(new Regional(t.get_number())); 
+    else if(t.get_type() == Train::HighSpeed)
+        parking.push_back(new HighSpeed(t.get_number())); 
+    else if(t.get_type() == Train::SuperHighSpeed)
+        parking.push_back(new SuperHighSpeed(t.get_number())); 
 }
 
-vector<Train> Station::get_parking_train() const
+vector<Train*> Station::get_parking_train() const
 {
     return parking; 
 }
@@ -36,7 +41,12 @@ void Station::remove_train_from_park()
 
 void Station::add_train_to_stop(Train& t )
 {   
-    stop_tracks.push_back(t);
+    if(t.get_type() == Train::Regional)
+        stop_tracks.push_back(new Regional(t.get_number())); 
+    else if(t.get_type() == Train::HighSpeed)
+        stop_tracks.push_back(new HighSpeed(t.get_number())); 
+    else if(t.get_type() == Train::SuperHighSpeed)
+        stop_tracks.push_back(new SuperHighSpeed(t.get_number()));
 }
 
 void Station::remove_train_to_stop()
@@ -86,17 +96,15 @@ int Secondary::get_station_type() const{ return Station::Secondary;}
 
 void Secondary::add_train_to_transit(Train& t)
 {
-    transit_tracks.push_back(t); 
+    if(t.get_type() == Train::HighSpeed)
+        transit_tracks.push_back(new HighSpeed(t.get_number())); 
+    else if(t.get_type() == Train::SuperHighSpeed)
+        transit_tracks.push_back(new SuperHighSpeed(t.get_number())); 
 }
 
 void Secondary::remove_train_to_transit()
 {
     transit_tracks.pop_back();
-}
-
-int Secondary::get_stop_tracks() const
-{
-    return N_STOP_TRACK;
 }
 
 int Secondary::get_transit_tracks() const
@@ -133,6 +141,9 @@ Principal::Principal(Principal&& stn)
     if(this == &stn) return;
     name = stn.name;
     distance = stn. distance;
+
+    stn.name = "";
+    stn.distance = 0;
 }
 
 Principal& Principal::operator=(Principal&& stn)
@@ -140,41 +151,14 @@ Principal& Principal::operator=(Principal&& stn)
     if(this == &stn) return;
     name = stn.name;
     distance = stn. distance;
+
+    stn.name = "";
+    stn.distance = 0;
     return *this;
 }
 
 
 int Principal::get_station_type() const{ return Station::Principal;}
-
-void Principal::add_train_to_park(Train& t)
-{
-    parking.push_back(t);
-}
-
-vector<Train> Principal::get_parking_train() const
-{
-    return parking;  
-}
-
-int Principal::get_count_parking_train() const
-{
-    return parking.size();
-}
-
-void Principal::remove_train_from_park()
-{
-    parking.pop_back();
-}
-
-void Principal::add_train_to_stop(Train& t )
-{   
-    stop_tracks.push_back(t);
-}
-
-void Principal::remove_train_to_stop()
-{
-    stop_tracks.pop_back();
-}
 
 int Principal::get_stop_tracks() const
 {
