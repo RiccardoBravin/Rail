@@ -94,11 +94,6 @@ void Secondary::remove_train_to_transit()
     transit_tracks.pop_back();
 }
 
-int Secondary::get_stop_tracks() const
-{
-    return N_STOP_TRACK;
-}
-
 int Secondary::get_transit_tracks() const
 {
     return N_TRANS_TRACK;
@@ -133,6 +128,9 @@ Principal::Principal(Principal&& stn)
     if(this == &stn) return;
     name = stn.name;
     distance = stn. distance;
+
+    stn.name = "";
+    stn.distance = 0;
 }
 
 Principal& Principal::operator=(Principal&& stn)
@@ -140,41 +138,14 @@ Principal& Principal::operator=(Principal&& stn)
     if(this == &stn) return;
     name = stn.name;
     distance = stn. distance;
+
+    stn.name = "";
+    stn.distance = 0;
     return *this;
 }
 
 
 int Principal::get_station_type() const{ return Station::Principal;}
-
-void Principal::add_train_to_park(Train& t)
-{
-    parking.push_back(t);
-}
-
-vector<Train> Principal::get_parking_train() const
-{
-    return parking;  
-}
-
-int Principal::get_count_parking_train() const
-{
-    return parking.size();
-}
-
-void Principal::remove_train_from_park()
-{
-    parking.pop_back();
-}
-
-void Principal::add_train_to_stop(Train& t )
-{   
-    stop_tracks.push_back(t);
-}
-
-void Principal::remove_train_to_stop()
-{
-    stop_tracks.pop_back();
-}
 
 int Principal::get_stop_tracks() const
 {
