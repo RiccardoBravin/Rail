@@ -29,7 +29,7 @@ std::vector<TimeTable> split_timeTable(std::string time_table, Railway& ref) {
             for(int i=0; ref.get_station_number(); i++) {
                 temp.time_at_station[i] = std::stoi(tokens[i+3]);
             }
-            if(returning) returns.push_back(temp);
-            else gones.push_back(temp);
+            if(returning) returns.push_back(&temp);
+            else gones.push_back(&temp);
         }
     } else throw std::runtime_error("enable to open file");
