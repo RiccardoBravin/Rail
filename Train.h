@@ -24,7 +24,7 @@ class Train{
 
         Train& operator=(const Train&) = delete;
         
-        virtual ~Train(){}
+        //virtual ~Train(){std::cout << "distrutto!!";} // potrei volerlo scrivere completo oppure lasciare quello di default!!!!
         
         /**
          * @brief Get the identifying number of the train
@@ -149,7 +149,7 @@ class Regional : public Train{
         Regional& operator=(const Regional& obj);
         Regional(Regional&& obj);
         Regional& operator=(Regional&& obj);
-        ~Regional() { }
+        //~Regional() override {std::cout << "distrutto!!"; }
 
         int get_type() const override; 
         void set_speed(const int _speed) override; //forse si può rendere virtual in train, da verificare
@@ -168,7 +168,7 @@ class HighSpeed : public Train{
         HighSpeed& operator=(const HighSpeed& obj);
         HighSpeed(HighSpeed&& obj);
         HighSpeed& operator=(HighSpeed&& obj);
-        ~HighSpeed() { }
+        //~HighSpeed() override {std::cout << "distrutto!!"; }
 
        
         int get_type() const override; 
@@ -187,7 +187,7 @@ class SuperHighSpeed : public Train{
         SuperHighSpeed& operator=(const SuperHighSpeed &obj);
         SuperHighSpeed(SuperHighSpeed&& obj);
         SuperHighSpeed& operator=(SuperHighSpeed&& obj);
-        ~SuperHighSpeed() { }
+        //~SuperHighSpeed() override {std::cout << "distrutto!!"; }
 
         //getter e setter
        
