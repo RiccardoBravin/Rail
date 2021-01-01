@@ -105,6 +105,8 @@ class Railway {
 
         void add_station(const Station& st);
         void set_source_file(std::string line_description);
+
+        int distance_check(Train& a, Train& b);
         
         std::string get_source_file_name() const;
 
@@ -113,7 +115,7 @@ class Railway {
          * @brief standard vector containing all station in this railway
          * 
          */
-        std::vector<Station> stations;
+        std::vector<Station*> stations;
         /**
          * @brief input file
          * 

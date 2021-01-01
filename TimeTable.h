@@ -22,7 +22,7 @@ struct timetable_element{
  * @param time_table 
  * @return std::vector<TimeTable> 
  */
-std::vector<TimeTable> split_timeTable(std::string time_tablem Railway& ref);
+std::vector<TimeTable> split_timeTable(std::string time_tablem, Railway& ref);
 
 class TimeTable{
     public:
@@ -78,7 +78,7 @@ class TimeTable{
          * @param train_number 
          * @return time_table_element 
          */
-        timetable_element get_timetable_element(int train_number);
+        const timetable_element& get_timetable_element(int train_number);
         /**
          * @brief container for time informations
          * 
@@ -89,7 +89,7 @@ class TimeTable{
         
 
     private:
-        Railway& reference;
+        Railway* reference;
 };
 
 /**
