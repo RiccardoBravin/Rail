@@ -85,7 +85,7 @@ class TimeTable{
          */
         std::vector<timetable_element> time_table;
 
-        Railway& get_railway_reference();*/
+        Railway& get_railway_reference();
         
 
     private:
