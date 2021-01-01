@@ -24,7 +24,7 @@ class Train{
 
         Train& operator=(const Train&) = delete;
         
-        virtual ~Train(){}
+        virtual ~Train(){} // potrei volerlo scrivere completo oppure lasciare quello di default!!!!
         
         /**
          * @brief Get the identifying number of the train

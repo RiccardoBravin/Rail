@@ -1,6 +1,7 @@
 #include <windows.h>
 
 #include <iostream>
+#include <vector>
 #include "Train.h"
 
 
@@ -22,8 +23,19 @@ void print(Regional& a, HighSpeed& b, SuperHighSpeed& c, HANDLE&  hConsole){
     SetConsoleTextAttribute(hConsole, 15);
 }
 
+void test(vector<Train*> &v){
+    Regional* r = new Regional(10);
+    v.push_back(r);
+}
+
+
 int main(int argc, char const *argv[])
 {
+
+    vector<Train*> v;
+    test(v);
+
+    cout << *v[0];
 
     HANDLE  hConsole;
 
