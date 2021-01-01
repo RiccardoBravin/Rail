@@ -158,9 +158,7 @@ class Principal : public Station {
         std::vector<Train> get_parking_train() const;
         int get_count_parking_train() const;
         void remove_train_from_park();
-        void add_train_to_transit(Train t);
         void add_train_to_stop(Train t);
-        void remove_train_to_transit();
         void remove_train_to_stop();
         int get_transit_tracks() const;
         int get_stop_tracks() const;

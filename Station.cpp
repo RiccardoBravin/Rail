@@ -166,19 +166,9 @@ void Principal::remove_train_from_park()
     parking.pop_back();
 }
 
-void Principal::add_train_to_transit(Train t)
-{
-    stop_tracks.push_back(t);  // Lo sovrascrivo cosi? non ha treni in transito
-}
-
 void Principal::add_train_to_stop(Train t )
 {   
     stop_tracks.push_back(t);
-}
-
-void Principal::remove_train_to_transit()
-{
-    transit_tracks.pop_back();
 }
 
 void Principal::remove_train_to_stop()
