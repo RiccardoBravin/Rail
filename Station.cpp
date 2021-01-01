@@ -180,3 +180,17 @@ std::ostream& operator<<(std::ostream& os, const Station& stn)
     os << " distanza: " << stn.get_station_distance() << endl;
     os << " ci sono: " << stn.get_count_parking_train() << " treni in sosta " << endl;
 }
+
+//** Operator == **//
+
+bool operator== (const Station &stn1, const Station &stn2)
+{
+    return(stn1.get_station_type() == stn2.get_station_type());
+}
+
+
+//** Operator != **//
+bool operator!= (const Station &stn1, const Station &stn2)
+{
+    return !(stn1 == stn2);
+}
