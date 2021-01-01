@@ -119,11 +119,11 @@ class Station {
 
 class Secondary : public Station {
     public:
-        Secondary(std::string _name, const int _distance);
-        Secondary(const Secondary& obj);
-        Secondary& operator=(const Secondary& obj);
-        Secondary(Secondary&& obj);
-        Secondary& operator=(Secondary&& obj);
+        Secondary(const std::string _name, const int _distance);
+        Secondary(const Secondary& stn);
+        Secondary& operator=(const Secondary& stn);
+        Secondary(Secondary&& stn);
+        Secondary& operator=(Secondary&& stn);
         ~Secondary() { }
 
         int get_station_type() const override;
@@ -137,8 +137,6 @@ class Secondary : public Station {
         void remove_train_to_stop();
         int get_transit_tracks() const;
         int get_stop_tracks() const;
-        
-       
 
     private: 
         static constexpr int N_TRANS_TRACK = 1;
@@ -148,11 +146,11 @@ class Secondary : public Station {
 class Principal : public Station {
 
     public:
-        Principal(std::string _name, const int _distance);
-        Principal(const Principal& obj);
-        Principal& operator=(const Principal& obj);
-        Principal(Principal&& obj);
-        Principal& operator=(Principal&& obj);
+        Principal(const std::string _name, const int _distance);
+        Principal(const Principal& stn);
+        Principal& operator=(const Principal& stn);
+        Principal(Principal&& stn);
+        Principal& operator=(Principal&& stn);
         ~Principal() { }
 
         int get_station_type() const override;
@@ -171,6 +169,6 @@ class Principal : public Station {
         static constexpr int N_STOP_TRACK = 2;
 };
 
-std::ostream& operator<<(std::ostream& os, const Station& obj);
+std::ostream& operator<<(std::ostream& os, const Station& stn);
 
 #endif //Station_h
