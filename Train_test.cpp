@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <memory>
 #include "Train.h"
 
 
@@ -23,13 +24,12 @@ void print(Regional& a, HighSpeed& b, SuperHighSpeed& c, HANDLE&  hConsole){
     SetConsoleTextAttribute(hConsole, 15);
 }
 
-void test(vector<Train*> &v){
-    Regional* r = new Regional(10);
-    v.push_back(r);
+void test(vector<unique_ptr<Train>>& v){
+    v.push_back(unique_ptr<Regional>(new Regional(10)));
 }
 
 
-void train_v_des(vector<Train*> &v){
+void train_v_des(vector<unique_ptr<Train>>& v){
     for(int i = 0; i < v.size(); i++){
         v[i]->~Train();
     }
@@ -38,7 +38,7 @@ void train_v_des(vector<Train*> &v){
 int main(int argc, char const *argv[])
 {
 
-    vector<Train*> v;
+    vector<unique_ptr<Train>> v;
     test(v);
 
     
@@ -96,10 +96,10 @@ int main(int argc, char const *argv[])
 
         print(reg,hs,shs, hConsole);
         cout << "_______________________________________________________________\n";
-        cin.get();
+        //cin.get();
     }
     
-    train_v_des(v);
+    //train_v_des(v);
     
     SetConsoleTextAttribute(hConsole, 15);
 
