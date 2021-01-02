@@ -39,14 +39,22 @@ void Station::remove_train_from_park()
     parking.pop_back();
 }
 
+
 void Station::add_train_to_stop(Train& t )
 {   
-    if(t.get_type() == Train::Regional)
-        stop_tracks.push_back(unique_ptr<Train>(new Regional(t.get_number()))); 
-    else if(t.get_type() == Train::HighSpeed)
-        stop_tracks.push_back(unique_ptr<Train>(new HighSpeed(t.get_number()))); 
-    else if(t.get_type() == Train::SuperHighSpeed)
-        stop_tracks.push_back(unique_ptr<Train>(new SuperHighSpeed(t.get_number()))); 
+        if(can_add_train_to_stop())
+        {
+            if(t.get_type() == Train::Regional)
+                stop_tracks.push_back(unique_ptr<Train>(new Regional(t.get_number()))); 
+            else if(t.get_type() == Train::HighSpeed)
+                stop_tracks.push_back(unique_ptr<Train>(new HighSpeed(t.get_number()))); 
+            else if(t.get_type() == Train::SuperHighSpeed)
+                stop_tracks.push_back(unique_ptr<Train>(new SuperHighSpeed(t.get_number())));
+        }
+        else{
+            cout << "Sono full"; // prova poi inserisco funzione
+        }
+    
 }
 
 void Station::remove_train_to_stop()
@@ -57,6 +65,19 @@ void Station::remove_train_to_stop()
 int Station::get_count_in_stop_train() const
 {
     return stop_tracks.size();
+}
+
+int Station::get_stop_tracks() const
+{
+    return N_STOP_TRACK;
+}
+
+bool Station::can_add_train_to_stop() const
+{
+    if(get_count_in_stop_train() < N_STOP_TRACK)
+        return true;
+    else
+        return false;
 }
 
 
@@ -102,6 +123,8 @@ Secondary& Secondary::operator=(Secondary&& stn)
 int Secondary::get_station_type() const{ return Station::Secondary;}
 
 
+
+
 void Secondary::add_train_to_transit(Train& t)
 {
     if(t.get_type() == Train::HighSpeed)
@@ -121,10 +144,8 @@ int Secondary::get_transit_tracks() const
     return N_TRANS_TRACK;
 }
 
-int Secondary::get_stop_tracks() const
-{
-    return N_STOP_TRACK;
-}
+
+
 
 //*** Principal ***//
 
@@ -172,12 +193,10 @@ Principal& Principal::operator=(Principal&& stn)
 }
 
 
+
 int Principal::get_station_type() const{ return Station::Principal;}
 
-int Principal::get_stop_tracks() const
-{
-    return N_STOP_TRACK;
-}
+
 
 
 //*** Operator << ***//

@@ -67,6 +67,8 @@ class Station {
          * @param t  - use vector parking
          */
         void remove_train_from_park();
+
+        bool can_add_train_to_stop() const;
         
         /**
          * @brief Add train to stop track
@@ -88,15 +90,7 @@ class Station {
          * @return int 
          */
         int get_count_in_stop_train() const;
-    
-        /**
-         * @brief Solo per le stazioni Secondary
-         * 
-         * @return int 
-         * 
-         * int get_transit_tracks() const;
-         */
-        
+ 
 
         /**
          * @brief Get the stop tracks object
@@ -118,6 +112,7 @@ class Station {
         std::vector<std::unique_ptr<Train>> parking;     
         std::vector<std::unique_ptr<Train>> transit_tracks;
         std::vector<std::unique_ptr<Train>> stop_tracks;
+        static constexpr int N_STOP_TRACK = 2;
 
     private:
        
@@ -141,7 +136,6 @@ class Secondary : public Station {
 
     private: 
         static constexpr int N_TRANS_TRACK = 1;
-        static constexpr int N_STOP_TRACK = 2;
 };
 
 class Principal : public Station {
@@ -153,12 +147,12 @@ class Principal : public Station {
         Principal(Principal&& stn);
         Principal& operator=(Principal&& stn);
         ~Principal() { }
-
+           
         int get_station_type() const override;
         int get_stop_tracks() const;
         
     private: 
-        static constexpr int N_STOP_TRACK = 2;
+
 };
 
 std::ostream& operator<<(std::ostream& os, const Station& stn);
