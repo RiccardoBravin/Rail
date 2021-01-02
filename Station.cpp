@@ -17,14 +17,14 @@ int Station::get_station_distance() const{ return distance;}
 void Station::add_train_to_park(Train& t)
 {
     if(t.get_type() == Train::Regional)
-        parking.push_back(new Regional(t.get_number())); 
+        parking.push_back(unique_ptr<Train>(new Regional(t.get_number()))); 
     else if(t.get_type() == Train::HighSpeed)
-        parking.push_back(new HighSpeed(t.get_number())); 
+        parking.push_back(unique_ptr<Train>(new HighSpeed(t.get_number()))); 
     else if(t.get_type() == Train::SuperHighSpeed)
-        parking.push_back(new SuperHighSpeed(t.get_number())); 
+        parking.push_back(unique_ptr<Train>(new SuperHighSpeed(t.get_number()))); 
 }
 
-vector<Train*> Station::get_parking_train() const
+vector<unique_ptr<Train>> Station::get_parking_train() const
 {
     return parking; 
 }
@@ -42,11 +42,11 @@ void Station::remove_train_from_park()
 void Station::add_train_to_stop(Train& t )
 {   
     if(t.get_type() == Train::Regional)
-        stop_tracks.push_back(new Regional(t.get_number())); 
+        parking.push_back(unique_ptr<Train>(new Regional(t.get_number()))); 
     else if(t.get_type() == Train::HighSpeed)
-        stop_tracks.push_back(new HighSpeed(t.get_number())); 
+        parking.push_back(unique_ptr<Train>(new HighSpeed(t.get_number()))); 
     else if(t.get_type() == Train::SuperHighSpeed)
-        stop_tracks.push_back(new SuperHighSpeed(t.get_number()));
+        parking.push_back(unique_ptr<Train>(new SuperHighSpeed(t.get_number()))); 
 }
 
 void Station::remove_train_to_stop()
@@ -100,9 +100,9 @@ int Secondary::get_station_type() const{ return Station::Secondary;}
 void Secondary::add_train_to_transit(Train& t)
 {
     if(t.get_type() == Train::HighSpeed)
-        transit_tracks.push_back(new HighSpeed(t.get_number())); 
+        parking.push_back(unique_ptr<Train>(new HighSpeed(t.get_number()))); 
     else if(t.get_type() == Train::SuperHighSpeed)
-        transit_tracks.push_back(new SuperHighSpeed(t.get_number())); 
+        parking.push_back(unique_ptr<Train>(new SuperHighSpeed(t.get_number()))); 
 }
 
 void Secondary::remove_train_to_transit()
@@ -115,6 +115,10 @@ int Secondary::get_transit_tracks() const
     return N_TRANS_TRACK;
 }
 
+int Secondary::get_stop_tracks() const
+{
+    return N_STOP_TRACK;
+}
 
 //*** Principal ***//
 
@@ -182,7 +186,7 @@ std::ostream& operator<<(std::ostream& os, const Station& stn)
     }
     os << " di: " << stn.get_station_name();
     os << " distanza: " << stn.get_station_distance() << " km " << endl;
-    os << " ci sono: " << stn.get_count_parking_train() << " treni in sosta " << endl;
+    os << "ci sono: " << stn.get_count_parking_train() << " treni in sosta " << endl;
     return os;
 }
 
@@ -190,9 +194,10 @@ std::ostream& operator<<(std::ostream& os, const Station& stn)
 
 bool operator== (const Station &stn1, const Station &stn2)
 {
-    return(stn1.get_station_type() == stn2.get_station_type());
+    return(stn1.get_station_type() == stn2.get_station_type() &&
+        stn1.get_count_parking_train() == stn2.get_count_parking_train()
+       );
 }
-
 
 //** Operator != **//
 bool operator!= (const Station &stn1, const Station &stn2)

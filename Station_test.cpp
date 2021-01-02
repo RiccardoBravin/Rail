@@ -9,8 +9,13 @@ int main() {
     Principal test_principal = Principal(s, 10);
     string p = "Mirano";
     Secondary test_secondary = Secondary(p, 25);
+    Regional reg = Regional(0);
+    test_principal.add_train_to_park(reg);
     bool b = (test_principal != test_secondary);
-    cout << b << endl;
+    if(b == true)
+        cout << "Sono uguali" << endl;
+    else 
+        cout << "Sono diverse"<< endl;
     
     cout << test_principal.get_station_type()<< endl;
     cout << test_secondary.get_station_type() << endl; 

@@ -52,7 +52,7 @@ class Station {
          * 
          * @return std::vector<Train> 
          */
-        std::vector<Train*> get_parking_train() const;
+        std::vector<std::unique_ptr<Train>> get_parking_train() const;
 
          /**
          * @brief Get the count parking train object
@@ -108,9 +108,9 @@ class Station {
         Station() {};
         std::string name; 
         int distance;
-        std::vector<Train*> parking;     
-        std::vector<Train*> transit_tracks;
-        std::vector<Train*> stop_tracks;
+        std::vector<std::unique_ptr<Train>> parking;     
+        std::vector<std::unique_ptr<Train>> transit_tracks;
+        std::vector<std::unique_ptr<Train>> stop_tracks;
 
     private:
        
