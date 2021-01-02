@@ -156,4 +156,8 @@ class Principal : public Station {
 
 std::ostream& operator<<(std::ostream& os, const Station& stn);
 
+bool operator == (const Station &stn1, const Station &stn2);
+
+bool operator != (const Station &stn1, const Station &stn2);
+
 #endif //Station_h

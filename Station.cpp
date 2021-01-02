@@ -183,6 +183,7 @@ std::ostream& operator<<(std::ostream& os, const Station& stn)
     os << " di: " << stn.get_station_name();
     os << " distanza: " << stn.get_station_distance() << " km " << endl;
     os << " ci sono: " << stn.get_count_parking_train() << " treni in sosta " << endl;
+    return os;
 }
 
 //** Operator == **//
