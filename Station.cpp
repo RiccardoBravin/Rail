@@ -54,7 +54,7 @@ void Station::remove_train_to_stop()
     stop_tracks.pop_back();
 }
 
-int const& Station::get_count_in_stop_train() const
+int Station::get_count_in_stop_train() const
 {
     return stop_tracks.size();
 }

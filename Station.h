@@ -87,7 +87,7 @@ class Station {
          * 
          * @return int 
          */
-        int const& get_count_in_stop_train() const;
+        int get_count_in_stop_train() const;
     
         /**
          * @brief Solo per le stazioni Secondary
