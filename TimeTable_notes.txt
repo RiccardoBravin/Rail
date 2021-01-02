@@ -1,0 +1,2 @@
+1. Non capisco il costruttore di timetable... riempie un vettore che non è dichiarato di elementi presenti in un vettore passato
+2.

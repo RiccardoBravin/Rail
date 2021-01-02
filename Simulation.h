@@ -2,6 +2,7 @@
 #include "TimeTable.h"
 #include "Train.h"
 #include "Station.h"
+#include <memory>
 
 class Simulation {
     public:
@@ -14,21 +15,30 @@ class Simulation {
         TimeTable return_timetable;
         Railway going_railway;
         Railway return_railway;
-        std::vector<Train*> going_trains;
-        std::vector<Train*> return_trains;
+        std::vector<std::unique_ptr<Train>> going_trains;
+        std::vector<std::unique_ptr<Train>> return_trains;
 
         int current_time {0};
-        void update_current_time(int incrememt);
+        void update_current_time(int incrememt); //non ha molto senso un metodo privato che aggiorna una variabile privata, è un int, puoi fare direttamente "x + 10"
 
-        void park_train(Train& Tr, Station& St);
-        void train_to_platform(Train& Tr, Station& St);
-        void leave_platform(Train& Tr, Station& St);
-        void leave_park(Train& Tr, Station& St);
+        //chiede ad una stazione di inserire il treno nei suoi parcheggi
+        void park_train(Train& tr, Station& st);
+        //chiede ad una stazione di inserire il treno nella banchina
+        void train_to_platform(Train& tr, Station& st);
+        //chiede ad una stazione di far uscire il treno dalla banchina
+        void leave_platform(Train& tr, Station& st);
+        //chiede alla stazione di far uscire il treno dal parcheggio
+        void leave_park(Train& tr, Station& st);
 
-        void notice_entering_station_area(Train& Tr, Station& St);
-        void notice_entering_station_platform(Train& Tr, Station& St);
-        void notice_leaving_station_platform(Train& Tr, Station& St);
+        //segnale che il treno manda alla stazione quando è a venti chilometri
+        void notice_entering_station_area(Train& tr, Station& st);
+        void notice_entering_station_platform(Train& tr, Station& st);
+        void notice_leaving_station_platform(Train& tr, Station& st);
 
+         
+
+
+        
 };
 
-std::string minute_to_our(int minute);
+std::string minute_to_hour(int minute);
