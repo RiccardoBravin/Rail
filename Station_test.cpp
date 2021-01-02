@@ -10,7 +10,11 @@ int main() {
     string p = "Mirano";
     Secondary test_secondary = Secondary(p, 25);
     Regional reg = Regional(0);
+    Regional reg1 = Regional(0);
+    Regional reg2 = Regional(0);
     test_principal.add_train_to_park(reg);
+    test_principal.add_train_to_stop(reg1);
+    test_principal.add_train_to_stop(reg2);
     bool b = (test_principal != test_secondary);
     if(b == true)
         cout << "Sono uguali" << endl;

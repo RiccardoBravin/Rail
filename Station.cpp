@@ -24,7 +24,7 @@ void Station::add_train_to_park(Train& t)
         parking.push_back(unique_ptr<Train>(new SuperHighSpeed(t.get_number()))); 
 }
 
-vector<unique_ptr<Train>> Station::get_parking_train() const
+vector<unique_ptr<Train>> const& Station::get_parking_train() const
 {
     return parking; 
 }
@@ -42,16 +42,21 @@ void Station::remove_train_from_park()
 void Station::add_train_to_stop(Train& t )
 {   
     if(t.get_type() == Train::Regional)
-        parking.push_back(unique_ptr<Train>(new Regional(t.get_number()))); 
+        stop_tracks.push_back(unique_ptr<Train>(new Regional(t.get_number()))); 
     else if(t.get_type() == Train::HighSpeed)
-        parking.push_back(unique_ptr<Train>(new HighSpeed(t.get_number()))); 
+        stop_tracks.push_back(unique_ptr<Train>(new HighSpeed(t.get_number()))); 
     else if(t.get_type() == Train::SuperHighSpeed)
-        parking.push_back(unique_ptr<Train>(new SuperHighSpeed(t.get_number()))); 
+        stop_tracks.push_back(unique_ptr<Train>(new SuperHighSpeed(t.get_number()))); 
 }
 
 void Station::remove_train_to_stop()
 {
     stop_tracks.pop_back();
+}
+
+int const& Station::get_count_in_stop_train() const
+{
+    return stop_tracks.size();
 }
 
 
@@ -100,10 +105,11 @@ int Secondary::get_station_type() const{ return Station::Secondary;}
 void Secondary::add_train_to_transit(Train& t)
 {
     if(t.get_type() == Train::HighSpeed)
-        parking.push_back(unique_ptr<Train>(new HighSpeed(t.get_number()))); 
+        transit_tracks.push_back(unique_ptr<Train>(new HighSpeed(t.get_number()))); 
     else if(t.get_type() == Train::SuperHighSpeed)
-        parking.push_back(unique_ptr<Train>(new SuperHighSpeed(t.get_number()))); 
+        transit_tracks.push_back(unique_ptr<Train>(new SuperHighSpeed(t.get_number()))); 
 }
+
 
 void Secondary::remove_train_to_transit()
 {
@@ -186,7 +192,8 @@ std::ostream& operator<<(std::ostream& os, const Station& stn)
     }
     os << " di: " << stn.get_station_name();
     os << " distanza: " << stn.get_station_distance() << " km " << endl;
-    os << "ci sono: " << stn.get_count_parking_train() << " treni in sosta " << endl;
+    os << "ci sono: " << stn.get_count_parking_train() << " treni in sosta nel parcheggio " << endl;
+    os << "ci sono: " << stn.get_count_in_stop_train() << " binari di fermata occupati " << endl;
     return os;
 }
 

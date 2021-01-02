@@ -52,7 +52,7 @@ class Station {
          * 
          * @return std::vector<Train> 
          */
-        std::vector<std::unique_ptr<Train>> get_parking_train() const;
+        std::vector<std::unique_ptr<Train>> const& get_parking_train() const;
 
          /**
          * @brief Get the count parking train object
@@ -81,6 +81,13 @@ class Station {
          * @param t 
          */
         void remove_train_to_stop();
+
+        /**
+         * @brief Get the count in stop trains 
+         * 
+         * @return int 
+         */
+        int const& get_count_in_stop_train() const;
     
         /**
          * @brief Solo per le stazioni Secondary
