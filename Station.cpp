@@ -70,7 +70,8 @@ Secondary::Secondary(const Secondary& stn)
 
 Secondary& Secondary::operator=(const Secondary& stn)
 {
-    if(this == &stn) return *this;
+    if(this == &stn)
+        return *this;
     name = stn.name;
     distance = stn. distance;
     return *this;
@@ -78,14 +79,16 @@ Secondary& Secondary::operator=(const Secondary& stn)
 
 Secondary::Secondary(Secondary&& stn)
 {
-    if(this == &stn) return;
+    if(this == &stn)
+        return;
     name = stn.name;
     distance = stn. distance;
 }
 
 Secondary& Secondary::operator=(Secondary&& stn)
 {
-    if(this == &stn) return;
+    if(this == &stn)
+        return *this;
     name = stn.name;
     distance = stn. distance;
     return *this;
@@ -148,7 +151,8 @@ Principal::Principal(Principal&& stn)
 
 Principal& Principal::operator=(Principal&& stn)
 {
-    if(this == &stn) return;
+    if(this == &stn)
+        return *this;
     name = stn.name;
     distance = stn. distance;
 
@@ -177,7 +181,7 @@ std::ostream& operator<<(std::ostream& os, const Station& stn)
         os << "Locale";
     }
     os << " di: " << stn.get_station_name();
-    os << " distanza: " << stn.get_station_distance() << endl;
+    os << " distanza: " << stn.get_station_distance() << " km " << endl;
     os << " ci sono: " << stn.get_count_parking_train() << " treni in sosta " << endl;
 }
 
