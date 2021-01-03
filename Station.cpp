@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include "Train.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -14,14 +15,10 @@ string Station::get_station_name() const{ return name;}
 
 int Station::get_station_distance() const{ return distance;}
 
-void Station::add_train_to_park(Train& t)
+void Station::add_train_to_park(Train* t)
 {
-    if(t.get_type() == Train::Regional)
-        parking.push_back(new Regional(t.get_number())); 
-    else if(t.get_type() == Train::HighSpeed)
-        parking.push_back(new HighSpeed(t.get_number())); 
-    else if(t.get_type() == Train::SuperHighSpeed)
-        parking.push_back(new SuperHighSpeed(t.get_number())); 
+
+    parking.push_back(t); 
 }
 
 vector<Train*> Station::get_parking_train() const
@@ -34,34 +31,29 @@ int Station::get_count_parking_train() const
     return parking.size();
 }
 
-void Station::remove_train_from_park()
+void Station::remove_train_from_park(Train* t)
 {
-    parking.pop_back();
+     parking.erase(find(parking.begin(), parking.end(), t));
 }
 
 
-bool Station::add_train_to_stop(Train& t )
+bool Station::add_train_to_stop(Train* t)
 {   
-        if(can_add_train_to_stop())
-        {
-            if(t.get_type() == Train::Regional)
-                stop_tracks.push_back(new Regional(t.get_number())); 
-            else if(t.get_type() == Train::HighSpeed)
-                stop_tracks.push_back(new HighSpeed(t.get_number())); 
-            else if(t.get_type() == Train::SuperHighSpeed)
-                stop_tracks.push_back(new SuperHighSpeed(t.get_number()));
-            return 1;
-        }
-        else{
-            cout << "Sono full"; 
-            return 0;
-        }
+    if(can_add_train_to_stop())
+    {   
+        stop_tracks.push_back(t); 
+        return 1;
+    }
+    else{
+        cout << "Sono full"; 
+        return 0;
+    }
     
 }
 
-void Station::remove_train_to_stop()
+void Station::remove_train_to_stop(const Train* t)
 {
-    stop_tracks.pop_back();
+    stop_tracks.erase(find(stop_tracks.begin(), stop_tracks.end(), t));
 }
 
 int Station::get_count_in_stop_train() const
@@ -124,12 +116,11 @@ Secondary& Secondary::operator=(Secondary&& stn)
 
 int Secondary::get_station_type() const{ return Station::Secondary;}
 
-void Secondary::add_train_to_transit(Train& t)
+void Secondary::add_train_to_transit(Train* t)
 {
-    if(t.get_type() == Train::HighSpeed)
-        transit_tracks.push_back(new HighSpeed(t.get_number())); 
-    else if(t.get_type() == Train::SuperHighSpeed)
-        transit_tracks.push_back(new SuperHighSpeed(t.get_number())); 
+
+    transit_tracks.push_back(t); 
+ 
 }
 
 void Secondary::remove_train_to_transit()

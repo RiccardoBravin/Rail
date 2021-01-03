@@ -45,7 +45,7 @@ class Station {
          * 
          * @param t - use vector parking
          */
-        void add_train_to_park(Train& t);
+        void add_train_to_park(Train* t);
                 
         /**
          * @brief Get the parking train object
@@ -66,29 +66,31 @@ class Station {
          * 
          * @param t  - use vector parking
          */
-        void remove_train_from_park();
+        void remove_train_from_park(Train* t);
 
         /**
-         * @brief 
+         * @brief Asks if can add a train on the stop platform
          * 
          * @return true 
          * @return false 
          */
         bool can_add_train_to_stop() const;
         
-        /**
-         * @brief Add train to stop track
-         * 
-         * @param t 
-         */
-        bool add_train_to_stop(Train& t );
+       /**
+        * @brief Add train to stop platform
+        * 
+        * @param t 
+        * @return true 
+        * @return false 
+        */
+        bool add_train_to_stop(Train* t);
         
         /**
          * @brief Remove train to stop track
          * 
          * @param t 
          */
-        void remove_train_to_stop();
+        void remove_train_to_stop(const Train* t);
 
         /**
          * @brief Get the count in stop trains 
@@ -135,7 +137,7 @@ class Secondary : public Station {
         ~Secondary() { }
 
         int get_station_type() const override;
-        void add_train_to_transit(Train& t);
+        void add_train_to_transit(Train* t);
         void remove_train_to_transit();
         int get_transit_tracks() const;
         int get_stop_tracks() const;
