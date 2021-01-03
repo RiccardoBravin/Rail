@@ -216,11 +216,11 @@ bool operator== (const Station &stn1, const Station &stn2)
 {
     return(stn1.get_station_type() == stn2.get_station_type() &&
         stn1.get_count_parking_train() == stn2.get_count_parking_train() &&
-        stn1.get_count_in_stop_train() == stn2.get_count_in_stop_train()
-       ); 
+        stn1.get_count_in_stop_train() == stn2.get_count_in_stop_train());
+}
 
 //** Operator != **//
 bool operator!= (const Station &stn1, const Station &stn2)
 {
     return !(stn1 == stn2);
-}
+};
