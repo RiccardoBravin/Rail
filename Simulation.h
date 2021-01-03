@@ -35,7 +35,8 @@ class Simulation {
         void notice_entering_station_platform(Train& tr, Station& st);
         void notice_leaving_station_platform(Train& tr, Station& st);
 
-         
+        
+        void fix_time_rail
 
 
         
