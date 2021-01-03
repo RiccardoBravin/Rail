@@ -1,11 +1,18 @@
 #include "Station.h"
 #include <string>
+#include <memory>
 #include "Train.h"
 
 using namespace std;
 
 void print_tr(vector<unique_ptr<Train>>& tr);
 void print_st(vector<unique_ptr<Station>>& st);
+
+bool in_station(Train* t, Station* s);
+
+bool at_stop(Train* t, Station* s);
+
+bool passing_at(Train* t, double dist);
 
 void step(vector<unique_ptr<Train>> &tr, vector<unique_ptr<Station>>& st);
 
@@ -49,8 +56,8 @@ int main() {
     tr.push_back(unique_ptr<Regional>(new Regional(0)));
     tr.push_back(unique_ptr<HighSpeed>(new HighSpeed(1)));
     tr.push_back(unique_ptr<Regional>(new Regional(2)));
-    tr.push_back(unique_ptr<SuperHighSpeed>(new SuperHighSpeed(3)));
-    tr.push_back(unique_ptr<SuperHighSpeed>(new SuperHighSpeed(4)));
+    /*tr.push_back(unique_ptr<SuperHighSpeed>(new SuperHighSpeed(3)));
+    tr.push_back(unique_ptr<SuperHighSpeed>(new SuperHighSpeed(4)));*/
 
 
     st.push_back(unique_ptr<Principal>(new Principal("Sacile", 0)));
@@ -58,18 +65,38 @@ int main() {
     st.push_back(unique_ptr<Secondary>(new Secondary("Codroipo", 46)));
     st.push_back(unique_ptr<Principal>(new Principal("Trieste", 150)));
 
+    for(unique_ptr<Train> &t : tr){
+        st[0].get()->add_train_to_stop(t.get());
+        t.get()->set_speed(80);
+    }
+
+    tr[2].get()->park(0);
+
+    cout << "\n\n";
+
     print_tr(tr);
 
     print_st(st);
 
 
-    tr[0].get()->set_speed(900);
-
+    //tr[0].get()->set_speed(900);
+    unsigned cycle;
     while(!tr.empty()){
+        
+        if(cycle == 15){
+            tr[2].get()->set_speed(80);
+            st[0].get()->add_train_to_stop(tr[2].get());
+        }
+        cout << "~~~~~~  Cycle " << cycle << "   ~~~~~~\n";
+        
         step(tr,st);
         print_tr(tr);
+        print_st(st);
+        
 
+        cycle++;
     }
+    
     
 }
 
@@ -90,12 +117,101 @@ void print_st(vector<unique_ptr<Station>>& st){
     cout << endl;
 }
 
-void step(vector<unique_ptr<Train>> &tr, vector<unique_ptr<Station>>& st){
-    for(unique_ptr<Train> &x : tr){
-
-
-        x.get()->step();
-        for(unique_ptr<Station> &s : st)
-            if(x.get()->get_distance() >)
-    }
+bool in_station(Train* t, Station* s){
+    if(t->next_distance() > s->get_station_distance() - 5  && t->next_distance() < s->get_station_distance() + 5)
+        return true;
+    return false;
 }
+
+bool at_stop(Train* t, Station* s){
+    if(t->get_distance() < s->get_station_distance() && t->next_distance() >= s->get_station_distance())
+        return true;
+    return false;
+}
+
+bool passing_at(Train* t, double dist){
+    if(t->get_distance() < dist && t->next_distance() >= dist)
+        return true;
+    return false;
+}
+
+
+
+void step(vector<unique_ptr<Train>> &tr, vector<unique_ptr<Station>>& st){
+    for(int i = 0; i < tr.size(); i++){
+        
+        for(unique_ptr<Station> &s : st){ //per ogni stazione
+            if(tr[i].get()->get_type() == Train::Regional){ //se sei un regionale te le fai tutte le stazioni
+                //se arrivi alla stazione allora fermati
+                if(at_stop(tr[i].get(), s.get())){
+                    tr[i].get()->stop(s.get()->get_station_distance());
+                    break;
+                }
+                //se sei in zona stazione devi andare ad 80 
+                if(in_station(tr[i].get(), s.get()) && !tr[i].get()->parked())
+                    tr[i].get()->set_speed(80);
+                
+                //se stai entrando controlla se puoi transitare
+                if(passing_at(tr[i].get(), s.get()->get_station_distance()-5)){
+                    if(s.get()->add_train_to_stop(tr[i].get())){
+                        //tr[i].get()->set_speed(80); //teoricamente non serirebbe nemmeno
+                    }
+                    else{
+                        s.get()->add_train_to_park(tr[i].get());
+                        tr[i].get()->park(s.get()->get_station_distance() - 5);
+                    }
+                    break;
+                }
+
+                if(passing_at(tr[i].get(), s.get()->get_station_distance() + 5)){
+                    s.get()->remove_train_to_stop(tr[i].get());
+                    tr[i].get()->set_speed(900);
+                    break;     
+                }
+                
+
+            }else if(tr[i].get()->get_type() == Train::HighSpeed || tr[i].get()->get_type() == Train::SuperHighSpeed){ //se non sei regional fai solo principal
+                
+                if(s.get()->get_station_type() == Station::Principal){
+                    //se arrivi alla stazione allora fermati
+                    if(at_stop(tr[i].get(), s.get())){
+                        tr[i].get()->stop(s.get()->get_station_distance());
+                        break;
+                    }
+                    //se sei in zona stazione devi andare ad 80 
+                    if(in_station(tr[i].get(), s.get()))
+                        tr[i].get()->set_speed(80);
+
+                    //se stai entrando controlla se puoi transitare
+                    if(passing_at(tr[i].get(), s.get()->get_station_distance()-5)){
+                        if(s.get()->add_train_to_stop(tr[i].get())){
+                            //tr[i].get()->set_speed(80); //teoricamente non serirebbe nemmeno
+                        }
+                        else{
+                            s.get()->add_train_to_park(tr[i].get());
+                            tr[i].get()->park(s.get()->get_station_distance() - 5);
+                        }
+                        break;
+                    }
+
+                    if(passing_at(tr[i].get(), s.get()->get_station_distance() + 5)){
+                        s.get()->remove_train_to_stop(tr[i].get());
+                        tr[i].get()->set_speed(900);
+                        break;     
+                    }
+                        
+                        
+                }
+            }
+        }
+
+        
+
+        tr[i].get()->step();
+
+        if(tr[i].get()->get_distance() > st.back().get()->get_station_distance()){
+            st.back().get()->remove_train_to_stop(tr[i].get());
+            tr.erase(tr.begin()+i);
+        }
+    }
+}   
