@@ -31,7 +31,7 @@ class Station {
          * 
          * @return int 
          */
-        int get_station_distance() const;
+        double get_station_distance() const;
 
         /**
          * @brief Get the station type Secondary Station == 1 || Principal == 0
@@ -116,7 +116,7 @@ class Station {
     protected:
         Station() {};
         std::string name; 
-        int distance;
+        double distance;
         std::vector<Train*> parking;     
         std::vector<Train*> transit_tracks;
         std::vector<Train*> stop_tracks;
@@ -129,7 +129,7 @@ class Station {
 
 class Secondary : public Station {
     public:
-        Secondary(const std::string _name, const int _distance);
+        Secondary(const std::string _name, const double _distance);
         Secondary(const Secondary& stn);
         Secondary& operator=(const Secondary& stn);
         Secondary(Secondary&& stn);
@@ -149,7 +149,7 @@ class Secondary : public Station {
 class Principal : public Station {
 
     public:
-        Principal(const std::string _name, const int _distance);
+        Principal(const std::string _name, const double _distance);
         Principal(const Principal& stn);
         Principal& operator=(const Principal& stn);
         Principal(Principal&& stn);

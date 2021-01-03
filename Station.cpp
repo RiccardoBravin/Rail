@@ -13,7 +13,7 @@ using namespace std;
 
 string Station::get_station_name() const{ return name;}
 
-int Station::get_station_distance() const{ return distance;}
+double Station::get_station_distance() const{ return distance;}
 
 void Station::add_train_to_park(Train* t)
 {
@@ -76,7 +76,7 @@ bool Station::can_add_train_to_stop() const
 
 
 //*** Secondary ***//
-Secondary::Secondary(const string _name, const int _distance)
+Secondary::Secondary(const string _name, const double _distance)
 {
     name = _name;
     distance = _distance;
@@ -137,7 +137,7 @@ int Secondary::get_transit_tracks() const
 
 //*** Principal ***//
 
-Principal::Principal(const string _name, const int _distance)
+Principal::Principal(const string _name, const double _distance)
 {
     name = _name;
     distance = _distance;
