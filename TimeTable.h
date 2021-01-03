@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "Railway.h"
 
 /**
  * @brief contains time informations for each train
@@ -22,7 +21,7 @@ struct timetable_element{
  * @param time_table 
  * @return std::vector<TimeTable> 
  */
-std::vector<TimeTable> split_timeTable(std::string time_tablem, Railway& ref);
+std::vector<TimeTable> split_timeTable(std::string time_tablem);
 
 class TimeTable{
     public:
@@ -85,11 +84,10 @@ class TimeTable{
          */
         std::vector<timetable_element> time_table;
 
-        Railway& get_railway_reference();
+        
         
 
     private:
-        Railway* reference;
 };
 
 /**

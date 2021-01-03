@@ -7,11 +7,16 @@
 using namespace std;
 
 Simulation::Simulation(string line_description_file, std::string timetables_file){
-    going_railway = Railway(line_description_file);
-    return_railway = going_railway.reverse(return_railway); //andra tolto return_railway da uno dei due posti
+    vector<TimeTable> timetables = split_timeTable(timetables_file);
 
-    going_timetable = TimeTable(timetables_file); //?
-    return_timetable = ?
+    going_timetable = timetables[0];
+    return_timetable = timetables[1];
     
+    going_railway = Railway(line_description_file, &going_timetable);
+    return_railway.reverse(going_railway, &return_timetable);
+
+    
+    
+
 
 }

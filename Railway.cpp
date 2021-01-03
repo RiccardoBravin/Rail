@@ -6,7 +6,8 @@
 #include <exception>
 #include <cstring>
 
-Railway::Railway(std::string line_description){
+Railway::Railway(std::string line_description, TimeTable* ref){
+    reference_to_TimeTable = ref;
     line_description_file_name = line_description;
     std::ifstream line_description_file (line_description_file_name);
     if(line_description_file.is_open()){
@@ -61,21 +62,23 @@ Railway::Railway(Railway&& rw){
 
 }
 
-Railway reverse (Railway& rw){
-    Railway temp;
-    temp.set_source_file(rw.get_source_file_name());
+void Railway::reverse (Railway& rw, TimeTable* tt) {
+    line_description_file_name = rw.get_source_file_name();
+    reverse_railway = &rw;
+    reference_to_TimeTable = tt;
     
     
-    for(int i=rw.get_station_number()-1; i>-1; i--) {
-        temp.add_station(rw.get_station(i));
+    for(int i=num_stations-1; i>-1; i--) {
+        stations.push_back(&get_station(i));
     }
 
-    rw.set_reverse_reference(temp);
-    return temp;
+    
+
 }
 
-//manca Station::operator!=(const Staion& st)
-/*bool Railway::operator==(const Railway& rw){
+
+
+bool Railway::operator==(const Railway& rw){
     if(line_description_file_name != rw.get_source_file_name()))
         return false;
     if(num_stations != rw.get_station_number())
@@ -87,7 +90,7 @@ Railway reverse (Railway& rw){
     for(int i=0; i<num_stations; i++) {
         *(stations[i]) != rw.get_station(i);
     }
-}*/
+}
 
 /*Railway& Railway::operator=(Railway&& rw){
 
@@ -121,9 +124,9 @@ Station& Railway::get_station(int i) const{
 
 /*Station& Railway::get_station_at_distance(int distance) const{
     return 0;
-}
+}*/
 
-Station& Railway::get_station(std::string name){
+/*Station& Railway::get_station(std::string name){
     for(int i=0; i<stations.size(); i++) {
         if(get_station(i).get_station_name() == name)
             return *stations[i];
@@ -139,9 +142,16 @@ std::string Railway::get_source_file_name() const{
     return line_description_file_name;
 }
 
-/*void Railway::add_station(const Station& st){
-    stations.push_back(che ci metto qua dentro???);
-}*/
+void Railway::add_station(const Station& st){
+    if(st.get_station_type() == Station::Secondary) {
+        Principal *temp = new Principal(st.get_station_name(), st.get_station_distance());
+        stations.push_back(temp);
+    }
+    else {
+        Secondary *temp= new Secondary(st.get_station_name(), st.get_station_distance());
+        stations.push_back(temp);
+    }
+}
 
 void Railway::set_source_file(std::string line_description){
     line_description_file_name= line_description;
@@ -158,10 +168,6 @@ std::ostream& operator<<(std::ostream& os, Railway& rw){
         os << rw.get_station(i);
 }
 
-
-void Railway::set_reverse_reference(Railway* ref){
-    reverse_railway = ref;
-}
 
 Railway* Railway::get_reverse_reference() {
     return reverse_railway;

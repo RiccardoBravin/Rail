@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include "Station.h"
+#include "TimeTable.h"
 
 class Railway {
     public:
@@ -12,12 +13,7 @@ class Railway {
          * 
          * @param line_description input file
          */
-        Railway(std::string line_description);
-        /**
-         * @brief default constructor (useless)
-         * 
-         */
-        Railway();
+        Railway(std::string line_description, TimeTable* ref);
         /**
          * @brief copy constructor
          * 
@@ -42,7 +38,7 @@ class Railway {
          * @param rw 
          * @return Railway 
          */
-        Railway reverse (Railway& rw);
+        void reverse (Railway& rw, TimeTable* tt);
         /**
          * @brief coparison operator
          * 
@@ -52,17 +48,17 @@ class Railway {
          * @brief move operator
          * 
          */
-        Railway& operator=(Railway&& rw);
+        //Railway& operator=(Railway&& rw);
         /**
          * @brief copy operator
          * 
          */
-        Railway operator=(const Railway& rw);
+        //Railway operator=(const Railway& rw);
         /**
          * @brief remove impossible station
          * 
          */
-        void verify_railway();
+        void verify_railway(); 
         /**
          * @brief remove station at index i
          * 
@@ -96,7 +92,7 @@ class Railway {
          * @return Station 
          */
         Station& get_station_at_distance(int distance) const;
-        Station& get_station(std::string name);
+        //Station& get_station(std::string name);
         /**
          * @brief how many station in this railway
          * 
@@ -111,8 +107,9 @@ class Railway {
         
         std::string get_source_file_name() const;
 
-        void set_reverse_reference(Railway* ref);
         Railway* get_reverse_reference();
+
+        
 
     private:
         /**
@@ -127,6 +124,13 @@ class Railway {
         std::string line_description_file_name;
 
         Railway* reverse_railway {nullptr};
+        /**
+         * @brief default constructor (useless)
+         * 
+         */
+        Railway();
+
+        TimeTable* reference_to_TimeTable;
 
         int num_stations {0};
 };
@@ -136,6 +140,4 @@ class Railway {
  * 
  */
 std::ostream& operator<<(std::ostream& os, Railway& rw);
-
-void erase_station(int i);
 

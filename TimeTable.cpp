@@ -10,7 +10,7 @@ TimeTable::TimeTable(std::vector<timetable_element> elements) {
     }
 }
 
-std::vector<TimeTable> split_timeTable(std::string time_table, Railway& ref) {
+std::vector<TimeTable> split_timeTable(std::string time_table) {
     std::ifstream timetable_file (time_table);
     if(timetable_file.is_open()) {
         timetable_element temp;
