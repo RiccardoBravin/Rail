@@ -36,10 +36,6 @@ class Simulation {
         void notice_leaving_station_platform(Train& tr, Station& st);
 
         
-        void fix_time_rail
-
-
-        
 };
 
 std::string minute_to_hour(int minute);
