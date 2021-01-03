@@ -3,141 +3,76 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <memory>
+
 #include "Station.h"
 #include "TimeTable.h"
 
+
 class Railway {
     public:
-        /**
-         * @brief Construct a new Railway object
-         * 
-         * @param line_description input file
-         */
+        
         Railway(std::string line_description, TimeTable* ref);
-        /**
-         * @brief copy constructor
-         * 
-         * @param reverse 1 to reverse the railway
-         */
+        
         Railway(const Railway& rw);
-        /**
-         * @brief move constructor
-         * 
-         */
+
+        Railway& operator=(const Railway& rw);
+
         Railway(Railway&& rw);
-        /**
-         * @brief destroyer
-         * 
-         */
+
+        Railway& operator=(Railway&& rw);
+        
         ~Railway() {};
 
-        
-        /**
-         * @brief reverse railway stations
-         * 
-         * @param rw 
-         * @return Railway 
-         */
-        void reverse (Railway& rw, TimeTable* tt);
-        /**
-         * @brief coparison operator
-         * 
-         */
         bool operator==(const Railway& rw);
-        /**
-         * @brief move operator
-         * 
-         */
-        //Railway& operator=(Railway&& rw);
-        /**
-         * @brief copy operator
-         * 
-         */
-        //Railway operator=(const Railway& rw);
-        /**
-         * @brief remove impossible station
-         * 
-         */
+       
+        void reverse (Railway& rw, TimeTable* tt);
+       
         void verify_railway(); 
-        /**
-         * @brief remove station at index i
-         * 
-         * @param i 
-         * @return Station 
-         */
+       
         void remove_station(int i);
-         /**
-         * @brief Get the beginning station of this railway
-         * 
-         * @return Station 
-         */
+
+        void add_station(Principal& st);
+
+        void add_station(Secondary& st);
+        
         Station& get_beginning_station() const;
-        /**
-         * @brief Get the terminal station of this railway
-         * 
-         * @return Station 
-         */
+        
         Station& get_terminal_station() const;
-        /**
-         * @brief Get the station by index
-         * 
-         * @param i 
-         * @return Station 
-         */
+        
         Station& get_station(int i) const;
-        /**
-         * @brief Get the station by distance (rounded)
-         * 
-         * @param distance 
-         * @return Station 
-         */
-        Station& get_station_at_distance(int distance) const;
-        //Station& get_station(std::string name);
-        /**
-         * @brief how many station in this railway
-         * 
-         * @return int 
-         */
-        int get_station_number() const;
-
-        void add_station(const Station& st);
-        void set_source_file(std::string line_description);
-
-        int distance_check(Train& a, Train& b);
         
         std::string get_source_file_name() const;
 
+        int get_railway_length() const;
+        
+        int get_station_number() const;
+
         Railway* get_reverse_reference();
 
+        TimeTable* get_timetable_reference();
+
         
+        void set_source_file(std::string line_description);
+
+        int distance_check(const Train& a, const Train& b);
+        
+        static constexpr int MIN_STATION_DISTANCE = 20;
 
     private:
-        /**
-         * @brief standard vector containing all station in this railway
-         * 
-         */
-        std::vector<Station*> stations;
-        /**
-         * @brief input file
-         * 
-         */
+        
+        Railway();
+
+        std::vector<std::unique_ptr<Station>> stations;
+        
         std::string line_description_file_name;
 
         Railway* reverse_railway {nullptr};
-        /**
-         * @brief default constructor (useless)
-         * 
-         */
-        Railway();
-
+        
         TimeTable* reference_to_TimeTable;
 
-        int num_stations {0};
 };
 
-/**
- * @brief output stream operator
- * 
- */
+
 std::ostream& operator<<(std::ostream& os, Railway& rw);
 
