@@ -52,7 +52,7 @@ class Station {
          * 
          * @return std::vector<Train> 
          */
-        std::vector<std::unique_ptr<Train>> const& get_parking_train() const;
+        std::vector<Train*> get_parking_train() const;
 
          /**
          * @brief Get the count parking train object
@@ -68,6 +68,12 @@ class Station {
          */
         void remove_train_from_park();
 
+        /**
+         * @brief 
+         * 
+         * @return true 
+         * @return false 
+         */
         bool can_add_train_to_stop() const;
         
         /**
@@ -75,7 +81,7 @@ class Station {
          * 
          * @param t 
          */
-        void add_train_to_stop(Train& t );
+        bool add_train_to_stop(Train& t );
         
         /**
          * @brief Remove train to stop track
@@ -109,9 +115,9 @@ class Station {
         Station() {};
         std::string name; 
         int distance;
-        std::vector<std::unique_ptr<Train>> parking;     
-        std::vector<std::unique_ptr<Train>> transit_tracks;
-        std::vector<std::unique_ptr<Train>> stop_tracks;
+        std::vector<Train*> parking;     
+        std::vector<Train*> transit_tracks;
+        std::vector<Train*> stop_tracks;
         static constexpr int N_STOP_TRACK = 2;
 
     private:
