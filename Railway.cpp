@@ -148,8 +148,16 @@ void Railway::verify_railway(){
     int num_principal {0};
     for(int i=0; i<get_station_number()-1; i++){
         if(stations[i]->get_station_type() == 0) num_principal++;
-        if(stations[i+1]->get_station_distance() - stations[i]->get_station_distance() < MIN_STATION_DISTANCE) {
-            if(stations[i]->)
+        if(stations[i+1]->get_station_distance() - stations[i]->get_station_distance() > MIN_STATION_DISTANCE) {
+            cout << "stazioni troppo vicine. elimino\n";
+            remove_station(i);
+            reverse_railway->remove_station(reverse_railway->get_station_number() - 1 -i);
+            if(stations[i]->get_station_type() == 0) {
+                reference_to_TimeTable->delete_fast_superFast_station_time(num_principal - 1);
+                reverse_railway->reference_to_TimeTable->delete_fast_superFast_station_time(reverse_railway->get_Principal_number() - num_principal);
+            }   
+            reference_to_TimeTable->delete_regionals_station_time(i);
+            reverse_railway->reference_to_TimeTable->delete_regionals_station_time(reverse_railway->get_station_number() - 1 - i);
         }
     }
 }
@@ -191,6 +199,15 @@ int Railway::get_station_number() const{
     return stations.size();
 }
 
+int Railway::get_Principal_number() const {
+    int count {0};
+    for(int i=0; i<stations.size(); i++) {
+        if(stations[i]->get_station_type() == 0)
+            count ++;
+    }
+    return count;
+}
+
 Railway* Railway::get_reverse_reference() {
     return reverse_railway;
 }
@@ -217,7 +234,3 @@ ostream& operator<<(ostream& os, Railway& rw){
     for(int i=0; i<rw.get_station_number(); i++)
         os << rw.get_station(i);
 }
-
-
-
-

@@ -48,6 +48,8 @@ class Railway {
         
         int get_station_number() const;
 
+        int get_Principal_number() const;
+
         Railway* get_reverse_reference();
 
         TimeTable* get_timetable_reference();
@@ -70,9 +72,7 @@ class Railway {
         Railway* reverse_railway {nullptr};
         
         TimeTable* reference_to_TimeTable;
-
 };
 
 
 std::ostream& operator<<(std::ostream& os, Railway& rw);
-
