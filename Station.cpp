@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include "Train.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -12,19 +13,15 @@ using namespace std;
 
 string Station::get_station_name() const{ return name;}
 
-int Station::get_station_distance() const{ return distance;}
+double Station::get_station_distance() const{ return distance;}
 
-void Station::add_train_to_park(Train& t)
+void Station::add_train_to_park(Train* t)
 {
-    if(t.get_type() == Train::Regional)
-        parking.push_back(unique_ptr<Train>(new Regional(t.get_number()))); 
-    else if(t.get_type() == Train::HighSpeed)
-        parking.push_back(unique_ptr<Train>(new HighSpeed(t.get_number()))); 
-    else if(t.get_type() == Train::SuperHighSpeed)
-        parking.push_back(unique_ptr<Train>(new SuperHighSpeed(t.get_number()))); 
+
+    parking.push_back(t); 
 }
 
-vector<unique_ptr<Train>> const& Station::get_parking_train() const
+vector<Train*> Station::get_parking_train() const
 {
     return parking; 
 }
@@ -34,32 +31,29 @@ int Station::get_count_parking_train() const
     return parking.size();
 }
 
-void Station::remove_train_from_park()
+void Station::remove_train_from_park(Train* t)
 {
-    parking.pop_back();
+     parking.erase(find(parking.begin(), parking.end(), t));
 }
 
 
-void Station::add_train_to_stop(Train& t )
+bool Station::add_train_to_stop(Train* t)
 {   
-        if(can_add_train_to_stop())
-        {
-            if(t.get_type() == Train::Regional)
-                stop_tracks.push_back(unique_ptr<Train>(new Regional(t.get_number()))); 
-            else if(t.get_type() == Train::HighSpeed)
-                stop_tracks.push_back(unique_ptr<Train>(new HighSpeed(t.get_number()))); 
-            else if(t.get_type() == Train::SuperHighSpeed)
-                stop_tracks.push_back(unique_ptr<Train>(new SuperHighSpeed(t.get_number())));
-        }
-        else{
-            cout << "Sono full"; // prova poi inserisco funzione
-        }
+    if(can_add_train_to_stop())
+    {   
+        stop_tracks.push_back(t); 
+        return 1;
+    }
+    else{
+        cout << "Sono full"; 
+        return 0;
+    }
     
 }
 
-void Station::remove_train_to_stop()
+void Station::remove_train_to_stop(const Train* t)
 {
-    stop_tracks.pop_back();
+    stop_tracks.erase(find(stop_tracks.begin(), stop_tracks.end(), t));
 }
 
 int Station::get_count_in_stop_train() const
@@ -82,7 +76,7 @@ bool Station::can_add_train_to_stop() const
 
 
 //*** Secondary ***//
-Secondary::Secondary(const string _name, const int _distance)
+Secondary::Secondary(const string _name, const double _distance)
 {
     name = _name;
     distance = _distance;
@@ -122,17 +116,12 @@ Secondary& Secondary::operator=(Secondary&& stn)
 
 int Secondary::get_station_type() const{ return Station::Secondary;}
 
-
-
-
-void Secondary::add_train_to_transit(Train& t)
+void Secondary::add_train_to_transit(Train* t)
 {
-    if(t.get_type() == Train::HighSpeed)
-        transit_tracks.push_back(unique_ptr<Train>(new HighSpeed(t.get_number()))); 
-    else if(t.get_type() == Train::SuperHighSpeed)
-        transit_tracks.push_back(unique_ptr<Train>(new SuperHighSpeed(t.get_number()))); 
-}
 
+    transit_tracks.push_back(t); 
+ 
+}
 
 void Secondary::remove_train_to_transit()
 {
@@ -146,10 +135,9 @@ int Secondary::get_transit_tracks() const
 
 
 
-
 //*** Principal ***//
 
-Principal::Principal(const string _name, const int _distance)
+Principal::Principal(const string _name, const double _distance)
 {
     name = _name;
     distance = _distance;
@@ -192,10 +180,7 @@ Principal& Principal::operator=(Principal&& stn)
     return *this;
 }
 
-
-
 int Principal::get_station_type() const{ return Station::Principal;}
-
 
 
 
@@ -221,12 +206,12 @@ std::ostream& operator<<(std::ostream& os, const Station& stn)
 bool operator== (const Station &stn1, const Station &stn2)
 {
     return(stn1.get_station_type() == stn2.get_station_type() &&
-        stn1.get_count_parking_train() == stn2.get_count_parking_train()
-       );
+        stn1.get_count_parking_train() == stn2.get_count_parking_train() &&
+        stn1.get_count_in_stop_train() == stn2.get_count_in_stop_train());
 }
 
 //** Operator != **//
 bool operator!= (const Station &stn1, const Station &stn2)
 {
     return !(stn1 == stn2);
-}
+};

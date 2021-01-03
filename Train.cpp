@@ -82,7 +82,7 @@ Regional::Regional(const int _number){
     speed = 0; 
     delay = 0; 
     distance = 0; 
-    state = Running; 
+    state = Parked; 
     station_timer = 0;
 }
 
@@ -176,7 +176,7 @@ HighSpeed::HighSpeed(const int _number){
     speed = 0; 
     delay = 0; 
     distance = 0; 
-    state = Running; 
+    state = Parked; 
     station_timer = 0;
 }
 
@@ -268,7 +268,7 @@ SuperHighSpeed::SuperHighSpeed(const int _number){
     speed = 0; 
     delay = 0; 
     distance = 0; 
-    state = Running; 
+    state = Parked; 
     station_timer = 0;
 }
 
