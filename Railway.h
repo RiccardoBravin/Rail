@@ -1,4 +1,7 @@
 //Author: elia feltrin
+#ifndef Railway_h
+#define Railway_h
+
 
 #include <vector>
 #include <string>
@@ -76,3 +79,5 @@ class Railway {
 
 
 std::ostream& operator<<(std::ostream& os, Railway& rw);
+
+#endif //Railway_h

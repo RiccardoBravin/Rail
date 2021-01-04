@@ -212,6 +212,7 @@ Railway* Railway::get_reverse_reference() {
     return reverse_railway;
 }
 
+
 TimeTable* Railway::get_timetable_reference() {
     return reference_to_TimeTable;
 }

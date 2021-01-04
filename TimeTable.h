@@ -1,5 +1,8 @@
 //Author: elia feltrin
 
+#ifndef TimeTable_h
+#define TimeTable_h
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -7,13 +10,12 @@
 
 
 struct timetable_element{
-    int train_number;
-    bool departure_from_beginning;
-    int train_type;
+    int train_number {0};
+    int train_type {0};
     std::vector<int> time_at_station;
 };
 
-std::vector<TimeTable> split_timeTable(std::string time_tablem);
+std::vector<TimeTable> split_timeTable(std::string time_table);
 
 class TimeTable{
     public:
@@ -22,30 +24,41 @@ class TimeTable{
         
         TimeTable(const TimeTable& tt);
 
-        TimeTable& operator=(const TimeTable& TT);
+        TimeTable& operator=(const TimeTable& tt);
 
-        TimeTable(TimeTable&& TT);
+        TimeTable(TimeTable&& tt);
 
-        TimeTable& operator=(TimeTable&& TT);
+        TimeTable& operator=(TimeTable&& tt);
         
         ~TimeTable() {};
         
-        void modify_Timetable(const timetable_element& Tte);
-
-        void delete_regionals_station_time(int i);
-
-        void delete_fast_superFast_station_time(int i);
-       
-        bool operator==(const TimeTable& TT);
-
-        const timetable_element& get_timetable_element(int train_number);
+        void adjust_timetable(int number_stations);
         
-        std::vector<timetable_element> time_table;
+        //void modify_Timetable(const timetable_element& tte);
+
+        void delete_regionals_station_time(int ind);
+
+        void delete_fast_superFast_station_time(int ind);
+       
+        bool operator==(const TimeTable& tt) const;
+
+        timetable_element search_timetable_element(int train_number) const;
+
+        timetable_element get_timetable_element(int ind) const;
+
+        int get_timetable_size() const;
+
+        
+        
 
     private:
         TimeTable() {};
 
+        std::vector<timetable_element> time_table;
+
 };
 
 
-std::ostream& operator<<(std::ostream& os, const TimeTable& TT);
+std::ostream& operator<<(std::ostream& os, const TimeTable& tt);
+std::ostream& operator<<(std::ostream& os, const timetable_element& tte);
+#endif //TimeTable_h
