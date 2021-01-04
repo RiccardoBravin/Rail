@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "Railway.h"
+
 
 
 struct timetable_element{
@@ -15,7 +15,6 @@ struct timetable_element{
     std::vector<int> time_at_station;
 };
 
-std::vector<TimeTable> split_timeTable(std::string time_table);
 
 class TimeTable{
     public:
@@ -30,7 +29,7 @@ class TimeTable{
 
         TimeTable& operator=(TimeTable&& tt);
         
-        ~TimeTable() {};
+        //~TimeTable() {};
         
         void adjust_timetable(int number_stations);
         
@@ -48,11 +47,11 @@ class TimeTable{
 
         int get_timetable_size() const;
 
-        
+        TimeTable() {};
         
 
     private:
-        TimeTable() {};
+        
 
         std::vector<timetable_element> time_table;
 
@@ -61,4 +60,7 @@ class TimeTable{
 
 std::ostream& operator<<(std::ostream& os, const TimeTable& tt);
 std::ostream& operator<<(std::ostream& os, const timetable_element& tte);
+
+std::vector<TimeTable> split_timeTable(std::string time_table);
+
 #endif //TimeTable_h

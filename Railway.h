@@ -25,7 +25,7 @@ class Railway {
 
         Railway& operator=(Railway&& rw);
         
-        ~Railway() {};
+        //~Railway() {};
 
         bool operator==(const Railway& rw);
        
@@ -35,9 +35,9 @@ class Railway {
        
         void remove_station(int i);
 
-        void add_station(Principal& st);
+        //void add_station(Principal& st);
 
-        void add_station(Secondary& st);
+        //void add_station(Secondary& st);
         
         Station& get_beginning_station() const;
         
@@ -59,8 +59,6 @@ class Railway {
 
         
         void set_source_file(std::string line_description);
-
-        int distance_check(const Train& a, const Train& b);
         
         static constexpr int MIN_STATION_DISTANCE = 20;
 

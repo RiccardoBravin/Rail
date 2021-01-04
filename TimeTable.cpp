@@ -3,6 +3,7 @@
 #include <exception>
 #include <string>
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 
@@ -32,6 +33,7 @@ vector<TimeTable> split_timeTable(string time_table) {
         tables.push_back(TimeTable(gones));
         tables.push_back(TimeTable(returns));
     } else throw runtime_error("enable to open file");
+    timetable_file.close();
     return tables;
 }
 
@@ -160,10 +162,16 @@ timetable_element TimeTable::get_timetable_element(int ind) const {
     return time_table[ind];
 }
 
+int TimeTable::get_timetable_size() const {
+    return time_table.size();
+}
+
 std::ostream& operator<<(std::ostream& os, const TimeTable& tt) {
     for(int i=0; i<tt.get_timetable_size(); i++) {
         os << tt.get_timetable_element(i) << "\n\n\n";
     }
+
+    return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const timetable_element& tte){
@@ -182,6 +190,8 @@ std::ostream& operator<<(std::ostream& os, const timetable_element& tte){
     for(int i=0; i< tte.time_at_station.size(); i++){
         os << "[" << i << "]: " << tte.time_at_station[i] << endl;
     }
+
+    return os;
 }
 
 
