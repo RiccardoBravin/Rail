@@ -10,6 +10,7 @@ using namespace std;
 vector<TimeTable> split_timeTable(string time_table) {
     ifstream timetable_file (time_table);
     vector<TimeTable> tables;
+    
     if(timetable_file.is_open()) {
         vector<timetable_element> gones;
         vector<timetable_element> returns;
@@ -19,19 +20,35 @@ vector<TimeTable> split_timeTable(string time_table) {
             string s;
             getline(timetable_file, s);
             vector<string> tokens;
-            for (auto i = strtok(&s[0], " "); i != NULL; i = strtok(NULL, " "))
+            for (auto i = strtok(&s[0], " "); i != NULL; i = strtok(NULL, " ")){
                 tokens.push_back(i);
-            temp.train_number = stoi(tokens[0]);
-            returning = (bool)(stoi(tokens[1]));
-            temp.train_type = stoi(tokens[2]);
-            for(int i=3; tokens.size(); i++) {
-                temp.time_at_station.push_back(stoi(tokens[i]));
             }
-            if(returning) returns.push_back(temp);
-            else gones.push_back(temp);
+            if(tokens.size() > 2) {
+                temp.train_number = stoi(tokens[0]);
+                returning = (bool)(stoi(tokens[1]));
+                temp.train_type = stoi(tokens[2]);
+                for(int i=3; i<tokens.size(); i++) {
+                    temp.time_at_station.push_back(stoi(tokens[i]));
+                }
+                if(returning == true) {
+                    returns.push_back(temp);         
+                } else {
+                    gones.push_back(temp); 
+                }
+            }
         }
-        tables.push_back(TimeTable(gones));
-        tables.push_back(TimeTable(returns));
+
+        if(gones.size() == 0 && returns.size() == 0){
+            throw runtime_error("file empty");
+        }
+        
+        if(!gones.empty()){
+            TimeTable sos = TimeTable(gones, true);
+            tables.push_back(sos);
+        }
+        if(!returns.empty()){
+            tables.push_back(TimeTable(returns, false));
+        }
     } else throw runtime_error("enable to open file");
     timetable_file.close();
     return tables;
@@ -39,66 +56,80 @@ vector<TimeTable> split_timeTable(string time_table) {
 
 
 
-TimeTable::TimeTable(vector<timetable_element> elements) {
+TimeTable::TimeTable(vector<timetable_element> elements, bool is_going) {
+    //cout << "using constructor\n";
     for(int i=0; i<elements.size(); i++){
         time_table.push_back(elements[i]);
     }
+    going_line = is_going;
 }
 
 TimeTable::TimeTable(const TimeTable& tt) {
+    //cout << "using copy constructor\n";
     for(int i=0; i<tt.time_table.size(); i++) {
         timetable_element copy;
         copy.train_number = tt.time_table[i].train_number;
         copy.train_type =  tt.time_table[i].train_type;
-        for(int j=0; j<tt.time_table[i].time_at_station.size(); i++) {
-            copy.time_at_station.push_back(tt.time_table[i].time_at_station[i]);
+        for(int j=0; j<tt.time_table[i].time_at_station.size(); j++) {
+            copy.time_at_station.push_back(tt.time_table[i].time_at_station[j]);
         }
         time_table.push_back(copy);
     }
+
+    going_line = tt.is_going();
 }
 
 TimeTable& TimeTable::operator=(const TimeTable& tt) {
+    //cout << "using copy operator\n";
     time_table.clear();
 
     for(int i=0; i<tt.time_table.size(); i++) {
         timetable_element copy;
         copy.train_number = tt.time_table[i].train_number;
         copy.train_type =  tt.time_table[i].train_type;
-        for(int j=0; j<tt.time_table[i].time_at_station.size(); i++) {
-            copy.time_at_station.push_back(tt.time_table[i].time_at_station[i]);
+        for(int j=0; j<tt.time_table[i].time_at_station.size(); j++) {
+            copy.time_at_station.push_back(tt.time_table[i].time_at_station[j]);
         }
         time_table.push_back(copy);
     }
-
+    going_line = tt.is_going();
     return *this;
 }
 
 TimeTable::TimeTable(TimeTable&& tt) {
+    //cout << "using move constructor\n";
+    if(this == &tt) return;
+
     for(int i=0; i<tt.time_table.size(); i++) {
         timetable_element copy;
         copy.train_number = tt.time_table[i].train_number;
         copy.train_type =  tt.time_table[i].train_type;
-        for(int j=0; j<tt.time_table[i].time_at_station.size(); i++) {
-            copy.time_at_station.push_back(tt.time_table[i].time_at_station[i]);
+
+        for(int j=0; j<tt.time_table[i].time_at_station.size(); j++) {
+            copy.time_at_station.push_back(tt.time_table[i].time_at_station[j]);
         }
         time_table.push_back(copy);
     }
-
+    going_line = tt.going_line;
     tt.time_table.clear();
+    tt.going_line = false;
 }
 
 TimeTable& TimeTable::operator=(TimeTable&& tt) {
+    //cout << "using move operator\n";
     for(int i=0; i<tt.time_table.size(); i++) {
         timetable_element copy;
         copy.train_number = tt.time_table[i].train_number;
         copy.train_type =  tt.time_table[i].train_type;
-        for(int j=0; j<tt.time_table[i].time_at_station.size(); i++) {
-            copy.time_at_station.push_back(tt.time_table[i].time_at_station[i]);
+        for(int j=0; j<tt.time_table[i].time_at_station.size(); j++) {
+            copy.time_at_station.push_back(tt.time_table[i].time_at_station[j]);
         }
         time_table.push_back(copy);
     }
 
     tt.time_table.clear();
+    going_line = tt.going_line;
+    tt.going_line = false;
     return *this;
 }
 
@@ -107,7 +138,7 @@ void TimeTable::adjust_timetable(int number_stations){
         if(time_table[i].time_at_station.size() > number_stations){
             time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + number_stations, time_table[i].time_at_station.end());
         }
-        for(int i=time_table[i].time_at_station.size(); i<number_stations; i++){
+        for(int j=time_table[i].time_at_station.size(); j<number_stations; j++){
             time_table[i].time_at_station.push_back(0);
         }
     }
@@ -125,6 +156,7 @@ void TimeTable::delete_regionals_station_time(int ind) {
 
 void TimeTable::delete_fast_superFast_station_time(int ind){
     for(int i=0; i<time_table.size(); i++) {
+        if(time_table[i].train_type == 2 || time_table[i].train_type == 3)
         time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + ind - 1);
     }
 }
@@ -152,7 +184,7 @@ bool TimeTable::operator==(const TimeTable& tt) const {
 timetable_element TimeTable::search_timetable_element(int train_number) const {
     for(int i=0; i<time_table.size(); i++) {
         if(time_table[i].train_number == train_number) 
-        return time_table[i];
+            return time_table[i];
     }
     timetable_element error;
     return error;
@@ -166,6 +198,7 @@ int TimeTable::get_timetable_size() const {
     return time_table.size();
 }
 
+
 std::ostream& operator<<(std::ostream& os, const TimeTable& tt) {
     for(int i=0; i<tt.get_timetable_size(); i++) {
         os << tt.get_timetable_element(i) << "\n\n\n";
@@ -177,13 +210,13 @@ std::ostream& operator<<(std::ostream& os, const TimeTable& tt) {
 std::ostream& operator<<(std::ostream& os, const timetable_element& tte){
     os << "Train " << tte.train_number << endl;
 
-    if(tte.train_number == 1) {
+    if(tte.train_type == 1) {
          os << "Regional\n";
          os << "arrive at station [station_index] at:\n";
     }
     else {
-        if(tte.train_number == 2) os << "Fast\n";
-        else os << "Super fast\n";
+        if(tte.train_type == 2) os << "Fast\n";
+        else if(tte.train_type == 3) os << "Super fast\n";
         os << "arrives at principal station [principal_station_index] at:\n";
     }
 

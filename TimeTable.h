@@ -19,7 +19,7 @@ struct timetable_element{
 class TimeTable{
     public:
         
-        TimeTable(std::vector<timetable_element> elemets);
+        TimeTable(std::vector<timetable_element> elemets, bool is_going);
         
         TimeTable(const TimeTable& tt);
 
@@ -48,11 +48,13 @@ class TimeTable{
         int get_timetable_size() const;
 
         TimeTable() {};
+
+        bool is_going() const { return going_line; }
         
 
     private:
         
-
+        bool going_line {true};
         std::vector<timetable_element> time_table;
 
 };
