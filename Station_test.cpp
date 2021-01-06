@@ -71,7 +71,7 @@ int main() {
     }
 
     tr[2].get()->park(0);
-
+    tr[1].get()->stop(0);
     cout << "\n\n";
 
     print_tr(tr);
@@ -136,6 +136,16 @@ bool passing_at(Train* t, double dist){
 }
 
 
+bool crash(Train* t1, Train* t2){
+    if(t1 == t2)
+        return false;
+    if(t1->parked() || t2->parked() || t1->stationary() || t2->stationary())
+        return false;
+    if(t1->get_distance() > t2->get_distance() - 10 && t1->get_distance() < t2->get_distance())
+        return true;
+    return false;
+}
+
 
 void step(vector<unique_ptr<Train>> &tr, vector<unique_ptr<Station>>& st){
     for(int i = 0; i < tr.size(); i++){
@@ -199,12 +209,23 @@ void step(vector<unique_ptr<Train>> &tr, vector<unique_ptr<Station>>& st){
                         tr[i].get()->set_speed(900);
                         break;     
                     }
-                        
-                        
+
+                    /*bool ok = true;
+                    for(unique_ptr<Train> &t : tr){
+                        if(crash(tr[i].get(), t.get())){
+                            tr[i]->set_distance(t->get_distance() - 10);
+                            tr[i]->set_speed(t->get_speed());
+                            ok = true;
+                            break;
+                        }
+                    }
+                    if(ok)
+                        tr[i].get()->set_speed(900);
+                    */
+
                 }
             }
         }
-
         
 
         tr[i].get()->step();
