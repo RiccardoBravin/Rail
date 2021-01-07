@@ -154,7 +154,6 @@ class Regional : public Train{
         int get_type() const override; 
         void set_speed(const int _speed) override; //forse si può rendere virtual in train, da verificare
 
-    private:
         static constexpr int MAXSPEED = 160;
 
 

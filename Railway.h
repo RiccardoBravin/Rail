@@ -24,6 +24,9 @@ class Railway {
         Railway(Railway&& rw);
 
         Railway& operator=(Railway&& rw);
+
+        Railway() { std::cout << "using railway default constructor\n";};
+
         
         //~Railway() {};
 
@@ -32,8 +35,14 @@ class Railway {
         void reverse (Railway& rw, TimeTable* tt);
        
         void verify_railway(); 
+
+        void verify_correct_timing(TimeTable* tt);
        
         void remove_station(int i);
+
+        int secondary_traets_length(int ind);
+
+        int principal_traets_length(int ind);
 
         //void add_station(Principal& st);
 
@@ -57,6 +66,8 @@ class Railway {
 
         TimeTable* get_timetable_reference();
 
+        void set_reverse_railway(Railway* ref);
+
         
         void set_source_file(std::string line_description);
         
@@ -64,8 +75,6 @@ class Railway {
 
     private:
         
-        Railway();
-
         std::vector<std::unique_ptr<Station>> stations;
         
         std::string line_description_file_name;
