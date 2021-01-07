@@ -15,7 +15,7 @@ class Train{
         };
 
         enum type : int{
-            Regional,
+            Regional = 1,
             HighSpeed,
             SuperHighSpeed
         };
@@ -154,7 +154,6 @@ class Regional : public Train{
         int get_type() const override; 
         void set_speed(const int _speed) override; //forse si può rendere virtual in train, da verificare
 
-    private:
         static constexpr int MAXSPEED = 160;
 
 
@@ -174,7 +173,6 @@ class HighSpeed : public Train{
         int get_type() const override; 
         void set_speed(const int _speed) override;
 
-    private:
         static constexpr int MAXSPEED = 240;
         
 };
@@ -194,8 +192,6 @@ class SuperHighSpeed : public Train{
         int get_type() const override; 
         void set_speed(const int _speed) override;
         
-        
-    private:
         static constexpr int MAXSPEED = 300;
 
 };

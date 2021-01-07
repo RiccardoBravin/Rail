@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <list>
+#include <iterator>
 
 class Simulation {
     public:
@@ -48,6 +49,10 @@ class Simulation {
         //in tutti gli altri casi fai passare il treno
 
         bool decide_station_passing(Train* a, Train* b); //questa è la funzione magica che decide chi far passare in entrata alla stazione
+        //se il ritardo di a + (a.pos - b.pos)/b.vel > (next_station.lenght/b.vel)-(next_station.lenght/b.vel)+ ritardo di b
+        //allora fai procedere a altrimenti metti a nel parcheggio
+
+
 
         void parked_trains();//decides for each train in the parking slots what to do
         //se ho esattamente una banchina libera prendo il treno con il maggior ritardo e di tier piu alto e se la funzione magica dice 

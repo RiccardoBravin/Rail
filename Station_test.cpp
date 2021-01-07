@@ -2,6 +2,9 @@
 #include <string>
 #include <memory>
 #include "Train.h"
+#include <iterator>
+#include <vector>
+#include <list>
 
 using namespace std;
 
@@ -15,6 +18,8 @@ bool at_stop(Train* t, Station* s);
 bool passing_at(Train* t, double dist);
 
 void step(vector<unique_ptr<Train>> &tr, vector<unique_ptr<Station>>& st);
+
+void test_dioporco(vector<list<unique_ptr<Train>>>& tr);
 
 int main() {
     /*string s = "Sacile";
@@ -65,6 +70,14 @@ int main() {
     st.push_back(unique_ptr<Secondary>(new Secondary("Codroipo", 46)));
     st.push_back(unique_ptr<Principal>(new Principal("Trieste", 150)));
 
+
+    vector<list<unique_ptr<Train>>> fw_trains; //forward
+    test_dioporco(fw_trains);
+    cout << fw_trains[]
+    
+    //cout << *next(next(&tr[0]))->get();
+
+    /*
     for(unique_ptr<Train> &t : tr){
         st[0].get()->add_train_to_stop(t.get());
         t.get()->set_speed(80);
@@ -96,7 +109,7 @@ int main() {
 
         cycle++;
     }
-    
+    */
     
 }
 
@@ -236,3 +249,18 @@ void step(vector<unique_ptr<Train>> &tr, vector<unique_ptr<Station>>& st){
         }
     }
 }   
+
+void test_dioporco(vector<list<unique_ptr<Train>>>& tr){
+
+    for(int i = 0; i < 10; i++){
+        list<unique_ptr<Train>> aux;
+        aux.push_front(unique_ptr<Regional>(new Regional(i*10)));
+        aux.push_front(unique_ptr<Regional>(new Regional(i*10 + 1)));
+        aux.push_front(unique_ptr<HighSpeed>(new HighSpeed(i*10 + 2)));
+        aux.push_front(unique_ptr<HighSpeed>(new HighSpeed(i*10 + 3)));
+        aux.push_front(unique_ptr<Regional>(new Regional(i*10 + 4)));
+        aux.push_front(unique_ptr<SuperHighSpeed>(new SuperHighSpeed(i*10 + 5)));
+        tr.push_back(aux);
+    }
+
+}
