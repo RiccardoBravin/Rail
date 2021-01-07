@@ -51,6 +51,21 @@ bool Station::add_train_to_stop(Train* t)
     
 }
 
+int Station::what_platform_train(Train* t)
+{
+    for(int i = 0; i < stop_tracks.size(); i++)
+    {
+        if (stop_tracks[0] == t){
+            return 1;
+        }    
+        else if (stop_tracks[1] == t){
+            return 2;
+        }
+    }  
+    return 0;
+    
+}
+
 void Station::remove_train_to_stop(const Train* t)
 {
     stop_tracks.erase(find(stop_tracks.begin(), stop_tracks.end(), t));
