@@ -68,7 +68,7 @@ void Train::step(){
     if(running()){
         distance = next_distance();
     }else if(parked()){
-        //delay++; //molto probabilmente questo non andrà eseguito
+        delay++; //molto probabilmente questo non andrà eseguito //e invece si
     }else if(stationary()){
         station_timer++;
     } 
@@ -359,11 +359,11 @@ int SuperHighSpeed::get_type() const {    return Train::SuperHighSpeed;}
 
 ostream& operator<<(ostream& os, const Train& obj){
     os << "Il treno "; 
-    if(obj.get_type() == 0){
+    if(obj.get_type() == Train::type::Regional){
         os << "regionale";
-    }else if(obj.get_type() == 1){
+    }else if(obj.get_type() == Train::type::HighSpeed){
         os << "alta velocita'";
-    }else if(obj.get_type() == 2){
+    }else if(obj.get_type() == Train::type::SuperHighSpeed){
         os << "alta velocita' super";
     }
     os << " numero: " << obj.get_number() << endl;

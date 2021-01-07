@@ -83,7 +83,15 @@ class Station {
         * @return true 
         * @return false 
         */
-        bool add_train_to_stop(Train* t);
+        bool add_train_to_stop(Train* t);   
+
+        /**
+         * @brief Returns the platform number (1 or 2) where the train is stopped or 0 otherwise
+         * 
+         * @param t - train 
+         * @return int 1 or 2 or 0
+         */
+        int what_platform_train(Train* t);
         
         /**
          * @brief Remove train to stop track
