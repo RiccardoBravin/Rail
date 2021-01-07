@@ -38,3 +38,7 @@ bool Simulation::simulate(){
     step();
     return true;
 }
+
+bool Simulation::start_trains(){
+
+}
