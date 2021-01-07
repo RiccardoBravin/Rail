@@ -19,7 +19,6 @@ bool passing_at(Train* t, double dist);
 
 void step(vector<unique_ptr<Train>> &tr, vector<unique_ptr<Station>>& st);
 
-void test_dioporco(vector<list<unique_ptr<Train>>>& tr);
 
 int main() {
     /*string s = "Sacile";
@@ -71,9 +70,7 @@ int main() {
     st.push_back(unique_ptr<Principal>(new Principal("Trieste", 150)));
 
 
-    vector<list<unique_ptr<Train>>> fw_trains; //forward
-    test_dioporco(fw_trains);
-    cout << fw_trains[]
+    
     
     //cout << *next(next(&tr[0]))->get();
 

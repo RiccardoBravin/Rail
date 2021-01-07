@@ -43,8 +43,7 @@ vector<TimeTable> split_timeTable(string time_table) {
         }
         
         if(!gones.empty()){
-            TimeTable sos = TimeTable(gones, true);
-            tables.push_back(sos);
+            tables.push_back(TimeTable(returns, false));
         }
         if(!returns.empty()){
             tables.push_back(TimeTable(returns, false));
@@ -57,7 +56,7 @@ vector<TimeTable> split_timeTable(string time_table) {
 
 
 TimeTable::TimeTable(vector<timetable_element> elements, bool is_going) {
-    //cout << "using constructor\n";
+    cout << "using constructor\n";
     for(int i=0; i<elements.size(); i++){
         time_table.push_back(elements[i]);
     }
@@ -65,7 +64,7 @@ TimeTable::TimeTable(vector<timetable_element> elements, bool is_going) {
 }
 
 TimeTable::TimeTable(const TimeTable& tt) {
-    //cout << "using copy constructor\n";
+    cout << "using copy constructor\n";
     for(int i=0; i<tt.time_table.size(); i++) {
         timetable_element copy;
         copy.train_number = tt.time_table[i].train_number;
@@ -80,7 +79,8 @@ TimeTable::TimeTable(const TimeTable& tt) {
 }
 
 TimeTable& TimeTable::operator=(const TimeTable& tt) {
-    //cout << "using copy operator\n";
+    cout << "using copy operator\n";
+    if(this == &tt) return *this;
     time_table.clear();
 
     for(int i=0; i<tt.time_table.size(); i++) {
@@ -97,7 +97,7 @@ TimeTable& TimeTable::operator=(const TimeTable& tt) {
 }
 
 TimeTable::TimeTable(TimeTable&& tt) {
-    //cout << "using move constructor\n";
+    cout << "using move constructor\n";
     if(this == &tt) return;
 
     for(int i=0; i<tt.time_table.size(); i++) {
@@ -116,7 +116,8 @@ TimeTable::TimeTable(TimeTable&& tt) {
 }
 
 TimeTable& TimeTable::operator=(TimeTable&& tt) {
-    //cout << "using move operator\n";
+    if(this == &tt) return *this;
+    cout << "using move operator\n";
     for(int i=0; i<tt.time_table.size(); i++) {
         timetable_element copy;
         copy.train_number = tt.time_table[i].train_number;
@@ -149,15 +150,19 @@ void TimeTable::adjust_timetable(int number_stations){
 }*/
 
 void TimeTable::delete_regionals_station_time(int ind) {
+    
+    //cout <<  time_table[0] << endl;
     for(int i=0; i<time_table.size(); i++) {
-        time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + ind - 1);
+        //cout << "fin qua\n";
+        if(time_table[i].train_type == 1)
+            time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + ind);
     }
 }
 
 void TimeTable::delete_fast_superFast_station_time(int ind){
     for(int i=0; i<time_table.size(); i++) {
         if(time_table[i].train_type == 2 || time_table[i].train_type == 3)
-        time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + ind - 1);
+        time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + ind);
     }
 }
 
