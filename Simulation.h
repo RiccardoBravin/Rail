@@ -16,19 +16,20 @@ class Simulation {
     private:
         TimeTable fw_timetable;
         TimeTable bw_timetable;
+        
         Railway fw_railway;
         Railway bw_railway;
-        std::vector<std::list<std::unique_ptr<Train>>> fw_trains; //forward
-        std::vector<std::list<std::unique_ptr<Train>>> bw_trains; //backward
-
-        //std
-        
+        std::vector<std::unique_ptr<Train>> fw_trains; //forward
+        std::vector<std::unique_ptr<Train>> bw_trains; //backward
 
         int current_time {0};
-        
-        bool start_trains(); //takes the timetable and cycles throught it to view if it has to create a train to start simulating it
+
+
+
+        void start_trains(); //takes the timetable and cycles throught it to view if it has to create a train to start simulating it
         //deve ciclare su tutti i treni presenti in timetable, se è arrivata l'ora di partire e non sono già 
         //stati messi in trains allora fallo partire se possibile (una linea libera e free_to_start) e inseriscilo nella banchina della prima stazione
+
 
         bool free_to_start(Station* st, Train* tr);//true if the train has a free path to start and is the best that can start for that station
         //(da diversificare per Primary e Secondary) controllare se la linea è libera per 10km e se il treno che ho scelto 
@@ -99,3 +100,6 @@ class Simulation {
 
 //QUESTA VA SPOSTATA IN UN .H A SE COSì CHE TUTTI LA POSSANO USARE NELLE LORO CLASSI PER DIRE L'ORA
 std::string minute_to_hour(int minute);
+
+
+void push_front_train(const timetable_element& a, std::vector<std::unique_ptr<Train>>* trains);
