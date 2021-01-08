@@ -86,7 +86,7 @@ class Station {
         bool add_train_to_stop(Train* t);   
 
         /**
-         * @brief Returns the platform number (1 or 2) where the train is stopped or 0 otherwise
+         * @brief Returns the platform number (1 or 2) where the train is stopped or 0 
          * 
          * @param t - train 
          * @return int 1 or 2 or 0
@@ -98,7 +98,7 @@ class Station {
          * 
          * @param t 
          */
-        void remove_train_to_stop(const Train* t);
+        void remove_train_to_stop( Train* t);
 
         /**
          * @brief Get the count in stop trains 

@@ -41,11 +41,17 @@ bool Station::add_train_to_stop(Train* t)
 {   
     if(can_add_train_to_stop())
     {   
-        stop_tracks.push_back(t); 
+        vector<Train*>::iterator iter = find(stop_tracks.begin(), stop_tracks.end(), nullptr);
+        //int index = std::distance(stop_tracks.begin(), iter );
+        //if(iter == stop_tracks.end()) 
+        //{
+            cout<<"FORSE va"<< endl;
+        //}
+        stop_tracks.insert(iter,t); 
         return 1;
     }
     else{
-        cout << "Sono full"; 
+        cout << "Sono full" << endl; 
         return 0;
     }
     
@@ -53,27 +59,39 @@ bool Station::add_train_to_stop(Train* t)
 
 int Station::what_platform_train(Train* t)
 {
-    for(int i = 0; i < stop_tracks.size(); i++)
+    vector<Train*>::iterator iter = find(stop_tracks.begin(), stop_tracks.end(), t);
+    if(iter == stop_tracks.end()) 
     {
-        if (stop_tracks[0] == t){
-            return 1;
-        }    
-        else if (stop_tracks[1] == t){
-            return 2;
-        }
-    }  
-    return 0;
+        return 0;
+    }
+    int index = std::distance(stop_tracks.begin(), iter );
+    return index+1;
     
 }
 
-void Station::remove_train_to_stop(const Train* t)
+void Station::remove_train_to_stop(Train* t)
 {
-    stop_tracks.erase(find(stop_tracks.begin(), stop_tracks.end(), t));
+    vector<Train*>::iterator iter = find(stop_tracks.begin(), stop_tracks.end(), t);
+    if(iter == stop_tracks.end()) 
+    {
+        //cout << "Non riesco a rimuovere" << endl;
+        return;
+
+    }
+    cout << "riesco a rimuovere" << endl;
+    int index = std::distance(stop_tracks.begin(), iter );
+    stop_tracks[index] = nullptr; 
+    
 }
 
 int Station::get_count_in_stop_train() const
 {
-    return stop_tracks.size();
+    int count = 0;
+    for(int i =0; i < stop_tracks.size();  i++){
+        if(stop_tracks[i] != nullptr)
+            count++;
+    }
+    return count;
 }
 
 int Station::get_stop_tracks() const
@@ -100,7 +118,7 @@ Secondary::Secondary(const string _name, const double _distance)
 Secondary::Secondary(const Secondary& stn)
 {
     name = stn.name;
-    distance = stn. distance;
+    distance = stn. distance;    
 }
 
 Secondary& Secondary::operator=(const Secondary& stn)
