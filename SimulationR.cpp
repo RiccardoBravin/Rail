@@ -22,21 +22,31 @@ Simulation::Simulation(string line_description_file, string timetables_file){
     fw_railway = Railway(line_description_file, &fw_timetable);
     bw_railway.reverse(fw_railway, &bw_timetable);
 
-    cout << fw_railway << endl << bw_railway <<  endl;
+    
+    cout << fw_railway << endl << fw_timetable << endl;
+    cout << bw_railway << endl << bw_timetable <<  endl;
+    
+
 }
 
 void Simulation::step(){
     for(unique_ptr<Train> &t : fw_trains){
-        	t->step();
+        	cout << *t;
+            t->step();
     }
     for(unique_ptr<Train> &t : bw_trains){
-        	t->step();
+        	cout << *t;
+            t->step();
     }
 }
 
 bool Simulation::simulate(){
-    while(!fw_trains.empty() && !bw_trains.empty())
+    while(current_time < 18){
+        cout << "~~~~~~      " << current_time << "      ~~~~~~\n";
+        start_trains();
         step();
+        current_time++;
+    };
     return true;
 }
 
@@ -44,10 +54,11 @@ bool Simulation::simulate(){
 //deve ciclare su tutti i treni presenti in timetable, se è arrivata l'ora di partire e non sono già 
 //stati messi in trains allora fallo partire se possibile (una linea libera e free_to_start) e inseriscilo nella banchina della prima stazione
 void Simulation::start_trains(){
+
     if(fw_railway.get_beginning_station().can_add_train_to_stop()){
         
         for(int i = 0; i < fw_timetable.get_timetable_size(); i++){
-            if(current_time > fw_timetable.get_timetable_element(i).time_at_station[0]){
+            if(current_time >= fw_timetable.get_timetable_element(i).time_at_station[0]){
                 bool found = false;
                 for(unique_ptr<Train> &t : fw_trains){
                     if(t->get_number() == fw_timetable.get_timetable_element(i).train_number){
@@ -59,6 +70,7 @@ void Simulation::start_trains(){
                     
                     push_front_train(fw_timetable.get_timetable_element(i), &fw_trains);
                     fw_railway.get_beginning_station().add_train_to_stop(fw_trains[0].get());
+                    fw_trains[0]->set_speed(80);
 
                 }
             }
