@@ -25,7 +25,7 @@ class Railway {
 
         Railway& operator=(Railway&& rw);
 
-        Railway() { std::cout << "using railway default constructor\n";};
+        Railway() { /*std::cout << "using railway default constructor\n";*/};
 
         
         //~Railway() {};
@@ -61,6 +61,8 @@ class Railway {
         int get_station_number() const;
 
         int get_Principal_number() const;
+
+        bool has_reverse() {if(reverse_railway == nullptr) return false; else return true;}
 
         Railway* get_reverse_reference();
 

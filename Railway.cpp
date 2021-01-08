@@ -156,59 +156,45 @@ void Railway::verify_railway(){
         if(stations[i+1]->get_station_distance() - stations[i]->get_station_distance() <= MIN_STATION_DISTANCE) {
             cout << "stazioni troppo vicine. elimino\n";
             remove_station(i);
-            reverse_railway->remove_station(get_station_number() - i);
             reference_to_TimeTable->delete_regionals_station_time(i);
-            //cout << "sosososos   " << reverse_railway->get_station_number();
-            reverse_railway->reference_to_TimeTable->delete_regionals_station_time(reverse_railway->get_station_number() - i);
-            //cout << stations[i]->get_station_name() << ": " << stations[i]->get_station_type() << "==" <<  Station::type::Principal << endl;
+            if(has_reverse()){
+                reverse_railway->remove_station(get_station_number() - i);
+                reverse_railway->reference_to_TimeTable->delete_regionals_station_time(reverse_railway->get_station_number() - i);
+            }
+
             if(is_principal) {
-                cout << "num principal: "  << num_principal << endl;
                 reference_to_TimeTable->delete_fast_superFast_station_time(num_principal - 1);
-                reverse_railway->reference_to_TimeTable->delete_fast_superFast_station_time(reverse_railway->get_Principal_number() - num_principal);
+                if(has_reverse())
+                    reverse_railway->reference_to_TimeTable->delete_fast_superFast_station_time(reverse_railway->get_Principal_number() - num_principal);
             } 
         }
     }   
 
-    /*cout << stations.size() << "  =   " << reference_to_TimeTable->get_timetable_element(0).time_at_station.size()<< endl;
-    cout << stations.size() << "  =   " << reverse_railway->reference_to_TimeTable->get_timetable_element(0).time_at_station.size()<< endl;*/
-    //secondary_traets_length(2);
-    verify_correct_timing(reference_to_TimeTable);
-    verify_correct_timing(reverse_railway->reference_to_TimeTable); 
+    verify_correct_timing(reference_to_TimeTable);    
+    if(has_reverse())
+        verify_correct_timing(reverse_railway->reference_to_TimeTable); 
 }
 
 void Railway::verify_correct_timing(TimeTable* tt) {
     constexpr int CROSS_STATION_TIME =  60 / 8;
     bool mod {false};
 
-    if(tt->is_going()) cout << get_station_number(); else cout << get_Principal_number();
-    cout << "  =   " << tt->get_timetable_element(0).time_at_station.size()<< endl; 
     for(int i=0; i<tt->get_timetable_size(); i++) {
-        //cout << tt->get_timetable_element(i).time_at_station.size();
         for(int j=0; j<tt->get_timetable_element(i).time_at_station.size() - 1; j++) {
             int min_temp {0};
-            /*if(tt->get_timetable_element(i).train_type == Train::type::Regional) {
-                min_temp= secondary_traets_length(j, tt->is_going()) / Regional::MAXSPEED * 60 + 10;
+            if(tt->get_timetable_element(i).train_type == Train::type::Regional) {
+                min_temp = (int)((double)(secondary_traets_length(j, tt->is_going())) / Regional::MAXSPEED * 60.0 + 10.0);
             } else  if (tt->get_timetable_element(i).train_type == Train::type::HighSpeed){
-                cout << "length= " << principal_traets_length(j, tt->is_going()) << endl; 
-                min_temp = principal_traets_length(j, tt->is_going()) / HighSpeed::MAXSPEED * 60 + 10;
+                min_temp = (int)((double)(principal_traets_length(j, tt->is_going())) / HighSpeed::MAXSPEED * 60.0 + 10.0);
             } else {
-                min_temp = principal_traets_length(j, tt->is_going()) / SuperHighSpeed::MAXSPEED *  60 + 10;
+                min_temp = (int)((double)(principal_traets_length(j, tt->is_going())) / SuperHighSpeed::MAXSPEED*  60.0 + 10.0);
             }
-            cout << min_temp << endl;
             if(min_temp > tt->get_timetable_element(i).time_at_station[j+1] - tt->get_timetable_element(i).time_at_station[j]) {
-                cout << "new temp = "<< tt->get_timetable_element(i).time_at_station[j] + min_temp << endl;
                 mod = true;
-                cout << "finq qua\n";
                 tt->modify_arrival_time(i, j+1, tt->get_timetable_element(i).time_at_station[j] + min_temp);
-                //tt->get_timetable_element(i).time_at_station[j+1] = tt->get_timetable_element(i).time_at_station[j] + min_temp;
                 cout << "TIME TABLE non compatile: orari del treno " << tt->get_timetable_element(i).train_number << " modificati." << endl; 
-            }*/
-            cout << "tratta di lunghezza: ";
-            if(tt->get_timetable_element(i).train_type == Train::type::Regional) cout << "non mi interessa\n";//cout << secondary_traets_length(j, tt->is_going());
-            else cout << principal_traets_length(j, tt->is_going());
-            cout << endl;
+            }
         }
-
         cout << endl << endl;
     }
     
@@ -217,7 +203,6 @@ void Railway::verify_correct_timing(TimeTable* tt) {
 }
 
 int Railway::secondary_traets_length(int ind, bool fw) {
-    //cout << endl << *stations[ind+1] << endl;
     if(fw)
         return (stations[ind+1]->get_station_distance() - stations[ind]->get_station_distance());
     else 
@@ -227,23 +212,21 @@ int Railway::secondary_traets_length(int ind, bool fw) {
 int Railway::principal_traets_length(int ind, bool fw) {
     
     if(fw){
-        cout << "andata\n";
         int length {0};
         int j {ind}; 
         do {
             length += secondary_traets_length(j,  true);
-            cout << "incrementen of " << length << endl;
+            j++;
         } while(stations[j + 1]->get_station_type() == Station::type::Secondary);
 
         return length;
     } else {
-        cout << "ritorno\n";
         int length {0};
         int j {ind}; 
-        while(reverse_railway->stations[j + 1]->get_station_type() == Station::type::Secondary) {
-            length += secondary_traets_length(j, false);
-            
-        }
+        do {
+            length += secondary_traets_length(j,  true);
+            j++;
+        } while(reverse_railway->stations[j + 1]->get_station_type() == Station::type::Secondary);
 
         return length;
     }

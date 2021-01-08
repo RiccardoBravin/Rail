@@ -22,25 +22,23 @@ int main() {
     railways.push_back(Railway());
     railways[1].reverse(railways[0], &tables[1]);
 
-    cout << railways[0] << tables[0] << endl << endl << railways[1] << tables[1] <<  endl;
+    //cout << railways[0] << tables[0] << endl << endl << railways[1] << tables[1] <<  endl;
 
     
     cout << "____________ADJUST_TIMETABLE__________" << endl;
     for(int i=0; i<tables.size(); i++) {
         tables[i].adjust_timetable(railways[0].get_Principal_number(), railways[0].get_station_number());
     }
-    cout << railways[0] << tables[0] << endl << endl << railways[1] << tables[1] <<  endl;
+    //cout << railways[0] << tables[0] << endl << endl << railways[1] << tables[1] <<  endl;
 
     cout << "____________VERIFY_RAILWAY__________" << endl;
-    for(int i=0; i<railways.size(); i+= 2) {
-        railways[i].verify_railway();
-    }
-    cout << railways[0] << tables[0] << endl << endl << railways[1] << tables[1] <<  endl;
+        railways[0].verify_railway();
+    //cout << railways[0] << tables[0] << endl << endl << railways[1] << tables[1] <<  endl;
     
 
     
-    
-    for(int i=0; i<railways.size(); i++)  cout << endl << endl << railways[i] << endl << endl;
+    cout << "_______RAILWAY & TIMETABLEs CORRETTE_______" << endl << endl;
+    for(int i=0; i<railways.size(); i++)  cout << railways[i] << endl << tables[i] << endl << endl;
 
     cout << "ho finito";
     return 0;

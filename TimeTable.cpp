@@ -44,7 +44,7 @@ vector<TimeTable> split_timeTable(string time_table) {
         }
         
         if(!gones.empty()){
-            tables.push_back(TimeTable(gones, false));
+            tables.push_back(TimeTable(gones, true));
         }
         if(!returns.empty()){
             tables.push_back(TimeTable(returns, false));
