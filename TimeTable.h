@@ -28,17 +28,21 @@ class TimeTable{
         TimeTable(TimeTable&& tt);
 
         TimeTable& operator=(TimeTable&& tt);
+
+        TimeTable() {};
         
         //~TimeTable() {};
         
-        void adjust_timetable(int number_stations);
+        bool adjust_timetable(int number_principal_stations, int number_secondary_station);
+
+        void modify_arrival_time(int time_table_index, int station_index, int arrival_time);
         
         //void modify_Timetable(const timetable_element& tte);
 
         void delete_regionals_station_time(int ind);
 
         void delete_fast_superFast_station_time(int ind);
-       
+
         bool operator==(const TimeTable& tt) const;
 
         timetable_element search_timetable_element(int train_number) const;
@@ -46,8 +50,6 @@ class TimeTable{
         timetable_element get_timetable_element(int ind) const;
 
         int get_timetable_size() const;
-
-        TimeTable() {};
 
         bool is_going() const { return going_line; }
         

@@ -150,56 +150,102 @@ void Railway::reverse (Railway& rw, TimeTable* tt) {
 
 void Railway::verify_railway(){
     int num_principal {0};
-    //cout << reference_to_TimeTable->get_timetable_element(0);
     for(int i=0; i<get_station_number()-1; i++){
-        if(stations[i]->get_station_type() == 0) num_principal++;
-        if(stations[i+1]->get_station_distance() - stations[i]->get_station_distance() > MIN_STATION_DISTANCE) {
+        bool is_principal = stations[i]->get_station_type() == Station::type::Principal;
+        if(is_principal) num_principal++;
+        if(stations[i+1]->get_station_distance() - stations[i]->get_station_distance() <= MIN_STATION_DISTANCE) {
             cout << "stazioni troppo vicine. elimino\n";
             remove_station(i);
-            //cout << reverse_railway->get_station_number()<< endl;
             reverse_railway->remove_station(get_station_number() - i);
-            
             reference_to_TimeTable->delete_regionals_station_time(i);
-            reverse_railway->reference_to_TimeTable->delete_regionals_station_time(reverse_railway->get_station_number() - 1 - i);
-            if(stations[i]->get_station_type() == 0) {
+            //cout << "sosososos   " << reverse_railway->get_station_number();
+            reverse_railway->reference_to_TimeTable->delete_regionals_station_time(reverse_railway->get_station_number() - i);
+            //cout << stations[i]->get_station_name() << ": " << stations[i]->get_station_type() << "==" <<  Station::type::Principal << endl;
+            if(is_principal) {
+                cout << "num principal: "  << num_principal << endl;
                 reference_to_TimeTable->delete_fast_superFast_station_time(num_principal - 1);
                 reverse_railway->reference_to_TimeTable->delete_fast_superFast_station_time(reverse_railway->get_Principal_number() - num_principal);
-            }  
+            } 
         }
-    }    
+    }   
+
+    /*cout << stations.size() << "  =   " << reference_to_TimeTable->get_timetable_element(0).time_at_station.size()<< endl;
+    cout << stations.size() << "  =   " << reverse_railway->reference_to_TimeTable->get_timetable_element(0).time_at_station.size()<< endl;*/
+    //secondary_traets_length(2);
+    verify_correct_timing(reference_to_TimeTable);
+    verify_correct_timing(reverse_railway->reference_to_TimeTable); 
 }
 
 void Railway::verify_correct_timing(TimeTable* tt) {
     constexpr int CROSS_STATION_TIME =  60 / 8;
+    bool mod {false};
+
+    if(tt->is_going()) cout << get_station_number(); else cout << get_Principal_number();
+    cout << "  =   " << tt->get_timetable_element(0).time_at_station.size()<< endl; 
     for(int i=0; i<tt->get_timetable_size(); i++) {
-        for(int j=0; j<tt->get_timetable_element(i).time_at_station.size(); j++) {
+        //cout << tt->get_timetable_element(i).time_at_station.size();
+        for(int j=0; j<tt->get_timetable_element(i).time_at_station.size() - 1; j++) {
             int min_temp {0};
-            if(tt->get_timetable_element(i).train_type == Train::type::Regional) {
-                min_temp= secondary_traets_length(j) / Regional::MAXSPEED * 60 + 10;
+            /*if(tt->get_timetable_element(i).train_type == Train::type::Regional) {
+                min_temp= secondary_traets_length(j, tt->is_going()) / Regional::MAXSPEED * 60 + 10;
             } else  if (tt->get_timetable_element(i).train_type == Train::type::HighSpeed){
-                min_temp = principal_traets_length(j) / HighSpeed::MAXSPEED * 60 + 10;
+                cout << "length= " << principal_traets_length(j, tt->is_going()) << endl; 
+                min_temp = principal_traets_length(j, tt->is_going()) / HighSpeed::MAXSPEED * 60 + 10;
             } else {
-                min_temp = principal_traets_length(j) / SuperHighSpeed::MAXSPEED *  60 + 10;
+                min_temp = principal_traets_length(j, tt->is_going()) / SuperHighSpeed::MAXSPEED *  60 + 10;
             }
-            
-            if(min_temp > tt->get_timetable_element(i).time_at_station[j+1] - tt->get_timetable_element(i).time_at_station[j])
-                tt->get_timetable_element(i).time_at_station[j+1] = tt->get_timetable_element(i).time_at_station[j] + min_temp;
-            }
-        } 
+            cout << min_temp << endl;
+            if(min_temp > tt->get_timetable_element(i).time_at_station[j+1] - tt->get_timetable_element(i).time_at_station[j]) {
+                cout << "new temp = "<< tt->get_timetable_element(i).time_at_station[j] + min_temp << endl;
+                mod = true;
+                cout << "finq qua\n";
+                tt->modify_arrival_time(i, j+1, tt->get_timetable_element(i).time_at_station[j] + min_temp);
+                //tt->get_timetable_element(i).time_at_station[j+1] = tt->get_timetable_element(i).time_at_station[j] + min_temp;
+                cout << "TIME TABLE non compatile: orari del treno " << tt->get_timetable_element(i).train_number << " modificati." << endl; 
+            }*/
+            cout << "tratta di lunghezza: ";
+            if(tt->get_timetable_element(i).train_type == Train::type::Regional) cout << "non mi interessa\n";//cout << secondary_traets_length(j, tt->is_going());
+            else cout << principal_traets_length(j, tt->is_going());
+            cout << endl;
+        }
+
+        cout << endl << endl;
     }
+    
+    if(mod) cout << "TIME TABLE AGGIORNATA:" << endl << *tt << endl;
+
 }
 
-int Railway::secondary_traets_length(int ind) {
-    return stations[ind+1]->get_station_distance() - stations[ind]->get_station_distance();
+int Railway::secondary_traets_length(int ind, bool fw) {
+    //cout << endl << *stations[ind+1] << endl;
+    if(fw)
+        return (stations[ind+1]->get_station_distance() - stations[ind]->get_station_distance());
+    else 
+        return (reverse_railway->stations[ind+1]->get_station_distance() - reverse_railway->stations[ind]->get_station_distance());
 }
 
-int Railway::principal_traets_length(int ind) {
-    if(stations[ind]->get_station_type() == Station::type::Secondary) return -1;
+int Railway::principal_traets_length(int ind, bool fw) {
+    
+    if(fw){
+        cout << "andata\n";
+        int length {0};
+        int j {ind}; 
+        do {
+            length += secondary_traets_length(j,  true);
+            cout << "incrementen of " << length << endl;
+        } while(stations[j + 1]->get_station_type() == Station::type::Secondary);
 
-    int length {0};
-    int j {ind}; 
-    while(stations[j + 1]->get_station_type() == Station::type::Secondary) {
-        length += secondary_traets_length(j);
+        return length;
+    } else {
+        cout << "ritorno\n";
+        int length {0};
+        int j {ind}; 
+        while(reverse_railway->stations[j + 1]->get_station_type() == Station::type::Secondary) {
+            length += secondary_traets_length(j, false);
+            
+        }
+
+        return length;
     }
 }
 
@@ -269,9 +315,9 @@ void Railway::set_source_file(string line_description){
 ostream& operator<<(ostream& os, Railway& rw){
     os << "Railway generated from " << rw.get_source_file_name() << ".\n";
     if(rw.get_reverse_reference() == nullptr)
-        os << "This is the going railway ";
-    else 
         os << "This is the returning railway ";
+    else 
+        os << "This is the going railway ";
     os << rw.get_beginning_station().get_station_name() << "   -   " << rw.get_terminal_station().get_station_name() << endl;
     for(int i=0; i<rw.get_station_number(); i++)
         os << rw.get_station(i);

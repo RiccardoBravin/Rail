@@ -34,19 +34,19 @@ class Railway {
        
         void reverse (Railway& rw, TimeTable* tt);
        
-        void verify_railway(); 
+        void verify_railway();
 
         void verify_correct_timing(TimeTable* tt);
        
         void remove_station(int i);
 
-        int secondary_traets_length(int ind);
+        int secondary_traets_length(int ind, bool fw);
 
-        int principal_traets_length(int ind);
+        int principal_traets_length(int ind, bool fw);
 
         //void add_station(Principal& st);
 
-        //void add_station(Secondary& st);
+        //void add_station(Secondary& st); 
         
         Station& get_beginning_station() const;
         

@@ -13,7 +13,6 @@ int main() {
 
     try{
         temp = split_timeTable(timetables);
-        
     } catch(runtime_error e) {cout << e.what();}
 
     for(int i=0; i<temp.size(); i++) {

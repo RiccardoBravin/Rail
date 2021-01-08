@@ -12,8 +12,8 @@ class Station {
     public:
 
         enum type : int{
-            Secondary, 
-            Principal 
+            Principal, 
+            Secondary 
         };
 
         Station (const Station&) = delete;

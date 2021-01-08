@@ -1,4 +1,5 @@
 #include "TimeTable.h"
+#include "Train.h"
 #include <fstream>
 #include <exception>
 #include <string>
@@ -43,7 +44,7 @@ vector<TimeTable> split_timeTable(string time_table) {
         }
         
         if(!gones.empty()){
-            tables.push_back(TimeTable(returns, false));
+            tables.push_back(TimeTable(gones, false));
         }
         if(!returns.empty()){
             tables.push_back(TimeTable(returns, false));
@@ -56,7 +57,7 @@ vector<TimeTable> split_timeTable(string time_table) {
 
 
 TimeTable::TimeTable(vector<timetable_element> elements, bool is_going) {
-    cout << "using constructor\n";
+    //cout << "using constructor\n";
     for(int i=0; i<elements.size(); i++){
         time_table.push_back(elements[i]);
     }
@@ -64,7 +65,7 @@ TimeTable::TimeTable(vector<timetable_element> elements, bool is_going) {
 }
 
 TimeTable::TimeTable(const TimeTable& tt) {
-    cout << "using copy constructor\n";
+    //cout << "using copy constructor\n";
     for(int i=0; i<tt.time_table.size(); i++) {
         timetable_element copy;
         copy.train_number = tt.time_table[i].train_number;
@@ -79,7 +80,7 @@ TimeTable::TimeTable(const TimeTable& tt) {
 }
 
 TimeTable& TimeTable::operator=(const TimeTable& tt) {
-    cout << "using copy operator\n";
+    //cout << "using copy operator\n";
     if(this == &tt) return *this;
     time_table.clear();
 
@@ -97,7 +98,7 @@ TimeTable& TimeTable::operator=(const TimeTable& tt) {
 }
 
 TimeTable::TimeTable(TimeTable&& tt) {
-    cout << "using move constructor\n";
+    //cout << "using move constructor\n";
     if(this == &tt) return;
 
     for(int i=0; i<tt.time_table.size(); i++) {
@@ -117,7 +118,7 @@ TimeTable::TimeTable(TimeTable&& tt) {
 
 TimeTable& TimeTable::operator=(TimeTable&& tt) {
     if(this == &tt) return *this;
-    cout << "using move operator\n";
+    //cout << "using move operator\n";
     for(int i=0; i<tt.time_table.size(); i++) {
         timetable_element copy;
         copy.train_number = tt.time_table[i].train_number;
@@ -134,15 +135,43 @@ TimeTable& TimeTable::operator=(TimeTable&& tt) {
     return *this;
 }
 
-void TimeTable::adjust_timetable(int number_stations){
+bool TimeTable::adjust_timetable(int number_principal_stations, int number_stations){
+    bool added {false};
+    bool deleted {false};
+    
+    
     for(int i=0; i<time_table.size(); i++) {
-        if(time_table[i].time_at_station.size() > number_stations){
-            time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + number_stations, time_table[i].time_at_station.end());
-        }
-        for(int j=time_table[i].time_at_station.size(); j<number_stations; j++){
-            time_table[i].time_at_station.push_back(0);
+        if(time_table[i].train_type == Train::type::Regional) {
+            if(time_table[i].time_at_station.size() > number_stations){
+                time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + number_stations, time_table[i].time_at_station.end());
+                deleted = true;
+
+                //cout << number_stations << " =? " << time_table[i].time_at_station.size() << endl;
+            }
+            for(int j=time_table[i].time_at_station.size(); j<number_stations; j++){
+                time_table[i].time_at_station.push_back(0);
+                added = true;
+            }
+        } else {
+            if(time_table[i].time_at_station.size() > number_principal_stations){
+                time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + number_principal_stations, time_table[i].time_at_station.end());
+                deleted = true;
+
+                //cout << number_stations << " =? " << time_table[i].time_at_station.size() << endl;
+            }
+            for(int j=time_table[i].time_at_station.size(); j<number_principal_stations; j++){
+                time_table[i].time_at_station.push_back(0);
+                added = true;
+            }
         }
     }
+
+    if(deleted) cout << "Il file contiene orari di arrivo in eccedenza. Non vengono conteggiati" << endl;
+    return added;
+}
+
+void TimeTable:: modify_arrival_time(int time_table_index, int station_index, int arrival_time){
+    time_table[time_table_index].time_at_station[station_index] = arrival_time;
 }
 
 /*void TimeTable::modify_Timetable(const timetable_element& tte) {
@@ -154,15 +183,16 @@ void TimeTable::delete_regionals_station_time(int ind) {
     //cout <<  time_table[0] << endl;
     for(int i=0; i<time_table.size(); i++) {
         //cout << "fin qua\n";
-        if(time_table[i].train_type == 1)
+        if(time_table[i].train_type == Train::type::Regional)
             time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + ind);
     }
 }
 
 void TimeTable::delete_fast_superFast_station_time(int ind){
     for(int i=0; i<time_table.size(); i++) {
-        if(time_table[i].train_type == 2 || time_table[i].train_type == 3)
-        time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + ind);
+        if(time_table[i].train_type == Train::type::HighSpeed || time_table[i].train_type == Train::type::SuperHighSpeed) {
+            time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + ind);
+        }
     }
 }
 
