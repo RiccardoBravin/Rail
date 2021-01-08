@@ -11,9 +11,9 @@ using namespace std;
 
 //*** Station ***//
 
-string Station::get_station_name() const{ return name;}
+string Station::get_name() const{ return name;}
 
-double Station::get_station_distance() const{ return distance;}
+double Station::get_distance() const{ return distance;}
 
 void Station::add_train_to_park(Train* t)
 {
@@ -69,18 +69,19 @@ int Station::what_platform_train(Train* t)
     
 }
 
-void Station::remove_train_to_stop(Train* t)
+bool Station::remove_train_to_stop(Train* t)
 {
     vector<Train*>::iterator iter = find(stop_tracks.begin(), stop_tracks.end(), t);
     if(iter == stop_tracks.end()) 
     {
         //cout << "Non riesco a rimuovere" << endl;
-        return;
+        return false;
 
     }
-    cout << "riesco a rimuovere" << endl;
+    //cout << "riesco a rimuovere" << endl;
     int index = std::distance(stop_tracks.begin(), iter );
     stop_tracks[index] = nullptr; 
+    return true;
     
 }
 
@@ -105,6 +106,11 @@ bool Station::can_add_train_to_stop() const
         return true;
     else
         return false;
+}
+
+void Station::remove_train_from_transit()
+{
+    transit_tracks.pop_back();
 }
 
 
@@ -147,7 +153,7 @@ Secondary& Secondary::operator=(Secondary&& stn)
     return *this;
 }
 
-int Secondary::get_station_type() const{ return Station::Secondary;}
+int Secondary::get_type() const{ return Station::Secondary;}
 
 void Secondary::add_train_to_transit(Train* t)
 {
@@ -156,16 +162,11 @@ void Secondary::add_train_to_transit(Train* t)
  
 }
 
-void Secondary::remove_train_to_transit()
-{
-    transit_tracks.pop_back();
-}
 
 int Secondary::get_transit_tracks() const
 {
     return N_TRANS_TRACK;
 }
-
 
 
 //*** Principal ***//
@@ -213,7 +214,7 @@ Principal& Principal::operator=(Principal&& stn)
     return *this;
 }
 
-int Principal::get_station_type() const{ return Station::Principal;}
+int Principal::get_type() const{ return Station::Principal;}
 
 
 
@@ -221,14 +222,14 @@ int Principal::get_station_type() const{ return Station::Principal;}
 std::ostream& operator<<(std::ostream& os, const Station& stn)
 {
     os << "Stazione ";
-    if(stn.get_station_type() == 0){
+    if(stn.get_type() == 0){
         os << "Principale";
     }
-    else if(stn.get_station_type() == 1){
+    else if(stn.get_type() == 1){
         os << "Locale";
     }
-    os << " di: " << stn.get_station_name();
-    os << " distanza: " << stn.get_station_distance() << " km " << endl;
+    os << " di: " << stn.get_name();
+    os << " distanza: " << stn.get_distance() << " km " << endl;
     os << "ci sono: " << stn.get_count_parking_train() << " treni in sosta nel parcheggio " << endl;
     os << "ci sono: " << stn.get_count_in_stop_train() << " binari di fermata occupati " << endl;
     return os;
@@ -238,7 +239,7 @@ std::ostream& operator<<(std::ostream& os, const Station& stn)
 
 bool operator== (const Station &stn1, const Station &stn2)
 {
-    return(stn1.get_station_type() == stn2.get_station_type() &&
+    return(stn1.get_type() == stn2.get_type() &&
         stn1.get_count_parking_train() == stn2.get_count_parking_train() &&
         stn1.get_count_in_stop_train() == stn2.get_count_in_stop_train());
 }
