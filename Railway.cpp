@@ -266,6 +266,15 @@ Station& Railway::get_station(int i) const{
     return *(stations[i]);
 }
 
+Station& Railway::get_next_principal(int this_station_index) const {
+    int i = this_station_index + 1;
+    while(stations[i]->get_type() == Station::type::Secondary) {
+        i++;
+    }
+
+    return *stations[i];
+}
+
 string Railway::get_source_file_name() const{
     return line_description_file_name;
 }

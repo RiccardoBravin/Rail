@@ -54,6 +54,8 @@ class Railway {
         
         Station& get_station(int i) const;
         
+        Station& get_next_principal(int this_principal_index) const;
+        
         std::string get_source_file_name() const;
 
         int get_railway_length() const;
