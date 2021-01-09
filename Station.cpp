@@ -112,6 +112,24 @@ bool Station::can_add_train_to_stop() const
         return false;
 }
 
+void Station::add_train_to_transit(Train* t)
+{
+    transit_tracks.push_back(t); 
+}
+
+int Station::get_count_in_transit_train() const
+{
+   return transit_tracks.size();
+}
+
+bool Station::can_add_train_to_transit() const
+{
+    if(get_count_in_transit_train() < N_TRANS_TRACK)
+        return true;
+    else
+        return false;
+}
+
 void Station::remove_train_from_transit()
 {
     transit_tracks.pop_back();
@@ -158,14 +176,6 @@ Secondary& Secondary::operator=(Secondary&& stn)
 }
 
 int Secondary::get_type() const{ return Station::Secondary;}
-
-void Secondary::add_train_to_transit(Train* t)
-{
-
-    transit_tracks.push_back(t); 
- 
-}
-
 
 int Secondary::get_transit_tracks() const
 {

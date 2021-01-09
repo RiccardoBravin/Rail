@@ -122,7 +122,27 @@ class Station {
          */
         int get_stop_tracks() const;
 
+        /**
+         * @brief Get the count in stop transit
+         * 
+         * @return int 
+         */
+        int get_count_in_transit_train() const;
 
+        /**
+         * @brief 
+         * 
+         * @param t 
+         */
+        void add_train_to_transit(Train* t);
+
+        /**
+         * @brief Asks if can add a train on the stop transit
+         * 
+         * @return true 
+         * @return false 
+         */
+        bool can_add_train_to_transit() const;
 
         /**
          * @brief Remove train from transit track
@@ -144,6 +164,7 @@ class Station {
         std::vector<Train*> transit_tracks;
         std::vector<Train*> stop_tracks;
         static constexpr int N_STOP_TRACK = 2;
+        static constexpr int N_TRANS_TRACK = 1;
 
     private:
        
@@ -160,13 +181,12 @@ class Secondary : public Station {
         ~Secondary() { }
 
         int get_type() const override;
-        void add_train_to_transit(Train* t);
         void remove_train_to_transit();
         int get_transit_tracks() const;
         int get_stop_tracks() const;
 
     private: 
-        static constexpr int N_TRANS_TRACK = 1;
+        
 };
 
 class Principal : public Station {
@@ -184,7 +204,7 @@ class Principal : public Station {
         int get_stop_tracks() const;
         
     private:
-    static constexpr int N_TRANS_TRACK = 0;
+    
 
 };
 
