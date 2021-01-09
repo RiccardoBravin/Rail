@@ -75,23 +75,24 @@ class Simulation {
         //cicla i treni nelle banchine e li fa fermare se arrivati alla stazione
 
         //mette il treno nel parcheggio della stazione
-        void park_train(Train* tr, Station* st);
+        void park_train(Station& st, Train* tr);
         
-        //mette il treno nella banchina della stazione
-        void train_to_platform(Train& tr, Station& st);
-
-        //rimuove un treno dalla banchina della stazione
-        void leave_platform(Train& tr, Station& st);
-
         //rimuove un treno dal parcheggio della stazione
-        void leave_park(Train& tr, Station& st);
-
-        //segnale che il treno manda alla stazione quando è a venti chilometri
-        void notice_entering_station_area(Train& tr, Station& st);
-
-        void notice_entering_station_platform(Train& tr, Station& st);
+        void leave_park(Station& st, Train* tr);
         
-        void notice_leaving_station_platform(Train& tr, Station& st);
+        
+        //mette il treno nell binario di transito
+        void add_train_transit(Station& st, Train* tr);
+        
+        //toglie il treno dal binario di transito
+        void remove_train_transit(Station& st, Train* tr);
+
+        //mette il treno nella banchina libera
+        void entering_station_area(Station& st, Train* tr);
+        
+        //toglie il treno dalla banchina
+        void exiting_station_area(Station& st, Train* tr);
+        
         
 
         //richiama step per ogni treno in ogni railway
