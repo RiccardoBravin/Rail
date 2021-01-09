@@ -40,9 +40,9 @@ class Railway {
        
         void remove_station(int i);
 
-        int secondary_traets_length(int ind, bool fw);
+        int secondary_treats_length(int ind, bool fw);
 
-        int principal_traets_length(int ind, bool fw);
+        int principal_treats_length(int ind, bool fw);
 
         //void add_station(Principal& st);
 
@@ -58,9 +58,9 @@ class Railway {
 
         int get_railway_length() const;
         
-        int get_station_number() const;
+        int get_station_count() const;
 
-        int get_Principal_number() const;
+        int get_principal_count() const;
 
         bool has_reverse() {if(reverse_railway == nullptr) return false; else return true;}
 
