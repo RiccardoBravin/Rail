@@ -14,21 +14,18 @@ class Simulation {
 
 
     private:
-        /*TimeTable fw_timetable;
-        TimeTable bw_timetable;
-        
-        Railway fw_railway;
-        Railway bw_railway;
-        std::vector<std::unique_ptr<Train>> fw_trains; //forward
-        std::vector<std::unique_ptr<Train>> bw_trains; //backward*/
+        static constexpr int RAILWAYS = 2;
 
         std::vector<TimeTable> timetable;
         std::vector<Railway> railway;
-        std::vector<std::vector<std::unique_ptr<Train>>> trains{2};
+        std::vector<std::vector<std::unique_ptr<Train>>> trains{RAILWAYS};
 
         int current_time {0};
 
-        static constexpr int RAILWAYS = 2;
+        
+        
+
+        int calc_delay(int k, int tr_index, int rw_index);
 
 
         void start_trains(); //takes the timetable and cycles throught it to view if it has to create a train to start simulating it
@@ -62,6 +59,7 @@ class Simulation {
         //allora fai procedere a altrimenti metti a nel parcheggio
 
 
+        bool best_train_in_station(Station* st, Train* t);
 
         void parked_trains();//decides for each train in the parking slots what to do
         //se ho esattamente una banchina libera prendo il treno con il maggior ritardo e di tier piu alto e se la funzione magica dice 
