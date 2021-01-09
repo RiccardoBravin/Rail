@@ -54,6 +54,13 @@ class Station {
          */
         std::vector<Train*> get_parking_train() const;
 
+        /**
+         * @brief Get the stop train object
+         * 
+         * @return std::vector<Train*> 
+         */
+        std::vector<Train*> get_stop_train() const;
+
          /**
          * @brief Get the count parking train object
          * 

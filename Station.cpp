@@ -36,6 +36,10 @@ void Station::remove_train_from_park(Train* t)
      parking.erase(find(parking.begin(), parking.end(), t));
 }
 
+vector<Train*> Station::get_stop_train() const
+{
+    return stop_tracks;
+}
 
 bool Station::add_train_to_stop(Train* t)
 {   
