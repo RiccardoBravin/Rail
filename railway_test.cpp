@@ -27,7 +27,7 @@ int main() {
     
     cout << "____________ADJUST_TIMETABLE__________" << endl;
     for(int i=0; i<tables.size(); i++) {
-        tables[i].adjust_timetable(railways[0].get_Principal_number(), railways[0].get_station_number());
+        tables[i].adjust_timetable(railways[0].get_principal_count(), railways[0].get_station_count());
     }
     //cout << railways[0] << tables[0] << endl << endl << railways[1] << tables[1] <<  endl;
 
