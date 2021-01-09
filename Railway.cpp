@@ -151,13 +151,18 @@ void Railway::reverse (Railway& rw, TimeTable* tt) {
 void Railway::verify_railway(){
     int num_principal {0};
     for(int i=0; i<get_station_count()-1; i++){
-        bool is_principal = stations[i]->get_type() == Station::type::Principal;
+        bool is_principal = stations[i+1]->get_type() == Station::type::Principal;
+        bool was_removed {false};
         if(is_principal) num_principal++;
+        
         if(stations[i+1]->get_distance() - stations[i]->get_distance() <= MIN_STATION_DISTANCE) {
             cout << "stazioni troppo vicine. elimino\n";
+            //cout << "is principal? " << is_principal << endl;
+            was_removed = true;
             remove_station(i+1);
             reference_to_TimeTable->delete_regionals_station_time(i+1);
             if(has_reverse()){
+                cout << "has reverse" << endl;
                 reverse_railway->remove_station(get_station_count() - i - 1);
                 reverse_railway->reference_to_TimeTable->delete_regionals_station_time(reverse_railway->get_station_count() - i - 1);
             }
@@ -166,8 +171,9 @@ void Railway::verify_railway(){
                 reference_to_TimeTable->delete_fast_superFast_station_time(num_principal - 1);
                 if(has_reverse())
                     reverse_railway->reference_to_TimeTable->delete_fast_superFast_station_time(reverse_railway->get_principal_count() - num_principal);
-            } 
+            }
         }
+        if(was_removed) i--;
     }   
 
     verify_correct_timing(reference_to_TimeTable);    
@@ -180,7 +186,9 @@ void Railway::verify_correct_timing(TimeTable* tt) {
     bool mod {false};
 
     for(int i=0; i<tt->get_timetable_size(); i++) {
+        //cout << "time_at_station.size() = " << tt->get_timetable_element(i).time_at_station.size() << endl;
         for(int j=0; j<tt->get_timetable_element(i).time_at_station.size() - 1; j++) {
+            //cout << " j = " << j << endl;
             int min_temp {0};
             if(tt->get_timetable_element(i).train_type == Train::type::Regional) {
                 min_temp = (int)((double)(secondary_treats_length(j, tt->is_going())) / Regional::MAXSPEED * 60.0 + 10.0);
@@ -194,6 +202,7 @@ void Railway::verify_correct_timing(TimeTable* tt) {
                 tt->modify_arrival_time(i, j+1, tt->get_timetable_element(i).time_at_station[j] + min_temp);
                 cout << "TIME TABLE non compatile: orari del treno " << tt->get_timetable_element(i).train_number << " modificati." << endl; 
             }
+            cout << *tt << endl;
         }
         cout << endl << endl;
     }
@@ -217,16 +226,16 @@ int Railway::principal_treats_length(int ind, bool fw) {
         do {
             length += secondary_treats_length(j,  true);
             j++;
-        } while(stations[j + 1]->get_type() == Station::type::Secondary);
+        } while(stations[j]->get_type() == Station::type::Secondary);
 
         return length;
     } else {
         int length {0};
         int j {ind}; 
         do {
-            length += secondary_treats_length(j,  true);
+            length += secondary_treats_length(j,  false);
             j++;
-        } while(reverse_railway->stations[j + 1]->get_type() == Station::type::Secondary);
+        } while(reverse_railway->stations[j]->get_type() == Station::type::Secondary);
 
         return length;
     }
