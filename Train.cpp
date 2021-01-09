@@ -28,6 +28,10 @@ double Train::next_distance() const{
     return distance + speed * 0.0166;
 }
 
+double Train::prev_distance() const{
+    return distance - speed * 0.0166;
+}
+
 bool Train::stationary() const{
     if(state == Stationary)
         return true;
@@ -82,7 +86,7 @@ Regional::Regional(const int _number){
     speed = 0; 
     delay = 0; 
     distance = 0; 
-    state = Parked; 
+    state = Running; 
     station_timer = 0;
 }
 
@@ -176,7 +180,7 @@ HighSpeed::HighSpeed(const int _number){
     speed = 0; 
     delay = 0; 
     distance = 0; 
-    state = Parked; 
+    state = Running; 
     station_timer = 0;
 }
 
@@ -268,7 +272,7 @@ SuperHighSpeed::SuperHighSpeed(const int _number){
     speed = 0; 
     delay = 0; 
     distance = 0; 
-    state = Parked; 
+    state = Running; 
     station_timer = 0;
 }
 
@@ -368,11 +372,11 @@ ostream& operator<<(ostream& os, const Train& obj){
     }
     os << " numero: " << obj.get_number() << endl;
     os << "A distanza " << obj.get_distance() << " ha subito un ritardo di " << obj.get_delay() << " minuti" << endl;
-    os << "perche sta procedendo alla velocita di " << obj.get_speed() << " km/h" << endl;
+    os << "e sta procedendo alla velocita di " << obj.get_speed() << " km/h" << endl;
     if(obj.running()){
         os << "Il treno sta attualmete percorrendo la tratta" << endl;
     }else if(obj.parked()){
-        os << "Il treno e' attualmente in sosta per qualche ragione misteriosa" << endl;
+        os << "Il treno e' attualmente in sosta" << endl;
         os << "Trenitalia si scusa per il disagio" << endl;
     }else if(obj.stationary()){
         os << "Il treno e' attualmete in stazione" << endl;

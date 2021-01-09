@@ -14,16 +14,21 @@ class Simulation {
 
 
     private:
-        TimeTable fw_timetable;
+        /*TimeTable fw_timetable;
         TimeTable bw_timetable;
         
         Railway fw_railway;
         Railway bw_railway;
         std::vector<std::unique_ptr<Train>> fw_trains; //forward
-        std::vector<std::unique_ptr<Train>> bw_trains; //backward
+        std::vector<std::unique_ptr<Train>> bw_trains; //backward*/
+
+        std::vector<TimeTable> timetable;
+        std::vector<Railway> railway;
+        std::vector<std::vector<std::unique_ptr<Train>>> trains{2};
 
         int current_time {0};
 
+        static constexpr int RAILWAYS = 2;
 
 
         void start_trains(); //takes the timetable and cycles throught it to view if it has to create a train to start simulating it
@@ -31,15 +36,18 @@ class Simulation {
         //stati messi in trains allora fallo partire se possibile (una linea libera e free_to_start) e inseriscilo nella banchina della prima stazione
 
 
-        bool free_to_start(Station* st, Train* tr);//true if the train has a free path to start and is the best that can start for that station
-        //(da diversificare per Primary e Secondary) controllare se la linea è libera per 10km e se il treno che ho scelto 
-        //è il migliore da far partire e se la linea di transito (se c'è) è libera
+        bool free_to_start(Station* st,  int trains_index) const;//true if the train has a free path to start 
+        //(da diversificare per Primary e Secondary) controllare se la linea è libera per 10km
+        // e se la linea di transito (se c'è) è libera
 
         bool notice_20_km_mark(Train* tr);//controlla se il treno è a 20 km dalla stazione successiva riferisce il suo stato
 
         void check_distance();//controlla ed eventualmente sistema tutti i problemi con le distanze e velocità fra tutti i treni 
         
         bool entering_station(Train* tr);//return true if the specified train is going to enter the station area the next step
+
+
+        void exit_station();//se un treno sta uscendo dalla stazione allora va alla velocità massima
 
         void in_station(); //checks all trains ad decides what to do when they enter the station area
         //se è in anticipo calcola l'anticipo metti nel parcheggio

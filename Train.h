@@ -70,6 +70,12 @@ class Train{
          * @return the next distance as a double
          */
         double next_distance() const; 
+
+        /**
+         * @brief calculates the distance from the starting station in the previous minute
+         * @return the prev distance as a double
+         */
+        double prev_distance() const;
         
         /**
          * @brief Set the distanca of a train from the starting station 
