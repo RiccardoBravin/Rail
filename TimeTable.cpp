@@ -142,14 +142,13 @@ bool TimeTable::adjust_timetable(int number_principal_stations, int number_stati
     for(int i=0; i<time_table.size(); i++) {
         if(time_table[i].time_at_station[0] > 1440) {
             time_table.erase(time_table.begin() + i);
-            if(i >= time_table.size()) break;
+            i--;
+            continue;
         }
         if(time_table[i].train_type == Train::type::Regional) {
             if(time_table[i].time_at_station.size() > number_stations){
                 time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + number_stations, time_table[i].time_at_station.end());
                 deleted = true;
-
-                //cout << number_stations << " =? " << time_table[i].time_at_station.size() << endl;
             }
             for(int j=time_table[i].time_at_station.size(); j<number_stations; j++){
                 time_table[i].time_at_station.push_back(0);
@@ -159,8 +158,6 @@ bool TimeTable::adjust_timetable(int number_principal_stations, int number_stati
             if(time_table[i].time_at_station.size() > number_principal_stations){
                 time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + number_principal_stations, time_table[i].time_at_station.end());
                 deleted = true;
-
-                //cout << number_stations << " =? " << time_table[i].time_at_station.size() << endl;
             }
             for(int j=time_table[i].time_at_station.size(); j<number_principal_stations; j++){
                 time_table[i].time_at_station.push_back(0);
@@ -177,15 +174,9 @@ void TimeTable:: modify_arrival_time(int time_table_index, int station_index, in
     time_table[time_table_index].time_at_station[station_index] = arrival_time;
 }
 
-/*void TimeTable::modify_Timetable(const timetable_element& tte) {
-
-}*/
 
 void TimeTable::delete_regionals_station_time(int ind) {
-    
-    //cout <<  time_table[0] << endl;
     for(int i=0; i<time_table.size(); i++) {
-        //cout << "fin qua\n";
         if(time_table[i].train_type == Train::type::Regional)
             time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + ind);
     }

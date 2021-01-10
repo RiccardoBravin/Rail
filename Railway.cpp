@@ -150,25 +150,20 @@ void Railway::reverse (Railway& rw, TimeTable* tt) {
 
 void Railway::verify_railway(){
     int num_principal {0};
-    cout << "has reverse? " << has_reverse() << endl;
     bool was_removed {false};
     for(int i=0; i<get_station_count()-1; ){
-        
         was_removed = false;
-        cout << "inzio ciclo: i=" << i << " su " << get_station_count() - 1 <<  endl;
         bool is_principal = stations[i+1]->get_type() == Station::type::Principal;
         
         if(is_principal) num_principal++;
         
         if(stations[i+1]->get_distance() - stations[i]->get_distance() <= MIN_STATION_DISTANCE) {
             cout << "stazioni troppo vicine. elimino\n";
-            //cout << "is principal? " << is_principal << endl;
             was_removed = true;
             remove_station(i+1);
             reference_to_TimeTable->delete_regionals_station_time(i+1);
             
             if(has_reverse()){
-                cout << "has reverse" << endl;
                 reverse_railway->remove_station(get_station_count() - i - 1);
                 reverse_railway->reference_to_TimeTable->delete_regionals_station_time(reverse_railway->get_station_count() - i - 1);
             }
@@ -179,36 +174,25 @@ void Railway::verify_railway(){
                     reverse_railway->reference_to_TimeTable->delete_fast_superFast_station_time(reverse_railway->get_principal_count() - num_principal);
             }
         }
-        //if(was_removed /*&& i!=get_station_count()-1*/) i--;
-        cout << "fine ciclo ciclo: i=" << i << " su " << get_station_count() - 1 <<  endl;
-        cout << "fin qua" << endl;
         if(!was_removed)i++;
     }   
 
-    cout << *reference_to_TimeTable << endl;
-
-    cout << "_____verify correct_timing____" << endl;
     verify_correct_timing(reference_to_TimeTable);    
     if(has_reverse())
         verify_correct_timing(reverse_railway->reference_to_TimeTable);
 }
 
 void Railway::verify_correct_timing(TimeTable* tt) {
-    cout << *tt << endl;
     constexpr int CROSS_STATION_TIME =  60 / 8;
     bool mod {false};
 
     for(int i=0; i<tt->get_timetable_size(); i++) {
-        cout << "i=" << i << " su " << tt->get_timetable_size() << endl;
         for(int j=0; j<tt->get_timetable_element(i).time_at_station.size() - 1; j++) {
-            cout << " j = " << j << " su " << tt->get_timetable_element(i).time_at_station.size() <<  endl;
             int min_temp {0};
             if(tt->get_timetable_element(i).train_type == Train::type::Regional) {
                 min_temp = (int)((double)((secondary_treats_length(j, tt->is_going())) - 10 ) / Regional::MAXSPEED * 60.0 + 10.0 + CROSS_STATION_TIME);
             } else  if (tt->get_timetable_element(i).train_type == Train::type::HighSpeed){
-                cout << "is going? " << tt->is_going() << endl;
                 min_temp = (int)((double)((principal_treats_length(j, tt->is_going())) - 10 ) / HighSpeed::MAXSPEED * 60.0 + 10.0 + CROSS_STATION_TIME);
-                cout << "fin qua" << endl;
             } else {
                 min_temp = (int)((double)((principal_treats_length(j, tt->is_going())) - 10 ) / SuperHighSpeed::MAXSPEED*  60.0 + 10.0 + CROSS_STATION_TIME);
             }
@@ -218,13 +202,9 @@ void Railway::verify_correct_timing(TimeTable* tt) {
                 tt->modify_arrival_time(i, j+1, tt->get_timetable_element(i).time_at_station[j] + min_temp);
                 cout << "TIME TABLE non compatile: orari del treno " << tt->get_timetable_element(i).train_number << " modificati." << endl; 
             }
-            //cout << *tt << endl;
         }
-        //cout << endl << endl;
     }
-    
     if(mod) cout << "TIME TABLE AGGIORNATA:" << endl << *tt << endl;
-
 }
 
 int Railway::secondary_treats_length(int ind, bool fw) {
@@ -261,14 +241,6 @@ void Railway::remove_station(int i){
     cout << "This station was removed:\n" << *(stations[i]); 
     stations.erase(stations.begin() + i);
 }
-
-/*void Railway::add_station(Principal& st){
-    stations.push_back(unique_ptr<Principal> (&st));
-}
-
-void Railway::add_station(Secondary& st){
-    stations.push_back(unique_ptr<Secondary> (&st));
-}*/
 
 Station& Railway::get_beginning_station() const{
     return *(stations[0]);
