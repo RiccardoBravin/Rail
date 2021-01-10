@@ -24,8 +24,18 @@ int main() {
     } else if(tables[0].is_going()) {
         railways.push_back(Railway(line_description, &tables[0]));
     } else {
-        railways.push_back(Railway(line_description, &tables[0]));
-        railways[0].reverse(railways[0], &tables[0]);
+        /*TimeTable Ttemp;
+        Railway Rtemp = Railway(line_description, &Ttemp);
+        Railway bw = Railway();
+        bw.reverse(Rtemp, &tables[0]);
+        cout << bw << endl;
+        railways.push_back(bw);*/
+        TimeTable temp;
+        railways.push_back(Railway(line_description, &temp));
+        railways.push_back(Railway());
+        tables[0].set_as_going();
+        railways[1].reverse(railways[0], &tables[0]);
+        //railways.erase(railways.begin());
     }
 
     //for(int i=0; i<railways.size(); i++)  cout << railways[i] << endl << tables[i] << endl << endl;
@@ -35,7 +45,10 @@ int main() {
     for(int i=0; i<tables.size(); i++) {
         tables[i].adjust_timetable(railways[0].get_principal_count(), railways[0].get_station_count());
     }
-    for(int i=0; i<railways.size(); i++)  cout << railways[i] << endl << tables[i] << endl << endl;
+    railways.erase(railways.begin());
+    for(int i=0; i<railways.size(); i++)  cout << railways[i] << endl << *railways[i].get_timetable_reference() << endl << endl;
+
+    
 
     cout << "____________VERIFY_RAILWAY__________" << endl;
         railways[0].verify_railway();

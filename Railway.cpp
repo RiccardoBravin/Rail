@@ -150,17 +150,20 @@ void Railway::reverse (Railway& rw, TimeTable* tt) {
 
 void Railway::verify_railway(){
     int num_principal {0};
-    for(int i=0; i<get_station_count()-1; i++){
+    bool was_removed {false};
+    for(int i=0; i<get_station_count()-1; ){
+        
+        was_removed = false;
         bool is_principal = stations[i+1]->get_type() == Station::type::Principal;
-        bool was_removed {false};
+        
         if(is_principal) num_principal++;
         
         if(stations[i+1]->get_distance() - stations[i]->get_distance() <= MIN_STATION_DISTANCE) {
             cout << "stazioni troppo vicine. elimino\n";
-            //cout << "is principal? " << is_principal << endl;
             was_removed = true;
             remove_station(i+1);
             reference_to_TimeTable->delete_regionals_station_time(i+1);
+            
             if(has_reverse()){
                 cout << "has reverse" << endl;
                 reverse_railway->remove_station(get_station_count() - i - 1);
@@ -173,38 +176,42 @@ void Railway::verify_railway(){
                     reverse_railway->reference_to_TimeTable->delete_fast_superFast_station_time(reverse_railway->get_principal_count() - num_principal);
             }
         }
-        if(was_removed) i--;
+        if(!was_removed)i++;
     }   
 
+    cout << *reference_to_TimeTable << endl;
+
+    cout << "_____verify correct_timing____" << endl;
     verify_correct_timing(reference_to_TimeTable);    
     if(has_reverse())
-        verify_correct_timing(reverse_railway->reference_to_TimeTable); 
+        verify_correct_timing(reverse_railway->reference_to_TimeTable);
 }
 
 void Railway::verify_correct_timing(TimeTable* tt) {
+    cout << *tt << endl;
     constexpr int CROSS_STATION_TIME =  60 / 8;
     bool mod {false};
 
     for(int i=0; i<tt->get_timetable_size(); i++) {
-        //cout << "time_at_station.size() = " << tt->get_timetable_element(i).time_at_station.size() << endl;
+        cout << "i=" << i << " su " << tt->get_timetable_size() << endl;
         for(int j=0; j<tt->get_timetable_element(i).time_at_station.size() - 1; j++) {
-            //cout << " j = " << j << endl;
+            cout << " j = " << j << " su " << tt->get_timetable_element(i).time_at_station.size() <<  endl;
             int min_temp {0};
             if(tt->get_timetable_element(i).train_type == Train::type::Regional) {
-                min_temp = (int)((double)(secondary_treats_length(j, tt->is_going())) / Regional::MAXSPEED * 60.0 + 10.0);
+                min_temp = (int)((double)((secondary_treats_length(j, tt->is_going())) - 10 ) / Regional::MAXSPEED * 60.0 + 10.0 + CROSS_STATION_TIME);
             } else  if (tt->get_timetable_element(i).train_type == Train::type::HighSpeed){
-                min_temp = (int)((double)(principal_treats_length(j, tt->is_going())) / HighSpeed::MAXSPEED * 60.0 + 10.0);
+                min_temp = (int)((double)((principal_treats_length(j, tt->is_going())) - 10 ) / HighSpeed::MAXSPEED * 60.0 + 10.0 + CROSS_STATION_TIME);
+                cout << "fin qua" << endl;
             } else {
-                min_temp = (int)((double)(principal_treats_length(j, tt->is_going())) / SuperHighSpeed::MAXSPEED*  60.0 + 10.0);
+                min_temp = (int)((double)((principal_treats_length(j, tt->is_going())) - 10 ) / SuperHighSpeed::MAXSPEED*  60.0 + 10.0 + CROSS_STATION_TIME);
             }
+            
             if(min_temp > tt->get_timetable_element(i).time_at_station[j+1] - tt->get_timetable_element(i).time_at_station[j]) {
                 mod = true;
                 tt->modify_arrival_time(i, j+1, tt->get_timetable_element(i).time_at_station[j] + min_temp);
                 cout << "TIME TABLE non compatile: orari del treno " << tt->get_timetable_element(i).train_number << " modificati." << endl; 
             }
-            cout << *tt << endl;
         }
-        cout << endl << endl;
     }
     
     if(mod) cout << "TIME TABLE AGGIORNATA:" << endl << *tt << endl;
@@ -293,6 +300,17 @@ int Railway::get_principal_count() const {
         if(stations[i]->get_type() == 0)
             count ++;
     }
+    return count;
+}
+
+int Railway::principal_index(int this_pricipal_index) const {
+    int count {0};
+    int i {0};
+    do {
+        if(stations[i]->get_type() == Station::type::Principal)
+            count ++;
+        i++;
+    } while (i <= this_pricipal_index);
     return count;
 }
 

@@ -233,6 +233,10 @@ int TimeTable::get_timetable_size() const {
     return time_table.size();
 }
 
+void TimeTable::set_as_going() {
+    going_line = true;
+}
+
 
 std::ostream& operator<<(std::ostream& os, const TimeTable& tt) {
     for(int i=0; i<tt.get_timetable_size(); i++) {

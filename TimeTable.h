@@ -52,6 +52,8 @@ class TimeTable{
         int get_timetable_size() const;
 
         bool is_going() const { return going_line; }
+
+        void set_as_going();
         
 
     private:

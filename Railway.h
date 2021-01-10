@@ -64,6 +64,8 @@ class Railway {
 
         int get_principal_count() const;
 
+        int principal_index(int this_pricipal_index) const;
+
         bool has_reverse() {if(reverse_railway == nullptr) return false; else return true;}
 
         Railway* get_reverse_reference();
