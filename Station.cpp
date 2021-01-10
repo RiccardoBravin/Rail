@@ -99,10 +99,6 @@ int Station::get_count_in_stop_train() const
     return count;
 }
 
-int Station::get_stop_tracks() const
-{
-    return N_STOP_TRACK;
-}
 
 bool Station::can_add_train_to_stop() const
 {
@@ -110,29 +106,6 @@ bool Station::can_add_train_to_stop() const
         return true;
     else
         return false;
-}
-
-void Station::add_train_to_transit(Train* t)
-{
-    transit_tracks.push_back(t); 
-}
-
-int Station::get_count_in_transit_train() const
-{
-   return transit_tracks.size();
-}
-
-bool Station::can_add_train_to_transit() const
-{
-    if(get_count_in_transit_train() < N_TRANS_TRACK)
-        return true;
-    else
-        return false;
-}
-
-void Station::remove_train_from_transit()
-{
-    transit_tracks.pop_back();
 }
 
 
@@ -180,6 +153,29 @@ int Secondary::get_type() const{ return Station::Secondary;}
 int Secondary::get_transit_tracks() const
 {
     return N_TRANS_TRACK;
+}
+
+bool Secondary::can_add_train_to_transit() const
+{
+    if(get_count_in_transit_train() < N_TRANS_TRACK)
+        return true;
+    else
+        return false;
+}
+
+void Secondary::add_train_to_transit(Train* t)
+{
+    transit_tracks.push_back(t); 
+}
+
+int Secondary::get_count_in_transit_train() const
+{
+   return transit_tracks.size();
+}
+
+void Secondary::remove_train_from_transit()
+{
+    transit_tracks.pop_back();
 }
 
 
@@ -230,7 +226,15 @@ Principal& Principal::operator=(Principal&& stn)
 
 int Principal::get_type() const{ return Station::Principal;}
 
+int Principal::get_transit_tracks() const
+{
+    return N_TRANS_TRACK;
+}
 
+bool Principal::can_add_train_to_transit() const
+{
+        return false;
+}
 
 //*** Operator << ***//
 std::ostream& operator<<(std::ostream& os, const Station& stn)
