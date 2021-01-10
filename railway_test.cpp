@@ -38,14 +38,14 @@ int main() {
         //railways.erase(railways.begin());
     }
 
-    //for(int i=0; i<railways.size(); i++)  cout << railways[i] << endl << tables[i] << endl << endl;
+    for(int i=0; i<railways.size(); i++)  cout << railways[i] << endl << *railways[i].get_timetable_reference() << endl << endl;
 
     
     cout << "____________ADJUST_TIMETABLE__________" << endl;
     for(int i=0; i<tables.size(); i++) {
         tables[i].adjust_timetable(railways[0].get_principal_count(), railways[0].get_station_count());
     }
-    railways.erase(railways.begin());
+    
     for(int i=0; i<railways.size(); i++)  cout << railways[i] << endl << *railways[i].get_timetable_reference() << endl << endl;
 
     
@@ -54,10 +54,10 @@ int main() {
         railways[0].verify_railway();
     //for(int i=0; i<railways.size(); i++)  cout << railways[i] << endl << tables[i] << endl << endl;
     
-
+    railways.erase(railways.begin());
     
     cout << "_______RAILWAY & TIMETABLEs CORRETTE_______" << endl << endl;
-    for(int i=0; i<railways.size(); i++)  cout << railways[i] << endl << tables[i] << endl << endl;
+    for(int i=0; i<railways.size(); i++)  cout << railways[i] << endl << *railways[i].get_timetable_reference() << endl << endl;
 
     cout << "ho finito";
     return 0;

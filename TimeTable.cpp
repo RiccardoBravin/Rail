@@ -139,8 +139,11 @@ bool TimeTable::adjust_timetable(int number_principal_stations, int number_stati
     bool added {false};
     bool deleted {false};
     
-    
     for(int i=0; i<time_table.size(); i++) {
+        if(time_table[i].time_at_station[0] > 1440) {
+            time_table.erase(time_table.begin() + i);
+            if(i >= time_table.size()) break;
+        }
         if(time_table[i].train_type == Train::type::Regional) {
             if(time_table[i].time_at_station.size() > number_stations){
                 time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + number_stations, time_table[i].time_at_station.end());
