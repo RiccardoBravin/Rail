@@ -201,7 +201,10 @@ class Principal : public Station {
         ~Principal() { }
            
         int get_type() const override;
+        int get_count_in_transit_train() const override;
         bool can_add_train_to_transit() const override ;
+        void add_train_to_transit(Train* t) override;
+        void remove_train_from_transit() override;
         int get_transit_tracks() const;
         
     private:

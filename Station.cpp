@@ -165,7 +165,8 @@ bool Secondary::can_add_train_to_transit() const
 
 void Secondary::add_train_to_transit(Train* t)
 {
-    transit_tracks.push_back(t); 
+    if(can_add_train_to_transit())
+        transit_tracks.push_back(t);         
 }
 
 int Secondary::get_count_in_transit_train() const
@@ -234,6 +235,22 @@ int Principal::get_transit_tracks() const
 bool Principal::can_add_train_to_transit() const
 {
         return false;
+}
+
+void Principal::add_train_to_transit(Train* t)
+{
+    if(can_add_train_to_transit())
+        transit_tracks.push_back(t);         
+}
+
+int Principal::get_count_in_transit_train() const
+{
+   return transit_tracks.size();
+}
+
+void Principal::remove_train_from_transit()
+{
+    transit_tracks.pop_back();
 }
 
 //*** Operator << ***//
