@@ -176,7 +176,10 @@ int Secondary::get_count_in_transit_train() const
 
 void Secondary::remove_train_from_transit()
 {
-    transit_tracks.pop_back();
+    if(!transit_tracks.empty())
+        transit_tracks.pop_back();
+    else
+        cout << "Empty" << endl;  
 }
 
 
@@ -250,7 +253,10 @@ int Principal::get_count_in_transit_train() const
 
 void Principal::remove_train_from_transit()
 {
-    transit_tracks.pop_back();
+    if(!transit_tracks.empty())
+        transit_tracks.pop_back();
+    else
+        cout << "Empty" << endl;  
 }
 
 //*** Operator << ***//
