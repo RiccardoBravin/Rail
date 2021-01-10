@@ -31,6 +31,15 @@ int Station::get_count_parking_train() const
     return parking.size();
 }
 
+bool Station::train_in_park(Train* t) const
+{
+    auto iter = find(parking.begin(), parking.end(), t);
+    if(iter != parking.end())
+        return true;
+    else
+        return false;
+}
+
 void Station::remove_train_from_park(Train* t)
 {
      parking.erase(find(parking.begin(), parking.end(), t));
@@ -39,6 +48,11 @@ void Station::remove_train_from_park(Train* t)
 vector<Train*> Station::get_stop_train() const
 {
     return stop_tracks;
+}
+
+int Station::get_stop_tracks() const
+{
+    return N_STOP_TRACK;
 }
 
 bool Station::add_train_to_stop(Train* t)
@@ -176,8 +190,8 @@ int Secondary::get_count_in_transit_train() const
 
 void Secondary::remove_train_from_transit()
 {
-    if(!transit_tracks.empty())
-        transit_tracks.pop_back();
+        if(!transit_tracks.empty())
+            transit_tracks.pop_back();
     else
         cout << "Empty" << endl;  
 }

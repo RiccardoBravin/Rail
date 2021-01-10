@@ -69,6 +69,14 @@ class Station {
         int get_count_parking_train() const;
 
         /**
+         * @brief Asks if the train is in the park
+         * 
+         * @return true 
+         * @return false 
+         */
+        bool train_in_park(Train* ) const;
+
+        /**
          * @brief Remove one train from the parking
          * 
          * @param t  - use vector parking
