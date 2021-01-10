@@ -157,7 +157,7 @@ void Simulation::exit_station(){//se un treno sta uscendo dalla stazione allora 
                 if(trains[k][j]->prev_distance() < railway[k].get_station(i).get_distance() + 5 && trains[k][j]->get_distance() >= railway[k].get_station(i).get_distance() + 5){
                     if(railway[k].get_station(i).remove_train_to_stop(trains[k][j].get())){
                         trains[k][j]->set_speed(300);
-                        cout << "Il treno numero " << trains[k][j]->get_number() << " e' uscito dalla\n" << railway[k].get_station(i) << endl;
+                        cout << "Il treno numero " << trains[k][j]->get_number() << " e' uscito dalla\n" << railway[k].get_station(i). << endl;
                         cout << *trains[k][j] << endl;
                     }else{
                         //railway[k].get_station(i).remove_train_to_transit(trains[k][i].get())
@@ -170,6 +170,7 @@ void Simulation::exit_station(){//se un treno sta uscendo dalla stazione allora 
 }
 
 
+//una volta fatta la funzione addtraintopark di simulation posso sostiuire un bel po di codice
 void Simulation::in_station(){
     for(int k = 0; k < RAILWAYS; k++){
         for(int i = 0; i < trains[k].size(); i++){//per ogni treno
@@ -189,6 +190,7 @@ void Simulation::in_station(){
                         }else if(delay >= 0 && railway[k].get_station(j).get_count_in_stop_train() == railway[k].get_station(j).get_stop_tracks() - 1){ //se non sei in anticipo e hai solo una banchina libera
                             
                             if(trains[k][i]->get_type() == Train::Regional || trains[k][i]->get_type() == Train::HighSpeed){ //se il treno è reg o hs e sta rallentando un treno 
+                                
                                 if(false /*treno in culo*/){//va nel parcheggio
                                     railway[k].get_station(j).add_train_to_park(trains[k][i].get());
                                     trains[k][i]->park(railway[k].get_station(j).get_distance());
@@ -209,7 +211,9 @@ void Simulation::in_station(){
                             }
 
                         }else if(delay >= 0 && railway[k].get_station(j).get_count_in_stop_train() == railway[k].get_station(j).get_stop_tracks() - 2){ //se non sei in ancicipo e hai almeno due banchine libere
+                            
                             if(trains[k][i]->get_type() == Train::Regional){ //se il treno è regionale e sta rallentando un treno che ne rallenta un altro
+                                
                                 if(false/*treno in culo con treno in culo*/){//DA FIXARRRRRREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
                                     railway[k].get_station(j).add_train_to_park(trains[k][i].get());
                                     trains[k][i]->park(railway[k].get_station(j).get_distance());
@@ -221,13 +225,16 @@ void Simulation::in_station(){
                                     cout << "Il treno numero " << trains[k][i]->get_number() << " e' entrato nell'area della\n" << railway[k].get_station(j) << endl;
                                     cout << *trains[k][i] << endl;
                                 }
+
                             }else{
                                 railway[k].get_station(j).add_train_to_stop(trains[k][i].get());
                                 trains[k][i]->set_speed(80);
                                 cout << "Il treno numero " << trains[k][i]->get_number() << " e' entrato nell'area della\n" << railway[k].get_station(j) << endl;
                                 cout << *trains[k][i] << endl;
                             }
-                        }else{//se non ci sono banchine parhcheggia senno entra
+
+                        }else{//se non ci sono banchine parcheggia sennò entra
+                            
                             if(railway[k].get_station(j).add_train_to_stop(trains[k][i].get())){
                                 trains[k][i]->set_speed(80);
                                 cout << "Il treno numero " << trains[k][i]->get_number() << " e' entrato nell'area della\n" << railway[k].get_station(j) << endl;
@@ -238,38 +245,50 @@ void Simulation::in_station(){
                                 cout << "Il treno numero " << trains[k][i]->get_number() << " e' entrato nel parcheggio della\n" << railway[k].get_station(j) << endl;
                                 cout << *trains[k][i] << endl;
                             }
+
                         }
 
                     }else if(railway[k].get_station(j).get_type() == Station::Secondary){
-
-                        /*cout << *trains[k][i] << endl;
-                        cout << railway[k].get_station(j).get_count_in_stop_train() << endl;
                         
-                        trains[k][i]->set_speed(80);
-                        railway[k].get_station(j).add_train_to_stop(trains[k][i].get());*/
+                        if(trains[k][i]->get_type() == Train::Regional){
+                            
+                            if(railway[k].get_station(j).add_train_to_stop(trains[k][i].get())){
+                                trains[k][i]->set_speed(80);
+                                cout << "Il treno numero " << trains[k][i]->get_number() << " e' entrato nell'area della\n" << railway[k].get_station(j) << endl;
+                                cout << *trains[k][i] << endl;
+                            }else{
+                                railway[k].get_station(j).add_train_to_park(trains[k][i].get());
+                                trains[k][i]->park(railway[k].get_station(j).get_distance());
+                                cout << "Il treno numero " << trains[k][i]->get_number() << " e' entrato nel parcheggio della\n" << railway[k].get_station(j) << endl;
+                                cout << *trains[k][i] << endl;
+                            }
+
+                        }else if(trains[k][i]->get_type() == Train::HighSpeed){
+                            if(true/*can add train to transit*/){
+                                if(false /*treno in culo di tier piu alto e funzione magica che decide chi passa prima dice che posso andare*/){
+                                    //railway[k].get_station(j).add_train_to_transit(trains[k][i].get())
+                                }else{
+                                    railway[k].get_station(j).add_train_to_park(trains[k][i].get());
+                                    trains[k][i]->park(railway[k].get_station(j).get_distance());
+                                    cout << "Il treno numero " << trains[k][i]->get_number() << " e' entrato nel parcheggio della\n" << railway[k].get_station(j) << endl;
+                                    cout << *trains[k][i] << endl;
+                                }
+                            }
+                        }else if(trains[k][i]->get_type() == Train::SuperHighSpeed){
+                            //if(can add_train to transit)
+                            //railway[k].get_station(j).add_train_to_transit(trains[k][i].get())
+                            cout << "Il treno numero " << trains[k][i]->get_number() << " sta transitando nella\n" << railway[k].get_station(j) << endl;
+                            cout << *trains[k][i] << endl;
+                            //else mettilo nel parcheggio
+                        }
+
                     }
 
-
-                    if(trains[k][i]->get_type() == Train::Regional){
-
-                    }else if(trains[k][i]->get_type() == Train::HighSpeed){
-
-                    }else if(trains[k][i]->get_type() == Train::SuperHighSpeed){
-
-                    }
-            
             }
-
 
         }
 
-
     }
-}
-
-int Simulation::calc_delay(int k, int tr_index, int rw_index){
-    //timetable[k].search_timetable_element(trains[k][tr_index]->get_number()).time_at_station[];
-    return 0;
 }
 
 
@@ -277,8 +296,17 @@ int Simulation::calc_delay(int k, int tr_index, int rw_index){
 //se la stazione è principale e il treno che sto guardando ha un treno in culo mettilo se c'è solo una banchina libera
 //mettilo nel parcheggio altrimenti se è un regionale con due treni in culo mettilo nel parcheggio, altrimenti metti in una banchina
 //se la stazione è secondaria e il treno in analisi è Regionale se ho almeno una banchina libera va altrimenti nel parcheggio,
-//se il treno non è un hs che ha un shs dietro e c'è solo una banchina libera allora decidi con la funzione se parcheggiarlo o farlo andare
+//se il treno è un hs che ha un shs dietro e c'è solo una banchina libera allora decidi con la funzione se parcheggiarlo o farlo andare
 //in tutti gli altri casi fai passare il treno
+
+
+
+int Simulation::calc_delay(int k, int tr_index, int rw_index){
+    //timetable[k].search_timetable_element(trains[k][tr_index]->get_number()).time_at_station[];
+    return 0;
+}
+
+
 
 
 void Simulation::stop_trains(){
@@ -306,6 +334,51 @@ void Simulation::stop_trains(){
         }
 
     }
+}
+
+
+//mette il treno nel parcheggio della stazione
+void Simulation::park_train(Station& st, Train* tr){
+    st.add_train_to_park(tr);
+    tr->park(st.get_distance());
+    cout << "Il treno numero " << tr->get_number() << " e' entrato nel parcheggio della\n" << st << endl;
+    cout << *tr << endl;
+}
+        
+void Simulation::leave_park(Station& st, Train* tr){
+    st.remove_train_from_park(tr);
+    tr->set_speed(80);
+    cout << "Il treno numero " << tr->get_number() << " e' uscito dal parcheggio della\n" << st << endl;
+    cout << *tr << endl;
+}
+
+//rimuove un treno dal parcheggio della stazione
+
+void Simulation::add_train_transit(Station& st, Train* tr){
+    //railway[k].get_station(j).add_train_to_transit(tr)
+    cout << "Il treno numero " << tr->get_number() << " sta transitando nella\n" << st << endl;
+    cout << *tr << endl;
+}
+        
+//toglie il treno dal binario di transito
+void Simulation::remove_train_transit(Station& st, Train* tr){
+    //railway[k].get_station(j).remove_train_to_transit(tr)
+    cout << "Il treno numero " << tr->get_number() << " e' uscito dal binario di transito della\n" << st << endl;
+    cout << *tr << endl;
+}
+//mette il treno nella banchina libera
+void Simulation::entering_station_area(Station& st, Train* tr){
+    st.add_train_to_stop(tr);
+    tr->set_speed(80);
+    cout << "Il treno numero " << tr->get_number() << " e' entrato nell'area della\n" << st << endl;
+    cout << *tr << endl;
+}
+//toglie il treno dalla banchina
+void Simulation::exiting_station_area(Station& st, Train* tr){
+    st.remove_train_to_stop(tr);
+    tr->set_speed(1000);
+    cout << "Il treno numero " << tr->get_number() << " sta uscendo dall'area della\n" << st << endl;
+    cout << *tr << endl;
 }
 
 

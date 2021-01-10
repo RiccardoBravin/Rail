@@ -122,13 +122,33 @@ class Station {
          */
         int get_stop_tracks() const;
 
+        /**
+         * @brief Get the count in stop transit
+         * 
+         * @return int 
+         */
+        virtual int get_count_in_transit_train() const = 0;
 
+        /**
+         * @brief 
+         * 
+         * @param t 
+         */
+        virtual void add_train_to_transit(Train* t) = 0;
+
+        /**
+         * @brief Asks if can add a train on the stop transit
+         * 
+         * @return true 
+         * @return false 
+         */
+        virtual bool can_add_train_to_transit() const = 0;
 
         /**
          * @brief Remove train from transit track
          * 
          */
-        void remove_train_from_transit();
+        virtual void remove_train_from_transit() = 0;
 
         /**
          * @brief Destroy the Station object
@@ -160,13 +180,14 @@ class Secondary : public Station {
         ~Secondary() { }
 
         int get_type() const override;
-        void add_train_to_transit(Train* t);
-        void remove_train_to_transit();
+        int get_count_in_transit_train() const override;
+        bool can_add_train_to_transit() const override ;
+        void add_train_to_transit(Train* t) override;
+        void remove_train_from_transit() override;
         int get_transit_tracks() const;
-        int get_stop_tracks() const;
 
     private: 
-        static constexpr int N_TRANS_TRACK = 1;
+    static constexpr int N_TRANS_TRACK = 1;    
 };
 
 class Principal : public Station {
@@ -180,8 +201,8 @@ class Principal : public Station {
         ~Principal() { }
            
         int get_type() const override;
+        bool can_add_train_to_transit() const override ;
         int get_transit_tracks() const;
-        int get_stop_tracks() const;
         
     private:
     static constexpr int N_TRANS_TRACK = 0;
