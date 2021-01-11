@@ -53,3 +53,23 @@ void Simulation::notice_20_km_mark() {
         }
     }
 }
+
+void Simulation::ending_station() {
+    for(int i=0; i<trains.size(); i++){                                     
+        for(int j=0; j<trains[i].size(); j++){
+            if(trains[i][j]->get_distance() > railway[i].get_terminal_station().get_distance() + 5){
+                trains[i].erase(trains[i].begin() + j);
+                trains_at_terminal++;
+            }
+        }
+    }
+}
+
+bool Simulation::end_simulation(){
+    for(int i=0; i<timetable.size(); i++){
+        if(trains_at_terminal < timetable[i].get_timetable_size())
+            return false;
+    }
+
+    return true;
+}
