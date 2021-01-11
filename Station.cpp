@@ -60,16 +60,10 @@ bool Station::add_train_to_stop(Train* t)
     if(can_add_train_to_stop())
     {   
         vector<Train*>::iterator iter = find(stop_tracks.begin(), stop_tracks.end(), nullptr);
-        //int index = std::distance(stop_tracks.begin(), iter );
-        //if(iter == stop_tracks.end()) 
-        //{
-            cout<<"FORSE va"<< endl;
-        //}
         stop_tracks.insert(iter,t); 
         return 1;
     }
     else{
-        cout << "Sono full" << endl; 
         return 0;
     }
     
@@ -106,7 +100,8 @@ bool Station::remove_train_to_stop(Train* t)
 int Station::get_count_in_stop_train() const
 {
     int count = 0;
-    for(int i =0; i < stop_tracks.size();  i++){
+    for(int i =0; i < stop_tracks.size();  i++)
+    {
         if(stop_tracks[i] != nullptr)
             count++;
     }
@@ -268,27 +263,30 @@ int Principal::get_count_in_transit_train() const
 void Principal::remove_train_from_transit()
 {
     if(!transit_tracks.empty())
-        transit_tracks.pop_back();
-    else
-        cout << "Empty" << endl;  
+        transit_tracks.pop_back();  
 }
 
 //*** Operator << ***//
 std::ostream& operator<<(std::ostream& os, const Station& stn)
 {
     os << "Stazione ";
-    if(stn.get_type() == 0){
+    if(stn.get_type() == Station::Principal)
+    {
         os << "Principale";
     }
-    else if(stn.get_type() == 1){
+    else if(stn.get_type() == Station::Secondary)
+    {
         os << "Locale";
     }
     os << " di: " << stn.get_name();
     os << " distanza: " << stn.get_distance() << " km " << endl;
     os << "ci sono: " << stn.get_count_parking_train() << " treni in sosta nel parcheggio " << endl;
-    os << "ci sono: " << stn.get_count_in_stop_train() << " binari di fermata occupati " << endl;
-    
-    os << "ci sono: " << stn.get_count_in_transit_train() << " binari di transito occupati " << endl;
+    os << "ci sono: " << stn.get_count_in_stop_train() << " binari su 2 occupati " << endl;
+    if(stn.get_type() == Station::Secondary)
+    {
+        os << "ci sono: " << stn.get_count_in_transit_train() << " in transito " << endl;
+    }
+
     return os;
 }
 
