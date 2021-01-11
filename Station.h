@@ -69,6 +69,14 @@ class Station {
         int get_count_parking_train() const;
 
         /**
+         * @brief Asks if the train is in the park
+         * 
+         * @return true 
+         * @return false 
+         */
+        bool train_in_park(Train* ) const;
+
+        /**
          * @brief Remove one train from the parking
          * 
          * @param t  - use vector parking
@@ -112,8 +120,7 @@ class Station {
          * 
          * @return int 
          */
-        int get_count_in_stop_train() const;
- 
+        int get_count_in_stop_train() const; 
 
         /**
          * @brief Get the stop tracks object
@@ -130,7 +137,7 @@ class Station {
         virtual int get_count_in_transit_train() const = 0;
 
         /**
-         * @brief 
+         * @brief Add train to transit track
          * 
          * @param t 
          */
@@ -156,6 +163,8 @@ class Station {
          */
         virtual ~Station(){};
 
+        static constexpr int N_STOP_TRACK = 2;
+
     protected:
         Station() {};
         std::string name; 
@@ -163,8 +172,7 @@ class Station {
         std::vector<Train*> parking;     
         std::vector<Train*> transit_tracks;
         std::vector<Train*> stop_tracks;
-        static constexpr int N_STOP_TRACK = 2;
-
+        
     private:
        
 };
@@ -185,9 +193,11 @@ class Secondary : public Station {
         void add_train_to_transit(Train* t) override;
         void remove_train_from_transit() override;
         int get_transit_tracks() const;
+        
 
     private: 
-    static constexpr int N_TRANS_TRACK = 1;    
+    static constexpr int N_TRANS_TRACK = 1; 
+      
 };
 
 class Principal : public Station {

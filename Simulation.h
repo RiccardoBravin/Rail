@@ -25,7 +25,7 @@ class Simulation {
         
         
 
-        int calc_delay(int k, int tr_index, int rw_index);
+        int calc_delay(int k, int tr_index, int st_index);
 
 
         void start_trains(); //takes the timetable and cycles throught it to view if it has to create a train to start simulating it
@@ -41,7 +41,7 @@ class Simulation {
 
         void check_distance();//controlla ed eventualmente sistema tutti i problemi con le distanze e velocità fra tutti i treni 
         
-        bool entering_station(Train* tr);//return true if the specified train is going to enter the station area the next step
+        //bool entering_station(Train* tr);//return true if the specified train is going to enter the station area the next step
 
 
         void exit_station();//se un treno sta uscendo dalla stazione allora va alla velocità massima
@@ -65,10 +65,12 @@ class Simulation {
         //se ho esattamente una banchina libera prendo il treno con il maggior ritardo e di tier piu alto e se la funzione magica dice 
         //che può passare entra nella banchina altrimenti stanno tutti li. se hai due banchine libere manda il treno più "figo"
 
-        bool should_this_parked_train_go(Train*a, Train* b); //il primo treno è quello nel parcheggio, il secondo è il treno che lo precede
+        int best_train_in_park(int k, int st_index); //il primo treno è quello nel parcheggio, il secondo è il treno che lo precede
         //se non c'è un treno nella tratta precedente passa comunque
 
-        Train* get_previous_train(std::unique_ptr<Train>* tr); //ritorna il puntatore al treno precedente
+        int best_regional_in_park(int k , int st_index);
+
+        int prev_train_index(int k, int tr_index); //ritorna il puntatore al treno precedente
 
 
         void stop_trains();//stops the train that need to unload passangers
