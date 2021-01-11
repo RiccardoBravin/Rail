@@ -65,8 +65,10 @@ class Simulation {
         //se ho esattamente una banchina libera prendo il treno con il maggior ritardo e di tier piu alto e se la funzione magica dice 
         //che può passare entra nella banchina altrimenti stanno tutti li. se hai due banchine libere manda il treno più "figo"
 
-        bool should_this_parked_train_go(Train*a, Train* b); //il primo treno è quello nel parcheggio, il secondo è il treno che lo precede
+        int best_train_in_park(int k, int st_index); //il primo treno è quello nel parcheggio, il secondo è il treno che lo precede
         //se non c'è un treno nella tratta precedente passa comunque
+
+        int best_regional_in_park(int k , int st_index);
 
         int prev_train_index(int k, int tr_index); //ritorna il puntatore al treno precedente
 
