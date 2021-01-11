@@ -5,58 +5,84 @@
 #include <algorithm>
 #include <memory>
 #include <iostream>
+#include <exception>
 
 
 using namespace std;
 
 
 Simulation::Simulation(string line_description_file, string timetables_file){
-    try{
-        timetable = split_timeTable(timetables_file);
-    }catch(runtime_error e){cout << e.what();}
     
-    for(int i = 0; i < RAILWAYS; i = i+2){
-        railway.push_back(Railway(line_description_file, &timetable[i]));
-        Railway bw;
-        bw.reverse(railway.back(), &timetable[i+1]);
-        railway.push_back(bw);
-        
-        timetable[i].adjust_timetable(railway[i].get_principal_count(), railway[i].get_station_count());
-        timetable[i+1].adjust_timetable(railway[i+1].get_principal_count(), railway[i+1].get_station_count());
+    bool cancel {false};
 
-        railway[i].verify_railway();
+    timetable = split_timeTable(timetables_file);
 
-        cout << railway[i] << endl << timetable[i] << endl;
-        cout << railway[i+1] << endl << timetable[i+1] << endl;
+    if(timetable.size() == 2) {
+    railway.push_back(Railway(line_description_file, &timetable[0]));
+    railway.push_back(Railway());
+    railway[1].reverse(railway[0], &timetable[1]);
+    } else if(timetable[0].is_going()) {
+        railway.push_back(Railway(line_description_file, &timetable[0]));
+    } else {
+
+        TimeTable temp;
+        railway.push_back(Railway(line_description_file, &temp));
+        railway.push_back(Railway());
+        timetable[0].set_as_going();
+        railway[1].reverse(railway[0], &timetable[0]);
+        cancel = true;
     }
+
+    cout << "____________ADJUST_TIMETABLE__________" << endl;
+    for(int i=0; i<timetable.size(); i++) {
+        timetable[i].adjust_timetable(railway[0].get_principal_count(), railway[0].get_station_count());
+    }
+
+    cout << "____________VERIFY_RAILWAY__________" << endl;
+    railway[0].verify_railway();
+    if(cancel){
+        railway.erase(railway.begin());
+    }
+
+    cout << "_______RAILWAY & TIMETABLEs CORRETTE_______" << endl << endl;
+    for(int i=0; i<railway.size(); i++)  cout << railway[i] << endl << *railway[i].get_timetable_reference() << endl << endl;
+    
+    
+        RAILWAYS = railway.size();
+    
+    for(int i = 0; i < railway.size(); i++){
+        trains.push_back(std::vector<std::unique_ptr<Train>> ());
+    }
+
     
     
 }
 
-bool Simulation::simulate(){
+void Simulation::simulate(){
     while(current_time < 100){
         cout << "~~~~~~      " << current_time << "      ~~~~~~\n";
+        
         start_trains();
         
-        
-        
         exit_station();
+        
+        in_station();
+        sort_trains();
+        
+        parked_trains();
+
         check_distance();
         
-        //parked_trains();
-
-        in_station();
-
         stop_trains();
+        
         step();
 
-        //sort_train();
         //cout << railway[0];
 
         current_time++;
         cout << endl;
     };
-    return true;
+
 }
 
 
@@ -102,7 +128,7 @@ void Simulation::start_trains(){
         //partenza dalle stazioni intermedie
         for(int i = 0; i < railway[k].get_station_count(); i++){
             for(unique_ptr<Train> &t : trains[k]){
-                if(t->can_start() && free_to_start(&railway[k].get_station(i), k) && !t->running() && best_train_in_station(&railway[k].get_station(i), t.get())){
+                if(t->can_start() && free_to_start(&railway[k].get_station(i), k) && !t->running() && !t->parked() && best_train_in_station(&railway[k].get_station(i), t.get())){
                     t->set_speed(80);
                     cout << "Il treno numero " << t->get_number() << " e' in partenza dalla\n" << railway[k].get_station(i) << endl;
                     cout << *t << endl;
@@ -139,7 +165,7 @@ bool Simulation::best_train_in_station(Station* st, Train* t){
 bool Simulation::free_to_start(Station* st,  int trains_index) const{  //non MANCA IL CONTROLLO A SECONDA DELLA STAZIONE PER VERIFICARE CHE IL BINARIO DI TRANSITO SIA LIBBERO
      
     for(int i = 0; i < trains[trains_index].size(); i++){
-        if(!trains[trains_index][i]->stationary())
+        if(!trains[trains_index][i]->stationary() && !trains[trains_index][i]->parked())
             if(st->get_distance() < trains[trains_index][i]->get_distance() && st->get_distance() + 10 > trains[trains_index][i]->get_distance()){
                 return false;
             }
@@ -170,7 +196,7 @@ void Simulation::exit_station(){//se un treno sta uscendo dalla stazione allora 
                         exiting_station_area(railway[k].get_station(i), trains[k][j].get());
                         
                     }else{//altrimenti è nel transito e quindi lo rimuovo da li
-                        //railway[k].get_station(i).remove_train_to_transit(trains[k][i].get())
+                        remove_train_transit(railway[k].get_station(i), trains[k][j].get());
                     }
 
                 }
@@ -247,8 +273,11 @@ void Simulation::in_station(){
                     }else if(railway[k].get_station(j).get_type() == Station::Secondary){
                         
                         if(trains[k][i]->get_type() == Train::Regional){
-                            
-                            if(railway[k].get_station(j).can_add_train_to_stop()){
+                            int delay = calc_delay(k, i, j);
+                            trains[k][i]->set_delay(delay);
+                            if(delay < 0){
+                                park_train(railway[k].get_station(j), trains[k][i].get());
+                            }else if(railway[k].get_station(j).can_add_train_to_stop()){
                                 entering_station_area(railway[k].get_station(j), trains[k][i].get());
                                 
                             }else{
@@ -309,9 +338,9 @@ int Simulation::calc_delay(int k, int tr_index, int st_index){
     if(trains[k][tr_index]->get_type() == Train::Regional)
         time_of_arrival = timetable[k].search_timetable_element(trains[k][tr_index]->get_number()).time_at_station[st_index];
     else
-        time_of_arrival = timetable[k].search_timetable_element(trains[k][tr_index]->get_number()).time_at_station[railway[k].principal_index(st_index) - 1];
-    //occhio al meno uno qui sopra che elia dobrebbe averlo corretto
-    return current_time - time_of_arrival + 4;
+        time_of_arrival = timetable[k].search_timetable_element(trains[k][tr_index]->get_number()).time_at_station[railway[k].principal_index(st_index)];
+    //occhio almeno uno qui sopra che elia dobrebbe averlo corretto
+    return current_time - time_of_arrival + 3;
 }
 
 void Simulation::check_distance(){
@@ -329,13 +358,7 @@ void Simulation::check_distance(){
 
             if(!found){
                 trains[k][i]->set_speed(1000);
-            }
-        }
-        //se un treno ha un treno che gli sta attaccato
-        //ciclo al contrario per non incorrere in casi particolari
-        for(int i = trains[k].size() - 1; i >= 0; i--){
-            
-            if(!trains[k][i]->parked()){
+                
                 int prev_index = prev_train_index(k, i);
                 if(prev_index != -1){
                     if(trains[k][prev_index]->get_distance() >= trains[k][i]->get_distance() - 10){
@@ -346,6 +369,7 @@ void Simulation::check_distance(){
                 }
             }
         }
+
     }
 }
 
@@ -366,50 +390,67 @@ int Simulation::prev_train_index(int k, int tr_index){
     return -1;
 } 
 
+bool Simulation::smart_train_function(int k, int tr_index, int st_index){
+    int prev_train = prev_train_index(k, tr_index);
+    if(prev_train == -1)
+        return true;
+    if(st_index != 0 && trains[k][prev_train]->get_distance() /*il treno che mi sta dietro è nella stessa tratta in cui sono io*/){
+
+    }
+
+}
+
 
 void Simulation::parked_trains(){
     for(int k = 0; k < RAILWAYS; k++){
         for(int j = 0; j < railway[k].get_station_count(); j++){
-            int best_train_index = best_train_in_park(k, j);
-            //se la stazione è principale allora tutti i treni potendo andranno sulla banchina
-            if(railway[k].get_station(j).get_type() == Station::Principal){
-                //se il ritardo è negativo o le banchine sono piene non faccio nulla
-                if(railway[k].get_station(j).can_add_train_to_stop() && trains[k][best_train_index]->get_delay() >= 0 ){
-                    //se hai una sola banchina libera allora controlla di non avere treni in arrivo 
-                    if(railway[k].get_station(j).get_count_in_stop_train() == railway[k].get_station(j).get_stop_tracks() - 1){ //se hai una sola banchina libera
-                        
-                        if(true/*ho un treno in culo e funzione magica che decide chi passa prima dice che posso andare*/){
+            
+            if(railway[k].get_station(j).get_count_parking_train() != 0){
+        
+                //se la stazione è principale allora tutti i treni potendo andranno sulla banchina
+                if(railway[k].get_station(j).get_type() == Station::Principal){
+                    int best_train_index = best_train_in_park(k, j);
+                    
+
+                    //se il ritardo è negativo o le banchine sono piene non faccio nulla
+                    if(railway[k].get_station(j).can_add_train_to_stop() && trains[k][best_train_index]->get_delay() >= 0 ){
+                        //se hai una sola banchina libera allora controlla di non avere treni in arrivo 
+                        if(railway[k].get_station(j).get_count_in_stop_train() == railway[k].get_station(j).get_stop_tracks() - 1){ //se hai una sola banchina libera
+
+                            if(true/*ho un treno in culo e funzione magica che decide chi passa prima dice che posso andare*/){
+                                leave_park(railway[k].get_station(j), trains[k][best_train_index].get());
+                                entering_station_area(railway[k].get_station(j), trains[k][best_train_index].get());
+                            }//altrimenti il treno rimane nel parcheggio
+                        //se ho due banchine libere il treno di tier piu alto può entrare in stazione
+                        }else if(railway[k].get_station(j).get_count_in_stop_train() == railway[k].get_station(j).get_stop_tracks() - 2){//se hai due banchine libere
                             leave_park(railway[k].get_station(j), trains[k][best_train_index].get());
                             entering_station_area(railway[k].get_station(j), trains[k][best_train_index].get());
-                        }//altrimenti il treno rimane nel parcheggio
-                    //se ho due banchine libere il treno di tier piu alto può entrare in stazione
-                    }else if(railway[k].get_station(j).get_count_in_stop_train() == railway[k].get_station(j).get_stop_tracks() - 2){//se hai due banchine libere
-                        leave_park(railway[k].get_station(j), trains[k][best_train_index].get());
-                        entering_station_area(railway[k].get_station(j), trains[k][best_train_index].get());
-                    }
-                }
-            //se la stazione è secondaria allora devo effettuare controlli sul tipo di treno
-            }else if(railway[k].get_station(j).get_type() == Station::Secondary){//nelle stazioni secondarie devo diversificare a seconda del tipo di treno
-                //se posso aggiungere un treno alla banchina ne cerco uno che ci possa andare e lo mando 
-                if(railway[k].get_station(j).can_add_train_to_stop()){
-                    int best_regional_index = best_regional_in_park(k, j);
-                    if(best_regional_index != -1 && trains[k][best_regional_index]->get_delay() >= 0){
-                        leave_park(railway[k].get_station(j), trains[k][best_regional_index].get());
-                        entering_station_area(railway[k].get_station(j), trains[k][best_regional_index].get());
-                    }
-                }
-                //se il treno non è un regionale devo metterlo nel binario di transito
-                if(trains[k][best_train_index]->get_type() != Train::Regional){
-                    if(railway[k].get_station(j).can_add_train_to_transit()){
-                        if(true /*funzione magica che decide chi passa prima dice che posso andare*/){
-                            leave_park(railway[k].get_station(j), trains[k][best_train_index].get());
-                            trains[k][best_train_index]->set_speed(1000);
-                            add_train_transit(railway[k].get_station(j), trains[k][best_train_index].get());
                         }
+                    }
+                //se la stazione è secondaria allora devo effettuare controlli sul tipo di treno
+                }else if(railway[k].get_station(j).get_type() == Station::Secondary){//nelle stazioni secondarie devo diversificare a seconda del tipo di treno
+                    //se posso aggiungere un treno alla banchina ne cerco uno che ci possa andare e lo mando 
+                    if(railway[k].get_station(j).can_add_train_to_stop()){
+                        int best_regional_index = best_regional_in_park(k, j);
+                        if(best_regional_index != -1 && trains[k][best_regional_index]->get_delay() >= 0){
+                            leave_park(railway[k].get_station(j), trains[k][best_regional_index].get());
+                            entering_station_area(railway[k].get_station(j), trains[k][best_regional_index].get());
+                        }
+                    }
+                    int best_train_index = best_train_in_park(k, j);
+                    //se il treno non è un regionale devo metterlo nel binario di transito
+                    if(best_train_index != -1 && trains[k][best_train_index]->get_type() != Train::Regional){
+                        if(railway[k].get_station(j).can_add_train_to_transit()){
+                            if(true /*funzione magica che decide chi passa prima dice che posso andare*/){
+                                leave_park(railway[k].get_station(j), trains[k][best_train_index].get());
+                                trains[k][best_train_index]->set_speed(1000);
+                                add_train_transit(railway[k].get_station(j), trains[k][best_train_index].get());
+                            }
+                        }
+
                     }
 
                 }
-                
             }
         }
     }
@@ -417,16 +458,16 @@ void Simulation::parked_trains(){
         //se ho esattamente una banchina libera prendo il treno con il maggior ritardo e di tier piu alto e se la funzione magica dice 
         //che può passare entra nella banchina altrimenti stanno tutti li. se hai due banchine libere manda il treno più "figo"
 
-
-
 int Simulation::best_train_in_park(int k, int st_index){//ritorna il miglior treno per quella stazione
     
     vector<Train*> aux = railway[k].get_station(st_index).get_parking_train();
-
-    Train* tr = aux[0];
     
-    for(int i = 1; i < aux.size(); i++){
-        if(aux[i]->get_type() > tr->get_type()){
+    Train* tr = {nullptr};
+    
+    for(int i = 0; i < aux.size(); i++){
+        if(tr == nullptr){
+            tr = aux[i];
+        }else if(aux[i]->get_type() > tr->get_type()){
             tr = aux[i];
         }else if(aux[i]->get_type() == tr->get_type() && aux[i]->get_delay() > tr->get_delay()){
             tr = aux[i];
@@ -437,6 +478,8 @@ int Simulation::best_train_in_park(int k, int st_index){//ritorna il miglior tre
         if(trains[k][i].get() == tr)
             return i;
     }
+    
+    return -1;
 }
 
 int Simulation::best_regional_in_park(int k , int st_index){
@@ -444,7 +487,7 @@ int Simulation::best_regional_in_park(int k , int st_index){
 
     Train* tr {nullptr};
     
-    for(int i = 1; i < aux.size(); i++){
+    for(int i = 0; i < aux.size(); i++){
         if(tr == nullptr){
             if(aux[i]->get_type() == Train::Regional)
                 tr = aux[i];
@@ -461,8 +504,9 @@ int Simulation::best_regional_in_park(int k , int st_index){
         if(trains[k][i].get() == tr)
             return i;
     }
-}
 
+    return -1;
+}
 
 
 void Simulation::stop_trains(){
@@ -511,14 +555,14 @@ void Simulation::leave_park(Station& st, Train* tr){
 //rimuove un treno dal parcheggio della stazione
 
 void Simulation::add_train_transit(Station& st, Train* tr){
-    //railway[k].get_station(j).add_train_to_transit(tr)
+    st.add_train_to_transit(tr);
     cout << "Il treno numero " << tr->get_number() << " sta transitando nella\n" << st << endl;
     cout << *tr << endl;
 }
         
 //toglie il treno dal binario di transito
 void Simulation::remove_train_transit(Station& st, Train* tr){
-    //railway[k].get_station(j).remove_train_to_transit(tr)
+    st.remove_train_from_transit();
     cout << "Il treno numero " << tr->get_number() << " e' uscito dal binario di transito della\n" << st << endl;
     cout << *tr << endl;
 }
