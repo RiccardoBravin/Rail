@@ -50,10 +50,11 @@ int main() {
 
 
     //cout << "____________VERIFY_RAILWAY__________" << endl;
-    if(canc)
     railways[0].verify_railway();
     
-    railways.erase(railways.begin());
+    if(canc) 
+        railways.erase(railways.begin());
+    
     
     cout << "_______RAILWAY & TIMETABLEs CORRETTE_______" << endl << endl;
     for(int i=0; i<railways.size(); i++)  cout << railways[i] << endl << *railways[i].get_timetable_reference() << endl << endl;
