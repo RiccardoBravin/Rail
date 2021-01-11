@@ -21,6 +21,10 @@ void Simulation::sort_trains() {
             replacer.push_back(move(trains[i][min_index]));
             trains[i].erase(trains[i].begin() + min_index);
         }
-        trains[i] = replacer;
+        trains[i] = move(replacer);
     }
+}
+
+bool Simulation::notice_20_km_mark(Train* tr) {
+    for
 }

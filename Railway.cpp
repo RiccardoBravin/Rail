@@ -46,7 +46,7 @@ Railway::Railway(string line_description, TimeTable* ref){
                 stations.push_back(unique_ptr<Secondary> (new Secondary(name, distance)));
             } 
         }
-    } else throw runtime_error("enable to open file");
+    } else throw runtime_error("unable to open file");
     line_description_file.close();
 }
 
