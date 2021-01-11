@@ -10,7 +10,7 @@
 class Simulation {
     public:
         Simulation(std::string line_description_file, std::string timetables_file);
-        bool simulate();        //return 0 se ha fallito, 1 se tutto apposto
+        void simulate();        
 
 
     private:
@@ -21,6 +21,8 @@ class Simulation {
         std::vector<TimeTable> timetable;
         std::vector<Railway> railway;
         std::vector<std::vector<std::unique_ptr<Train>>> trains;
+
+        std::vector<int> trains_at_trminal;
 
         
 
@@ -43,7 +45,6 @@ class Simulation {
 
         void check_distance();//controlla ed eventualmente sistema tutti i problemi con le distanze e velocità fra tutti i treni 
         
-        //bool entering_station(Train* tr);//return true if the specified train is going to enter the station area the next step
 
 
         void exit_station();//se un treno sta uscendo dalla stazione allora va alla velocità massima
@@ -74,7 +75,7 @@ class Simulation {
 
         int prev_train_index(int k, int tr_index); //ritorna il puntatore al treno precedente
 
-        bool smart_train_function(int k, int tr_index);
+        bool smart_train_function(int k, int tr_index, int st_index);
 
         void stop_trains();//stops the train that need to unload passangers
         //cicla i treni nelle banchine e li fa fermare se arrivati alla stazione
@@ -97,6 +98,18 @@ class Simulation {
         
         //toglie il treno dalla banchina
         void exiting_station_area(Station& st, Train* tr);
+
+        
+        
+        
+        //rimuove tutti i treni che hanno superato l'ultima stazione così che non vengano più simulati ed aumenta il contatore 
+        //nel rispettivo vettore di int trains_in_terminal
+        void ending_station();
+
+
+        //controlla se tutti i numeri in trans_in_trminal corrispondono a tutti i treni da simulare
+        //true solo se ho terminato di simulare
+        bool end_simulation();
         
         
 

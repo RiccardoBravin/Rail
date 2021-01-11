@@ -52,11 +52,14 @@ Simulation::Simulation(string line_description_file, string timetables_file){
     
     for(int i = 0; i < railway.size(); i++){
         trains.push_back(std::vector<std::unique_ptr<Train>> ());
+        trains_at_trminal.push_back(0);
     }
+
+    
     
 }
 
-bool Simulation::simulate(){
+void Simulation::simulate(){
     while(current_time < 100){
         cout << "~~~~~~      " << current_time << "      ~~~~~~\n";
         
@@ -64,12 +67,11 @@ bool Simulation::simulate(){
         
         exit_station();
         
+        in_station();
+        sort_trains();
+        
         parked_trains();
 
-        sort_trains();
-        in_station();
-
-        sort_trains();
         check_distance();
         
         stop_trains();
@@ -81,7 +83,8 @@ bool Simulation::simulate(){
         current_time++;
         cout << endl;
     };
-    return true;
+
+
 }
 
 
@@ -195,7 +198,7 @@ void Simulation::exit_station(){//se un treno sta uscendo dalla stazione allora 
                         exiting_station_area(railway[k].get_station(i), trains[k][j].get());
                         
                     }else{//altrimenti è nel transito e quindi lo rimuovo da li
-                        //railway[k].get_station(i).remove_train_to_transit(trains[k][i].get())
+                        remove_train_transit(railway[k].get_station(i), trains[k][j].get());
                     }
 
                 }
@@ -272,8 +275,11 @@ void Simulation::in_station(){
                     }else if(railway[k].get_station(j).get_type() == Station::Secondary){
                         
                         if(trains[k][i]->get_type() == Train::Regional){
-                            
-                            if(railway[k].get_station(j).can_add_train_to_stop()){
+                            int delay = calc_delay(k, i, j);
+                            trains[k][i]->set_delay(delay);
+                            if(delay < 0){
+                                park_train(railway[k].get_station(j), trains[k][i].get());
+                            }else if(railway[k].get_station(j).can_add_train_to_stop()){
                                 entering_station_area(railway[k].get_station(j), trains[k][i].get());
                                 
                             }else{
@@ -336,7 +342,7 @@ int Simulation::calc_delay(int k, int tr_index, int st_index){
     else
         time_of_arrival = timetable[k].search_timetable_element(trains[k][tr_index]->get_number()).time_at_station[railway[k].principal_index(st_index)];
     //occhio almeno uno qui sopra che elia dobrebbe averlo corretto
-    return current_time - time_of_arrival + 4;
+    return current_time - time_of_arrival + 3;
 }
 
 void Simulation::check_distance(){
@@ -365,21 +371,7 @@ void Simulation::check_distance(){
                 }
             }
         }
-        //se un treno ha un treno che gli sta attaccato
-        //ciclo al contrario per non incorrere in casi particolari
-        /*for(int i = trains[k].size() - 1; i >= 0; i--){
-            
-            if(!trains[k][i]->parked()){
-                int prev_index = prev_train_index(k, i);
-                if(prev_index != -1){
-                    if(trains[k][prev_index]->get_distance() >= trains[k][i]->get_distance() - 10){
-                        trains[k][prev_index]->set_distance(trains[k][i]->get_distance() - 10);
-                        trains[k][prev_index]->set_speed(trains[k][i]->get_speed());
-                        cout << "E' in corso un rallentamento causato da" <<  endl << *trains[k][i] << endl << *trains[k][prev_index] << endl;
-                    }
-                }
-            }
-        }*/
+
     }
 }
 
@@ -400,8 +392,11 @@ int Simulation::prev_train_index(int k, int tr_index){
     return -1;
 } 
 
-bool Simulation::smart_train_function(int k, int tr_index){
+bool Simulation::smart_train_function(int k, int tr_index, int st_index){
     int prev_train = prev_train_index(k, tr_index);
+    if(prev_train == -1)
+        return true;
+    if(st_index != 0 && )
 
 }
 
@@ -444,7 +439,7 @@ void Simulation::parked_trains(){
                     }
                     int best_train_index = best_train_in_park(k, j);
                     //se il treno non è un regionale devo metterlo nel binario di transito
-                    if(trains[k][best_train_index]->get_type() != Train::Regional){
+                    if(best_train_index != -1 && trains[k][best_train_index]->get_type() != Train::Regional){
                         if(railway[k].get_station(j).can_add_train_to_transit()){
                             if(true /*funzione magica che decide chi passa prima dice che posso andare*/){
                                 leave_park(railway[k].get_station(j), trains[k][best_train_index].get());
@@ -462,8 +457,6 @@ void Simulation::parked_trains(){
 }
         //se ho esattamente una banchina libera prendo il treno con il maggior ritardo e di tier piu alto e se la funzione magica dice 
         //che può passare entra nella banchina altrimenti stanno tutti li. se hai due banchine libere manda il treno più "figo"
-
-
 
 int Simulation::best_train_in_park(int k, int st_index){//ritorna il miglior treno per quella stazione
     
@@ -516,9 +509,6 @@ int Simulation::best_regional_in_park(int k , int st_index){
 }
 
 
-
-
-
 void Simulation::stop_trains(){
     for(int k = 0; k < RAILWAYS; k++){
         for(int i = 0; i < trains[k].size(); i++){
@@ -565,14 +555,14 @@ void Simulation::leave_park(Station& st, Train* tr){
 //rimuove un treno dal parcheggio della stazione
 
 void Simulation::add_train_transit(Station& st, Train* tr){
-    //railway[k].get_station(j).add_train_to_transit(tr)
+    st.add_train_to_transit(tr);
     cout << "Il treno numero " << tr->get_number() << " sta transitando nella\n" << st << endl;
     cout << *tr << endl;
 }
         
 //toglie il treno dal binario di transito
 void Simulation::remove_train_transit(Station& st, Train* tr){
-    //railway[k].get_station(j).remove_train_to_transit(tr)
+    st.remove_train_from_transit();
     cout << "Il treno numero " << tr->get_number() << " e' uscito dal binario di transito della\n" << st << endl;
     cout << *tr << endl;
 }
