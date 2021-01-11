@@ -25,11 +25,11 @@ void Train::set_distance(const double _distance){
 double Train::get_distance() const{  return distance;}
 
 double Train::next_distance() const{
-    return distance + speed * 0.0166;
+    return distance + speed / 60.0;
 }
 
 double Train::prev_distance() const{
-    return distance - speed * 0.0166;
+    return distance - speed / 60.0;
 }
 
 bool Train::stationary() const{
