@@ -287,6 +287,7 @@ std::ostream& operator<<(std::ostream& os, const Station& stn)
     os << " distanza: " << stn.get_distance() << " km " << endl;
     os << "ci sono: " << stn.get_count_parking_train() << " treni in sosta nel parcheggio " << endl;
     os << "ci sono: " << stn.get_count_in_stop_train() << " binari di fermata occupati " << endl;
+    os << "ci sono: " << stn.get_count_in_transit_train() << " binari di transito occupati " << endl;
     return os;
 }
 
