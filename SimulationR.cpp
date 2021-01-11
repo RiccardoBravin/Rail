@@ -52,7 +52,6 @@ Simulation::Simulation(string line_description_file, string timetables_file){
     
     for(int i = 0; i < railway.size(); i++){
         trains.push_back(std::vector<std::unique_ptr<Train>> ());
-        trains_at_trminal.push_back(0);
     }
 
     
@@ -83,7 +82,6 @@ void Simulation::simulate(){
         current_time++;
         cout << endl;
     };
-
 
 }
 
@@ -396,7 +394,9 @@ bool Simulation::smart_train_function(int k, int tr_index, int st_index){
     int prev_train = prev_train_index(k, tr_index);
     if(prev_train == -1)
         return true;
-    if(st_index != 0 && )
+    if(st_index != 0 && trains[k][prev_train]->get_distance() /*il treno che mi sta dietro è nella stessa tratta in cui sono io*/){
+
+    }
 
 }
 

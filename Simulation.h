@@ -22,10 +22,7 @@ class Simulation {
         std::vector<Railway> railway;
         std::vector<std::vector<std::unique_ptr<Train>>> trains;
 
-        std::vector<int> trains_at_trminal;
-
-        
-
+        int trains_at_trminal {0};
         
         
 
