@@ -74,6 +74,8 @@ void Simulation::simulate(){
         check_distance();
         
         stop_trains();
+
+        notice_20_km_mark();
         
         step();
 
@@ -162,19 +164,19 @@ bool Simulation::best_train_in_station(Station* st, Train* t){
 }
 
 
-bool Simulation::free_to_start(Station* st,  int trains_index) const{  //non MANCA IL CONTROLLO A SECONDA DELLA STAZIONE PER VERIFICARE CHE IL BINARIO DI TRANSITO SIA LIBBERO
+bool Simulation::free_to_start(Station* st,  int k) const{
      
-    for(int i = 0; i < trains[trains_index].size(); i++){
-        if(!trains[trains_index][i]->stationary() && !trains[trains_index][i]->parked())
-            if(st->get_distance() < trains[trains_index][i]->get_distance() && st->get_distance() + 10 > trains[trains_index][i]->get_distance()){
+    for(int i = 0; i < trains[k].size(); i++){
+        if(!trains[k][i]->stationary() && !trains[k][i]->parked())
+            if(st->get_distance() < trains[k][i]->get_distance() && st->get_distance() + 10 > trains[k][i]->get_distance()){
                 return false;
             }
             if(st->get_type() == Station::Secondary){
-                if(trains[trains_index][i]->get_type() == Train::SuperHighSpeed){
-                    if(st->get_distance() - 25 > trains[trains_index][i]->get_distance() && st->get_distance() - 3 > trains[trains_index][i]->get_distance())
+                if(trains[k][i]->get_type() == Train::SuperHighSpeed){
+                    if(st->get_distance() - 25 > trains[k][i]->get_distance() && st->get_distance() - 3 > trains[k][i]->get_distance())
                         return false;
-                }else if(trains[trains_index][i]->get_type() == Train::HighSpeed){
-                    if(st->get_distance() - 21 > trains[trains_index][i]->get_distance() && st->get_distance() > trains[trains_index][i]->get_distance())
+                }else if(trains[k][i]->get_type() == Train::HighSpeed){
+                    if(st->get_distance() - 21 > trains[k][i]->get_distance() && st->get_distance() > trains[k][i]->get_distance())
                         return false;
                 }
             }
@@ -213,7 +215,6 @@ void Simulation::in_station(){
             for(int j = 0; j < railway[k].get_station_count(); j++){ //per ogni stazione
                 
                 if(trains[k][i]->prev_distance() < railway[k].get_station(j).get_distance() - 5 && trains[k][i]->get_distance() >= railway[k].get_station(j).get_distance() - 5 && !trains[k][i]->parked()){   
-                    //cout << endl << "controllo treno in entrata"<<*trains[k][i]<< endl;
                     
                     if(railway[k].get_station(j).get_type() == Station::Principal){ //se la stazione è una principale
                         int delay = calc_delay(k, i, j);
@@ -227,8 +228,8 @@ void Simulation::in_station(){
                         }else if(delay >= 0 && railway[k].get_station(j).get_count_in_stop_train() == railway[k].get_station(j).get_stop_tracks() - 1){ //se non sei in anticipo e hai solo una banchina libera
                             
                             if(trains[k][i]->get_type() == Train::Regional || trains[k][i]->get_type() == Train::HighSpeed){ //se il treno è reg o hs e sta rallentando un treno 
-                                
-                                if(false /*treno in culo*/){//va nel parcheggio
+                                int prev_index = prev_train_index(k, i);
+                                if(prev_index != -1 && slowing_down_trains(k, i)){
                                     park_train(railway[k].get_station(j), trains[k][i].get());
 
                                 }else{//altrinmenti prosegue alla banchina
@@ -244,8 +245,8 @@ void Simulation::in_station(){
                         }else if(delay >= 0 && railway[k].get_station(j).get_count_in_stop_train() == railway[k].get_station(j).get_stop_tracks() - 2){ //se non sei in ancicipo e hai almeno due banchine libere
                             
                             if(trains[k][i]->get_type() == Train::Regional){ //se il treno è regionale e sta rallentando un treno che ne rallenta un altro
-                                
-                                if(false/*treno in culo con treno in culo*/){//DA FIXARRRRRREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+                                int prev_index = prev_train_index(k, i);
+                                if(prev_index != -1 && slowing_down_trains(k, i) && slowing_down_trains(k, prev_index)){//DA FIXARRRRRREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
                                     park_train(railway[k].get_station(j), trains[k][i].get());
                                     
                                 }else{
@@ -288,18 +289,14 @@ void Simulation::in_station(){
                         }else if(trains[k][i]->get_type() == Train::HighSpeed){
                             if(railway[k].get_station(j).can_add_train_to_transit()){
                                 
-                                if(false /*treno in culo */){
-                                    if(true/*e funzione magica che decide chi passa prima dice che posso andare*/){
-                                        add_train_transit(railway[k].get_station(j), trains[k][i].get());
-
-                                    }else{
-                                        park_train(railway[k].get_station(j), trains[k][i].get());
-
-                                    }
-                                }else{
+                                if(smart_train_function(k, i, j)){
                                     add_train_transit(railway[k].get_station(j), trains[k][i].get());
-                                    
+                                }else{
+                                    park_train(railway[k].get_station(j), trains[k][i].get());
+
                                 }
+                                    
+                                
                             }else{
                                 park_train(railway[k].get_station(j), trains[k][i].get());
 
@@ -374,6 +371,8 @@ void Simulation::check_distance(){
 }
 
 
+
+
 int Simulation::prev_train_index(int k, int tr_index){
     for(int i = tr_index - 1; i >= 0; i--){
         bool found {false};
@@ -390,15 +389,43 @@ int Simulation::prev_train_index(int k, int tr_index){
     return -1;
 } 
 
-bool Simulation::smart_train_function(int k, int tr_index, int st_index){
-    int prev_train = prev_train_index(k, tr_index);
-    if(prev_train == -1)
+bool Simulation::slowing_down_trains(int k, int tr_index){
+    int prev_index = prev_train_index(k, tr_index);
+    if(prev_index != -1 && trains[k][tr_index]->get_distance() - 10 == trains[k][prev_index]->get_distance()){
         return true;
-    if(st_index != 0 && trains[k][prev_train]->get_distance() /*il treno che mi sta dietro è nella stessa tratta in cui sono io*/){
-
-    }
-
+    } 
+    return false;
 }
+
+bool Simulation::smart_train_function(int k, int tr_index, int st_index){
+    int prev_index = prev_train_index(k, tr_index);
+    
+    if(prev_index == -1)
+        return true;
+    Train* tr = trains[k][tr_index].get();
+    Train* prev = trains[k][prev_index].get();
+
+    if(st_index != 0 && prev->get_distance() > railway[k].get_station(st_index - 1).get_distance() + 5 && prev->get_distance() > railway[k].get_station(st_index ).get_distance() - 5){
+    
+        if(prev->get_type() <= tr->get_type()){
+            return true;
+        }else{
+            if(st_index != railway[k].get_station_count() - 1){
+                int next_length = railway[k].get_station(st_index).get_distance() - railway[k].get_station(st_index + 1).get_distance();
+                if(tr->get_delay() + (tr->get_distance() - prev->get_distance()) / prev->get_speed() > next_length / prev->get_speed() - next_length / tr->get_speed() + prev->get_delay()){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        }
+            
+    }
+    return false;
+}
+
+//se il ritardo di a + (a.pos - b.pos)/b.vel > (next_station.lenght/b.vel)-(next_station.lenght/a.vel)+ ritardo di b
+//allora fai procedere a altrimenti metti a nel parcheggio
 
 
 void Simulation::parked_trains(){
