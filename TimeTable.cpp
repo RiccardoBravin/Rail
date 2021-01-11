@@ -13,10 +13,11 @@ vector<TimeTable> split_timeTable(string time_table) {
     vector<TimeTable> tables;
     
     if(timetable_file.is_open()) {
-        vector<timetable_element> gones;
+        vector<timetable_element> gones;                    
         vector<timetable_element> returns;
-        while(!timetable_file.eof()) {
-            timetable_element temp;
+
+        while(!timetable_file.eof()) {                                                          //leggo il file
+            timetable_element temp;                                                             //elementi necessari per costruire un timetable_element
             bool returning {false};
             string s;
             getline(timetable_file, s);
@@ -24,14 +25,15 @@ vector<TimeTable> split_timeTable(string time_table) {
             for (auto i = strtok(&s[0], " "); i != NULL; i = strtok(NULL, " ")){
                 tokens.push_back(i);
             }
-            if(tokens.size() > 2) {
-                temp.train_number = stoi(tokens[0]);
+
+            if(tokens.size() >= 4) {                                                             //al minimo devo avere numero del treno, tipo, verso di percorrenza e orario di partenza dalla prima stazione
+                temp.train_number = stoi(tokens[0]);                                             //leggo le varie "parole"
                 returning = (bool)(stoi(tokens[1]));
                 temp.train_type = stoi(tokens[2]);
-                for(int i=3; i<tokens.size(); i++) {
+                for(int i=3; i<tokens.size(); i++) {                                           
                     temp.time_at_station.push_back(stoi(tokens[i]));
                 }
-                if(returning == true) {
+                if(returning == true) {                                                         //a seconda del verso, memorizzo in andata o ritorno
                     returns.push_back(temp);         
                 } else {
                     gones.push_back(temp); 
@@ -39,24 +41,24 @@ vector<TimeTable> split_timeTable(string time_table) {
             }
         }
 
-        if(gones.size() == 0 && returns.size() == 0){
-            throw runtime_error("file empty");
+        if(gones.size() == 0 && returns.size() == 0){                                           //se non ho costruiro nessun timetable_element, il file è vuoto o contine scarse o errate informazioni
+            throw runtime_error("empty or bad file");
         }
         
-        if(!gones.empty()){
+        if(!gones.empty()){                                                                     //costruisco due istanze di TimeTable: una per verso di percorrenza (se vengono effettivamente percorsi)
             tables.push_back(TimeTable(gones, true));
         }
         if(!returns.empty()){
             tables.push_back(TimeTable(returns, false));
         }
-    } else throw runtime_error("enable to open file");
-    timetable_file.close();
-    return tables;
+    } else throw runtime_error("enable to open file");                                          
+    timetable_file.close();                                                                     //rilascio delle risorse
+    return tables;                                                                              //restituisco il vettore contente TimeTable
 }
 
 
 
-TimeTable::TimeTable(vector<timetable_element> elements, bool is_going) {
+TimeTable::TimeTable(vector<timetable_element> elements, bool is_going) {                       //costruisco memorizzando i timetable_elements e il verso di percorrenza
     //cout << "using constructor\n";
     for(int i=0; i<elements.size(); i++){
         time_table.push_back(elements[i]);
@@ -135,12 +137,11 @@ TimeTable& TimeTable::operator=(TimeTable&& tt) {
     return *this;
 }
 
-bool TimeTable::adjust_timetable(int number_principal_stations, int number_stations){
-    bool added {false};
-    bool deleted {false};
+void TimeTable::adjust_timetable(int number_principal_stations, int number_stations){                   //standardizza la dimensione dei vettori contenenti gli orari di arrivo nella stazione,
+    bool deleted {false};                                                                               //cancellando quelli in eccesso, aggiungendo 0 dove mancanti in base al tipo di treno
     
-    for(int i=0; i<time_table.size(); i++) {
-        if(time_table[i].time_at_station[0] > 1440) {
+    for(int i=0; i<time_table.size(); i++) {                                                            //se l'orario di partenza è oltre la mezzanotte non compete alla simulazione, viene eliminato
+        if(time_table[i].time_at_station[0] >= 1440) {
             time_table.erase(time_table.begin() + i);
             i--;
             continue;
@@ -152,7 +153,6 @@ bool TimeTable::adjust_timetable(int number_principal_stations, int number_stati
             }
             for(int j=time_table[i].time_at_station.size(); j<number_stations; j++){
                 time_table[i].time_at_station.push_back(0);
-                added = true;
             }
         } else {
             if(time_table[i].time_at_station.size() > number_principal_stations){
@@ -161,21 +161,19 @@ bool TimeTable::adjust_timetable(int number_principal_stations, int number_stati
             }
             for(int j=time_table[i].time_at_station.size(); j<number_principal_stations; j++){
                 time_table[i].time_at_station.push_back(0);
-                added = true;
             }
         }
     }
 
-    if(deleted) cout << "Il file contiene orari di arrivo in eccedenza. Non vengono conteggiati" << endl;
-    return added;
+    if(deleted) cout << "Il file contiene orari di arrivo in eccedenza. Non vengono conteggiati" << endl;           
 }
 
-void TimeTable:: modify_arrival_time(int time_table_index, int station_index, int arrival_time){
+void TimeTable:: modify_arrival_time(int time_table_index, int station_index, int arrival_time){                        
     time_table[time_table_index].time_at_station[station_index] = arrival_time;
 }
 
 
-void TimeTable::delete_regionals_station_time(int ind) {
+void TimeTable::delete_regionals_station_time(int ind) {                                            
     for(int i=0; i<time_table.size(); i++) {
         if(time_table[i].train_type == Train::type::Regional)
             time_table[i].time_at_station.erase(time_table[i].time_at_station.begin() + ind);
@@ -215,7 +213,7 @@ timetable_element TimeTable::search_timetable_element(int train_number) const {
         if(time_table[i].train_number == train_number) 
             return time_table[i];
     }
-    timetable_element error;
+    timetable_element error;                                                        
     return error;
 }
 
