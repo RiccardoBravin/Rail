@@ -9,8 +9,10 @@ using namespace std;
 int main() {
     vector<TimeTable> tables;
     vector<Railway> railways;
-    string line_description = "line_description.txt";
-    string timetables = "timetables.txt";
+    string line_description = "data\\line_description.txt";
+    string timetables = "data\\timetables.txt";
+
+    bool canc {false};
 
     try{
         tables = split_timeTable(timetables);
@@ -30,6 +32,7 @@ int main() {
         railways.push_back(Railway());
         tables[0].set_as_going();
         railways[1].reverse(railways[0], &tables[0]);
+        canc = true;
     }
 
     //for(int i=0; i<railways.size(); i++)  cout << railways[i] << endl << *railways[i].get_timetable_reference() << endl << endl;
@@ -47,6 +50,7 @@ int main() {
 
 
     //cout << "____________VERIFY_RAILWAY__________" << endl;
+    if(canc)
     railways[0].verify_railway();
     
     railways.erase(railways.begin());
