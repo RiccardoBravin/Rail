@@ -14,13 +14,15 @@ class Simulation {
 
 
     private:
-        static constexpr int RAILWAYS = 2;
+        int RAILWAYS {0};
+
+        int current_time {0};
 
         std::vector<TimeTable> timetable;
         std::vector<Railway> railway;
-        std::vector<std::vector<std::unique_ptr<Train>>> trains{RAILWAYS};
+        std::vector<std::vector<std::unique_ptr<Train>>> trains;
 
-        int current_time {0};
+        
 
         
         
@@ -37,7 +39,7 @@ class Simulation {
         //(da diversificare per Primary e Secondary) controllare se la linea è libera per 10km
         // e se la linea di transito (se c'è) è libera
 
-        bool notice_20_km_mark(Train* tr);//controlla se il treno è a 20 km dalla stazione successiva riferisce il suo stato
+        void notice_20_km_mark();//cicla sui treni, se un treno è a venti km da una stazione avvisa l'utente dell'accaduto 
 
         void check_distance();//controlla ed eventualmente sistema tutti i problemi con le distanze e velocità fra tutti i treni 
         
@@ -72,6 +74,7 @@ class Simulation {
 
         int prev_train_index(int k, int tr_index); //ritorna il puntatore al treno precedente
 
+        bool smart_train_function(int k, int tr_index);
 
         void stop_trains();//stops the train that need to unload passangers
         //cicla i treni nelle banchine e li fa fermare se arrivati alla stazione
@@ -106,9 +109,6 @@ class Simulation {
         void sort_trains();
 };
 
-
-//QUESTA VA SPOSTATA IN UN .H A SE COSì CHE TUTTI LA POSSANO USARE NELLE LORO CLASSI PER DIRE L'ORA
-std::string minute_to_hour(int minute);
 
 
 void push_front_train(const timetable_element& a, std::vector<std::unique_ptr<Train>>* trains);
