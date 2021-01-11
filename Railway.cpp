@@ -37,8 +37,11 @@ Railway::Railway(string line_description, TimeTable* ref){
             cout << endl;*/
             distance = stoi(tokens[tokens.size() - 1]);
             type = stoi(tokens[tokens.size() - 2]);
-            for(int i=0; i<tokens.size() - 2; i++) 
+            for(int i=0; i<tokens.size() - 2; i++){ 
                 name += tokens[i];
+                if(i < tokens.size() - 1)
+                    name += " ";
+            }
 
             if(type == 0){
                 stations.push_back(unique_ptr<Principal> (new Principal(name, distance)));
