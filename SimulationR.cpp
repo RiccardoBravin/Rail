@@ -1,4 +1,5 @@
 #include "Simulation.h"
+#include "utility.h"
 #include <string>
 #include <list>
 #include <vector>
@@ -13,8 +14,8 @@ using namespace std;
 
 
 void Simulation::simulate(){
-    while(current_time < 100){
-        cout << "~~~~~~      " << current_time << "      ~~~~~~\n";
+    while(!end_simulation()){
+        cout << "~~~~~~      " << mtoh(current_time) << "      ~~~~~~\n";
         
         start_trains();
         
@@ -33,7 +34,7 @@ void Simulation::simulate(){
         
         step();
 
-        //cout << railway[0];
+        ending_station();
 
         current_time++;
         cout << endl;
