@@ -17,24 +17,34 @@ void Simulation::simulate(){
     while(!end_simulation()){
         cout << "~~~~~~      " << mtoh(current_time) << "      ~~~~~~\n";
         
+        //cout << 1 << endl;
         notice_20_km_mark();
         cout << endl;
 
+        //cout << 2 << endl;
         start_trains();
         
+        //cout << 3 << endl;
         exit_station();
         
+        //cout << 4 << endl;
         in_station();
+        //cout << 5 << endl;
         sort_trains();
         
+        //cout << 6 << endl;
         parked_trains();
 
+        //cout << 7 << endl;
         check_distance();
         
+        //cout << 8 << endl;
         stop_trains();
         
+        //cout << 9 << endl;
         step();
 
+        //cout << 10 << endl;
         ending_station();
 
         current_time++;
@@ -67,7 +77,6 @@ void Simulation::start_trains(){
                     bool found = false;
                     for(int &tr_num : simulated_trains){
                         if(tr_num == timetable[k].get_timetable_element(i).train_number){
-                            
                             found = true; 
                             break;
                         }          
@@ -85,16 +94,19 @@ void Simulation::start_trains(){
             }
         }
         //partenza dalle stazioni intermedie
+        
         for(int i = 0; i < railway[k].get_station_count(); i++){
-            for(unique_ptr<Train> &t : trains[k]){
-                if(t->can_start() && free_to_start(&railway[k].get_station(i), k) && !t->running() && !t->parked() && best_train_in_station(&railway[k].get_station(i), t.get())){
+            for(Train* &t : railway[k].get_station(i).get_stop_train()){
+
+                
+                if(t!= nullptr && t->can_start() && free_to_start(&railway[k].get_station(i), k) && !t->running() && best_train_in_station(&railway[k].get_station(i), t)){
                     t->set_speed(80);
                     cout << "Il treno numero " << t->get_number() << " e' in partenza dalla\n" << railway[k].get_station(i) << endl;
                     cout << *t << endl;
                     break;
                 }
-
             }
+            
         }
         
     }
@@ -104,7 +116,7 @@ void Simulation::start_trains(){
 bool Simulation::best_train_in_station(Station* st, Train* t){
     if(st->get_count_in_stop_train() == 1)
         return true;
-
+    cout << st->what_platform_train(t);
     int tr_index = st->what_platform_train(t) - 1;
 
     if(tr_index == -1)
@@ -147,8 +159,9 @@ bool Simulation::free_to_start(Station* st,  int k) const{
 
 void Simulation::exit_station(){//se un treno sta uscendo dalla stazione allora va alla velocità massima
     for(int k = 0; k < RAILWAYS; k++){
+        
         for(int i = 0; i < railway[k].get_station_count(); i++){ //cicla sulla dimensione della railway
-
+            
             for(int j = 0; j < trains[k].size(); j++){
                 if(trains[k][j]->prev_distance() < railway[k].get_station(i).get_distance() + 5 && trains[k][j]->get_distance() >= railway[k].get_station(i).get_distance() + 5){
                     if(railway[k].get_station(i).what_platform_train(trains[k][j].get()) != 0){ //se il treno è alla fine della stazione allora lo rimuovo
@@ -401,7 +414,7 @@ void Simulation::parked_trains(){
                         //se hai una sola banchina libera allora controlla di non avere treni in arrivo 
                         if(railway[k].get_station(j).get_count_in_stop_train() == railway[k].get_station(j).get_stop_tracks() - 1){ //se hai una sola banchina libera
 
-                            if(true/*ho un treno in culo e funzione magica che decide chi passa prima dice che posso andare*/){
+                            if(smart_train_function(k, best_train_index, j)){
                                 leave_park(railway[k].get_station(j), trains[k][best_train_index].get());
                                 entering_station_area(railway[k].get_station(j), trains[k][best_train_index].get());
                             }//altrimenti il treno rimane nel parcheggio

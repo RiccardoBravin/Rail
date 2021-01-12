@@ -56,27 +56,30 @@ int Station::get_stop_tracks() const
 }
 
 bool Station::add_train_to_stop(Train* t)
-{   
-    if(can_add_train_to_stop())
-    {   
-        vector<Train*>::iterator iter = find(stop_tracks.begin(), stop_tracks.end(), nullptr);
-        stop_tracks.insert(iter,t); 
-        return 1;
+{
+    int index = 0;
+    for(int i = 0; i < stop_tracks.size(); i++)
+    {
+        if(stop_tracks[i] == nullptr)
+        {
+            stop_tracks[i] = t;
+            return 1;
+        }
     }
-    else{
-        return 0;
-    }
-    
+    return 0;
+
 }
 
 int Station::what_platform_train(Train* t)
 {
     vector<Train*>::iterator iter = find(stop_tracks.begin(), stop_tracks.end(), t);
-    if(iter == stop_tracks.end()) 
+
+    if(iter == stop_tracks.end() ) 
     {
         return 0;
     }
     int index = std::distance(stop_tracks.begin(), iter );
+    
     return index+1;
     
 }
@@ -86,11 +89,9 @@ bool Station::remove_train_to_stop(Train* t)
     vector<Train*>::iterator iter = find(stop_tracks.begin(), stop_tracks.end(), t);
     if(iter == stop_tracks.end()) 
     {
-        //cout << "Non riesco a rimuovere" << endl;
         return false;
 
     }
-    //cout << "riesco a rimuovere" << endl;
     int index = std::distance(stop_tracks.begin(), iter );
     stop_tracks[index] = nullptr; 
     return true;
@@ -100,6 +101,7 @@ bool Station::remove_train_to_stop(Train* t)
 int Station::get_count_in_stop_train() const
 {
     int count = 0;
+
     for(int i =0; i < stop_tracks.size();  i++)
     {
         if(stop_tracks[i] != nullptr)
@@ -123,6 +125,8 @@ Secondary::Secondary(const string _name, const double _distance)
 {
     name = _name;
     distance = _distance;
+    stop_tracks.push_back(nullptr);
+    stop_tracks.push_back(nullptr);
 }
 
 Secondary::Secondary(const Secondary& stn)
@@ -198,6 +202,8 @@ Principal::Principal(const string _name, const double _distance)
 {
     name = _name;
     distance = _distance;
+    stop_tracks.push_back(nullptr);
+    stop_tracks.push_back(nullptr);
 }
     
 
