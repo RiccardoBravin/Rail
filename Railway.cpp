@@ -125,7 +125,7 @@ Railway& Railway::operator=(Railway&& rw){
     return *this;
 }
 
-bool Railway::operator==(const Railway& rw) const{
+bool Railway::operator==(const Railway& rw){
     if(line_description_file_name != rw.get_source_file_name())
         return false;
     if(stations.size() != rw.get_station_count())
@@ -254,19 +254,19 @@ void Railway::remove_station(int i){
     stations.erase(stations.begin() + i);
 }
 
-Station& Railway::get_beginning_station() const {
+Station& Railway::get_beginning_station() {
     return *(stations[0]);
 }
 
-Station& Railway::get_terminal_station() const {
+Station& Railway::get_terminal_station() {
     return *(stations[stations.size()-1]);
 }
 
-Station& Railway::get_station(int i) const {
+Station& Railway::get_station(int i) {
     return *(stations[i]);
 }
 
-Station& Railway::get_next_principal(int this_station_index) const {
+Station& Railway::get_next_principal(int this_station_index) {
     int i = this_station_index + 1;
     while(stations[i]->get_type() == Station::type::Secondary) {
         i++;

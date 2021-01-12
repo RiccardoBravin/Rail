@@ -1,5 +1,3 @@
-//Author: elia feltrin
-
 #include "TimeTable.h"
 #include "Train.h"
 #include "utility.h"
