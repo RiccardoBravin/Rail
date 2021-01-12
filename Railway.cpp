@@ -59,10 +59,10 @@ Railway::Railway(const Railway& rw){
     reverse_railway = rw.reverse_railway;    
     stations.clear();
     for(int i=0; i<rw.get_station_count(); i++) {
-        if(rw.get_station(i).get_type() == 0) {
-            stations.push_back(unique_ptr<Principal> (new Principal(rw.get_station(i).get_name(), rw.get_station(i).get_distance())));
+        if(rw.stations[i]->get_type() == 0) {
+            stations.push_back(unique_ptr<Principal> (new Principal(rw.stations[i]->get_name(), rw.stations[i]->get_distance())));
         } else {
-            stations.push_back(unique_ptr<Secondary> (new Secondary(rw.get_station(i).get_name(), rw.get_station(i).get_distance())));
+            stations.push_back(unique_ptr<Secondary> (new Secondary(rw.stations[i]->get_name(), rw.stations[i]->get_distance())));
         }    
     }
 }
@@ -131,7 +131,7 @@ bool Railway::operator==(const Railway& rw){
     if(stations.size() != rw.get_station_count())
         return false;
     for(int i=0; i<stations.size(); i++) {
-        *(stations[i]) != rw.get_station(i);
+        *(stations[i]) != *(rw.stations[i]);
     }
     return true;
 }
@@ -143,10 +143,10 @@ void Railway::reverse (Railway& rw, TimeTable* tt) {
     
     for(int i=rw.stations.size() - 1; i>-1; i--) {
         int temp = rw.get_railway_length();
-        if(rw.get_station(i).get_type() == 0)
-            stations.push_back(unique_ptr<Principal> (new Principal(rw.get_station(i).get_name(), temp - rw.get_station(i).get_distance())));
+        if(rw.stations[i]->get_type() == 0)
+            stations.push_back(unique_ptr<Principal> (new Principal(rw.stations[i]->get_name(), temp - rw.stations[i]->get_distance())));
         else    
-            stations.push_back(unique_ptr<Secondary> (new Secondary(rw.get_station(i).get_name(), temp - rw.get_station(i).get_distance())));
+            stations.push_back(unique_ptr<Secondary> (new Secondary(rw.stations[i]->get_name(), temp - rw.stations[i]->get_distance())));
     }
 }
 
@@ -157,10 +157,12 @@ void Railway::verify_railway(){
     for(int i=0; i<get_station_count()-1; ){                                                            //ciclo sulle stazioni
         was_removed = false;
         bool is_principal = stations[i+1]->get_type() == Station::type::Principal;
+        int diff {0};
         
         if(is_principal) num_principal++;
         
-        if(stations[i+1]->get_distance() - stations[i]->get_distance() <= MIN_STATION_DISTANCE) {       //elimino la stazione successiva se troppo vicina
+        diff = stations[i+1]->get_distance() - stations[i]->get_distance();
+        if(diff <= MIN_STATION_DISTANCE) {       //elimino la stazione successiva se troppo vicina
             cout << "stazioni troppo vicine. elimino\n";
             was_removed = true;
             remove_station(i+1);
@@ -176,6 +178,13 @@ void Railway::verify_railway(){
                 if(has_reverse())
                     reverse_railway->reference_to_TimeTable->delete_fast_superFast_station_time(reverse_railway->get_principal_count() - num_principal);
             }
+
+            if(was_removed && i == get_station_count() - 1 && has_reverse()){                           //se elimino l'ultima stazione, devo aggiornare le posizioni delle stazioni sulla railway inversa
+                for(int j=0; j<stations.size(); j++) {
+                    reverse_railway->stations[j]->set_distance(reverse_railway->stations[j]->get_distance() - diff);
+                }
+            }
+
         }
         if(!was_removed)i++;                                                                            //se ho rimosso una stazione i punta già alla successiva
     }   
@@ -245,19 +254,19 @@ void Railway::remove_station(int i){
     stations.erase(stations.begin() + i);
 }
 
-Station& Railway::get_beginning_station() const{
+Station& Railway::get_beginning_station() {
     return *(stations[0]);
 }
 
-Station& Railway::get_terminal_station() const{
+Station& Railway::get_terminal_station() {
     return *(stations[stations.size()-1]);
 }
 
-Station& Railway::get_station(int i) const{
+Station& Railway::get_station(int i) {
     return *(stations[i]);
 }
 
-Station& Railway::get_next_principal(int this_station_index) const{
+Station& Railway::get_next_principal(int this_station_index) {
     int i = this_station_index + 1;
     while(stations[i]->get_type() == Station::type::Secondary) {
         i++;

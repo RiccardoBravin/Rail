@@ -124,14 +124,14 @@ class Railway {
          * 
          * @return Station& 
          */
-        Station& get_beginning_station() const;
+        Station& get_beginning_station();
 
         /**
          * @brief Reistituisce l'ultima stazione della tratta
          * 
          * @return Station& 
          */
-        Station& get_terminal_station() const;
+        Station& get_terminal_station();
         
         /**
          * @brief Resituisce l'i-esima stazione
@@ -139,7 +139,7 @@ class Railway {
          * @param i 
          * @return Station& 
          */
-        Station& get_station(int i) const;
+        Station& get_station(int i);
 
         /**
          * @brief Restituisce la stazione principale successiva
@@ -147,7 +147,7 @@ class Railway {
          * @param this_principal_index 
          * @return Station& 
          */
-        Station& get_next_principal(int this_principal_index) const;
+        Station& get_next_principal(int this_principal_index);
 
         /**
          * @brief restituisce il file contenente le informazioni sulla tratta
