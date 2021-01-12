@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19.2)
+cmake_minimum_required(VERSION 3.19.1)
 
 project(Rail)
 
@@ -7,10 +7,11 @@ main.cpp
 Railway.cpp
 SimulationR.cpp
 SimulationE.cpp
+SimulationA.cpp
 Station.cpp
 Timetable.cpp
 Train.cpp
-utilityE.cpp
+utilityA.cpp
 )
 
 set(CMAKE_CXX_STANDARD 11)
@@ -20,4 +21,4 @@ add_definitions(-Wno-c++11-extensions )
 
 target_compile_features(Rail PUBLIC cxx_constexpr)
 
-set(CMAKE_CXX_FLAGS -O3)
+set(CMAKE_CXX_FLAGS -O2)
