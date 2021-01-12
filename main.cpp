@@ -1,3 +1,4 @@
+//Authors: Elia Feltrin, Riccardo Bravin, Angelo Turris
 #include "Simulation.h"
 #include <iostream>
 
@@ -14,5 +15,6 @@ int main()
     
     sim.simulate();
 
+    
     return 0;
 }
