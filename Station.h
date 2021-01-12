@@ -158,6 +158,13 @@ class Station {
         virtual void remove_train_from_transit() = 0;
 
         /**
+         * @brief Set the Discance object
+         * 
+         * @param d 
+         */
+        void set_distance(const double d);
+
+        /**
          * @brief Destroy the Station object
          * 
          */

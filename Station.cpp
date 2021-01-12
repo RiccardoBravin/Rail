@@ -195,6 +195,11 @@ void Secondary::remove_train_from_transit()
         cout << "Empty" << endl;  
 }
 
+void Station::set_distance(const double d)
+{
+    distance = d;
+}
+
 
 //*** Principal ***//
 
