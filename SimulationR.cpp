@@ -17,6 +17,9 @@ void Simulation::simulate(){
     while(!end_simulation()){
         cout << "~~~~~~      " << mtoh(current_time) << "      ~~~~~~\n";
         
+        notice_20_km_mark();
+        cout << endl;
+
         start_trains();
         
         exit_station();
@@ -29,8 +32,6 @@ void Simulation::simulate(){
         check_distance();
         
         stop_trains();
-
-        notice_20_km_mark();
         
         step();
 
@@ -39,7 +40,7 @@ void Simulation::simulate(){
         current_time++;
         cout << endl;
     };
-
+    cout << "Simulazione terminata\n";
 }
 
 
@@ -64,14 +65,15 @@ void Simulation::start_trains(){
                 if(current_time >= timetable[k].get_timetable_element(i).time_at_station[0]){
                     
                     bool found = false;
-                    for(unique_ptr<Train> &t : trains[k]){
-                        if(t->get_number() == timetable[k].get_timetable_element(i).train_number){
+                    for(int &tr_num : simulated_trains){
+                        if(tr_num == timetable[k].get_timetable_element(i).train_number){
                             
                             found = true; 
                             break;
                         }          
                     }
                     if(!found){//se il treno non è gia stato inizzializzato crealo e fallo partire
+                        simulated_trains.push_back(timetable[k].get_timetable_element(i).train_number);
                         push_front_train(timetable[k].get_timetable_element(i), &trains[k]);
                         railway[k].get_beginning_station().add_train_to_stop(trains[k][0].get());
                         trains[k][0]->set_speed(80);

@@ -33,8 +33,12 @@ class Simulation {
         std::vector<Railway> railway;   ///contains the stations of all railways
         std::vector<std::vector<std::unique_ptr<Train>>> trains;    ///contains the trains divided by in different railways
 
+        std::vector<int> simulated_trains; ///contains the numbers of the trains that have been simulated 
+
         int trains_at_terminal {0}; ///keeps track of the trains that got to the ending station
         int total_train_count {0};
+
+
         
         
         /**
