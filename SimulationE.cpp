@@ -118,7 +118,11 @@ void Simulation::ending_station() {
     for(int i=0; i<trains.size(); i++){                                     
         for(int j=0; j<trains[i].size(); j++){
             if(trains[i][j]->get_distance() > railway[i].get_terminal_station().get_distance() + 5){
-                railway[i].get_terminal_station().remove_train_to_stop(trains[i][j].release());
+                if(railway[i].get_terminal_station().get_type() == Station::type::Principal || trains[i][j]->get_type() == Train::type::Regional){
+                    railway[i].get_terminal_station().remove_train_to_stop(trains[i][j].release());
+                } else {
+                    railway[i].get_terminal_station().remove_train_from_transit();
+                }
                 trains[i].erase(trains[i].begin() + j);
                 trains_at_terminal++;
             }
