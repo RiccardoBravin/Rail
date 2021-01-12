@@ -9,6 +9,55 @@
 
 using namespace std;
 
+Simulation::Simulation(string line_description_file, string timetables_file){
+    
+    bool cancel {false};
+
+    timetable = split_timeTable(timetables_file);
+
+    if(timetable.size() == 2) {
+    railway.push_back(Railway(line_description_file, &timetable[0]));
+    railway.push_back(Railway());
+    railway[1].reverse(railway[0], &timetable[1]);
+    } else if(timetable[0].is_going()) {
+        railway.push_back(Railway(line_description_file, &timetable[0]));
+    } else {
+
+        TimeTable temp;
+        railway.push_back(Railway(line_description_file, &temp));
+        railway.push_back(Railway());
+        timetable[0].set_as_going();
+        railway[1].reverse(railway[0], &timetable[0]);
+        cancel = true;
+    }
+
+    cout << "____________ADJUST_TIMETABLE__________" << endl;
+    for(int i=0; i<timetable.size(); i++) {
+        timetable[i].adjust_timetable(railway[0].get_principal_count(), railway[0].get_station_count());
+    }
+
+    cout << "____________VERIFY_RAILWAY__________" << endl;
+    railway[0].verify_railway();
+    if(cancel){
+        railway.erase(railway.begin());
+    }
+
+    cout << "_______RAILWAY & TIMETABLEs CORRETTE_______" << endl << endl;
+    for(int i=0; i<railway.size(); i++)  cout << railway[i] << endl << *railway[i].get_timetable_reference() << endl << endl;
+    
+    
+        RAILWAYS = railway.size();
+    
+    for(int i = 0; i < railway.size(); i++){
+        trains.push_back(std::vector<std::unique_ptr<Train>> ());
+    }
+
+    for(int i=0; i<timetable.size(); i++){
+        total_train_count += timetable[i].get_timetable_size();    
+    }
+    
+}
+
 void Simulation::sort_trains() {
     for(int i=0; i<trains.size(); i++) {
         vector<unique_ptr<Train>> replacer;
@@ -31,19 +80,19 @@ void Simulation::notice_20_km_mark() {
             for(int k=1; k<railway[i].get_station_count(); k++){            //ciclo sulle stazioni (parto dalla seconda perchè devo verificare la distaznza mai prima della prima)
                 //cout << "ci sto provando" << endl;
                 if(trains[i][j]->get_type() == Train::type::Regional){
-                    if(trains[i][j]->get_distance() > railway[i].get_station(k).get_distance() - 22.7 && trains[i][j]->get_distance() < railway[i].get_station(k).get_distance() - 20){
+                    if(trains[i][j]->get_distance() > railway[i].get_station(k).get_distance() - 22.7 && trains[i][j]->get_distance() <= railway[i].get_station(k).get_distance() - 20){
                         cout << endl << "Il treno regionale n. " << trains[i][j]->get_number() << " si trova a 20 km dalla stazione " << railway[i].get_station(k).get_name() << endl;
                         //cout << "[temp]...   train distance: " << trains[i][j]->get_distance() << "    station distance: " <<  railway[i].get_station(k).get_distance() << endl;
                         break;
                     }
                 } else if(trains[i][j]->get_type() == Train::type::HighSpeed) {
-                    if(trains[i][j]->get_distance() > railway[i].get_station(k).get_distance() - 24 && trains[i][j]->get_distance() < railway[i].get_station(k).get_distance() - 20){
+                    if(trains[i][j]->get_distance() > railway[i].get_station(k).get_distance() - 24 && trains[i][j]->get_distance() <= railway[i].get_station(k).get_distance() - 20){
                         cout << endl << "Il treno alta velocita n. " << trains[i][j]->get_number() << " si trova a 20 km dalla stazione " << railway[i].get_station(k).get_name() << endl;
                         //cout << "[temp]...   train distance: " << trains[i][j]->get_distance() << "    station distance: " <<  railway[i].get_station(k).get_distance() << endl;
                         break;
                     }
                 } else {
-                    if(trains[i][j]->get_distance() > railway[i].get_station(k).get_distance() - 25 && trains[i][j]->get_distance() < railway[i].get_station(k).get_distance() - 20){
+                    if(trains[i][j]->get_distance() > railway[i].get_station(k).get_distance() - 25 && trains[i][j]->get_distance() <= railway[i].get_station(k).get_distance() - 20){
                         cout << endl << "Il treno super alta velocita n. " << trains[i][j]->get_number() << " si trova a 20 km dalla stazione " << railway[i].get_station(k).get_name() << endl;
                         //cout << "[temp]...   train distance: " << trains[i][j]->get_distance() << "    station distance: " <<  railway[i].get_station(k).get_distance() << endl;
                         break;
@@ -66,10 +115,7 @@ void Simulation::ending_station() {
 }
 
 bool Simulation::end_simulation(){
-    for(int i=0; i<timetable.size(); i++){
-        if(trains_at_terminal < timetable[i].get_timetable_size())
-            return false;
-    }
-
+    if(trains_at_terminal < total_train_count)
+        return false;
     return true;
 }
