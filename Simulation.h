@@ -34,6 +34,7 @@ class Simulation {
         std::vector<std::vector<std::unique_ptr<Train>>> trains;    ///contains the trains divided by in different railways
 
         int trains_at_terminal {0}; ///keeps track of the trains that got to the ending station
+        int total_train_count {0};
         
         
         /**

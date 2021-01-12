@@ -11,52 +11,6 @@
 using namespace std;
 
 
-Simulation::Simulation(string line_description_file, string timetables_file){
-    
-    bool cancel {false};
-
-    timetable = split_timeTable(timetables_file);
-
-    if(timetable.size() == 2) {
-    railway.push_back(Railway(line_description_file, &timetable[0]));
-    railway.push_back(Railway());
-    railway[1].reverse(railway[0], &timetable[1]);
-    } else if(timetable[0].is_going()) {
-        railway.push_back(Railway(line_description_file, &timetable[0]));
-    } else {
-
-        TimeTable temp;
-        railway.push_back(Railway(line_description_file, &temp));
-        railway.push_back(Railway());
-        timetable[0].set_as_going();
-        railway[1].reverse(railway[0], &timetable[0]);
-        cancel = true;
-    }
-
-    cout << "____________ADJUST_TIMETABLE__________" << endl;
-    for(int i=0; i<timetable.size(); i++) {
-        timetable[i].adjust_timetable(railway[0].get_principal_count(), railway[0].get_station_count());
-    }
-
-    cout << "____________VERIFY_RAILWAY__________" << endl;
-    railway[0].verify_railway();
-    if(cancel){
-        railway.erase(railway.begin());
-    }
-
-    cout << "_______RAILWAY & TIMETABLEs CORRETTE_______" << endl << endl;
-    for(int i=0; i<railway.size(); i++)  cout << railway[i] << endl << *railway[i].get_timetable_reference() << endl << endl;
-    
-    
-        RAILWAYS = railway.size();
-    
-    for(int i = 0; i < railway.size(); i++){
-        trains.push_back(std::vector<std::unique_ptr<Train>> ());
-    }
-
-    
-    
-}
 
 void Simulation::simulate(){
     while(current_time < 100){
@@ -116,7 +70,7 @@ void Simulation::start_trains(){
                             break;
                         }          
                     }
-                    if(!found){
+                    if(!found){//se il treno non è gia stato inizzializzato crealo e fallo partire
                         push_front_train(timetable[k].get_timetable_element(i), &trains[k]);
                         railway[k].get_beginning_station().add_train_to_stop(trains[k][0].get());
                         trains[k][0]->set_speed(80);
