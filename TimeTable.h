@@ -76,29 +76,6 @@ class TimeTable{
         void adjust_timetable(int number_principal_stations, int number_secondary_station);
 
         /**
-         * @brief Modifica gli orari di arrivo di un treno in una stazione
-         * 
-         * @param time_table_index 
-         * @param station_index 
-         * @param arrival_time 
-         */
-        void modify_arrival_time(int time_table_index, int station_index, int arrival_time);
-        
-        /**
-         * @brief Cancella gli orari di arrivo in una stazione solamente per i treni regionali
-         * 
-         * @param ind 
-         */
-        void delete_regionals_station_time(int ind);
-
-        /**
-         * @brief Cancella gli orari di arrivo in una stazione solamente per i treni HighSpeed e SuperHighSpeed
-         * 
-         * @param ind 
-         */
-        void delete_fast_superFast_station_time(int ind);
-
-        /**
          * @brief operatore di uguaglianza
          * 
          * @param tt 
@@ -149,6 +126,29 @@ class TimeTable{
         
         bool going_line {true};
         std::vector<timetable_element> time_table;
+
+        /**
+         * @brief Modifica gli orari di arrivo di un treno in una stazione
+         * 
+         * @param time_table_index 
+         * @param station_index 
+         * @param arrival_time 
+         */
+        void modify_arrival_time(int time_table_index, int station_index, int arrival_time);
+
+        /**
+         * @brief Cancella gli orari di arrivo in una stazione solamente per i treni regionali
+         * 
+         * @param ind 
+         */
+        void delete_regionals_station_time(int ind);
+
+        /**
+         * @brief Cancella gli orari di arrivo in una stazione solamente per i treni HighSpeed e SuperHighSpeed
+         * 
+         * @param ind 
+         */
+        void delete_fast_superFast_station_time(int ind);
 
 };
 

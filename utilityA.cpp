@@ -1,4 +1,4 @@
-//author: elia feltrin
+//Author: Angelo Turris
 
 #include <iostream>
 #include <string>
@@ -6,18 +6,18 @@
 
 using namespace std;
 
-string mtoh(int minute) {
+string mtoh(int minute) 
+{
     int temp = minute % 1440;
     string s;
-    int hour = temp/60;
-    int min = temp%60;
-    if(hour/10 == 0)
+    int hour = temp / 60;
+    int min = temp % 60;
+    if(hour / 10 == 0)
         s += "0";
     s = to_string(hour) + ":";
-    if(min/10 == 0)
+    if(min / 10 == 0)
         s += "0";
     s += to_string(min);
     
-
     return s;
 }

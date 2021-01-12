@@ -65,7 +65,7 @@ class Railway {
          * @return true 
          * @return false 
          */
-        bool operator==(const Railway& rw);
+        bool operator==(const Railway& rw) const;
        
         /**
          * @brief Memorizza rw percorsa in direzione opposta. Cancella i dati contenuti precedentemente
@@ -82,24 +82,6 @@ class Railway {
          * 
          */
         void verify_railway();
-
-        /**
-         * @brief Verifica che i tempi di percorrenza siano compatibili con le velovità massime, aventualmente correggendoli
-         * 
-         * @details Per essere considerato corretto, il tempo di percorrenza deve contenere: il tempo necessario per percorrere la tratta fra una stazione e l'altra a massima velocità meno i 10 km all'interno delle stazioni percorsi a 80 km/h più 10 minuti 
-         * 
-         * @param tt 
-         */
-        void verify_correct_timing(TimeTable* tt);
-       
-       /**
-        * @brief elimina una stazione dalla tratta
-        * 
-        * @details Segnala in output
-        * 
-        * @param i 
-        */
-        void remove_station(int i);
 
         /**
          * @brief Calcola la distanza fra due stazioni 
@@ -124,14 +106,14 @@ class Railway {
          * 
          * @return Station& 
          */
-        Station& get_beginning_station();
+        Station& get_beginning_station() const;
 
         /**
          * @brief Reistituisce l'ultima stazione della tratta
          * 
          * @return Station& 
          */
-        Station& get_terminal_station();
+        Station& get_terminal_station() const;
         
         /**
          * @brief Resituisce l'i-esima stazione
@@ -139,7 +121,7 @@ class Railway {
          * @param i 
          * @return Station& 
          */
-        Station& get_station(int i);
+        Station& get_station(int i) const;
 
         /**
          * @brief Restituisce la stazione principale successiva
@@ -147,21 +129,7 @@ class Railway {
          * @param this_principal_index 
          * @return Station& 
          */
-        Station& get_next_principal(int this_principal_index);
-
-        /**
-         * @brief restituisce il file contenente le informazioni sulla tratta
-         * 
-         * @return std::string 
-         */
-        std::string get_source_file_name() const;
-
-        /**
-         * @brief Restituisce la lunghezza totale della tratta in km
-         * 
-         * @return int 
-         */
-        int get_railway_length() const;
+        Station& get_next_principal(int this_principal_index) const;
 
         /**
          * @brief Restituisce il numero di stazioni presenti nella tratta
@@ -185,6 +153,48 @@ class Railway {
          */
         int principal_index(int this_pricipal_index) const;
 
+
+    private:
+        
+        std::vector<std::unique_ptr<Station>> stations;
+        
+        std::string line_description_file_name;
+
+        Railway* reverse_railway {nullptr};
+        
+        TimeTable* reference_to_TimeTable;
+
+        /**
+         * @brief Distanza minima fra due stazioni affinche siano valide
+         * 
+         */
+        static constexpr int MIN_STATION_DISTANCE = 20;
+
+        /**
+         * @brief Verifica che i tempi di percorrenza siano compatibili con le velovità massime, aventualmente correggendoli
+         * 
+         * @details Per essere considerato corretto, il tempo di percorrenza deve contenere: il tempo necessario per percorrere la tratta fra una stazione e l'altra a massima velocità meno i 10 km all'interno delle stazioni percorsi a 80 km/h più 10 minuti 
+         * 
+         * @param tt 
+         */
+        void verify_correct_timing(TimeTable* tt);
+
+       /**
+        * @brief elimina una stazione dalla tratta
+        * 
+        * @details Segnala in output
+        * 
+        * @param i 
+        */
+        void remove_station(int i);
+
+        /**
+         * @brief restituisce il file contenente le informazioni sulla tratta
+         * 
+         * @return std::string 
+         */
+        std::string get_source_file_name() const;
+
         /**
          * @brief Controlla l'esistenza di una railway inversa
          * 
@@ -192,6 +202,13 @@ class Railway {
          * @return false 
          */
         bool has_reverse();
+
+        /**
+         * @brief Restituisce la lunghezza totale della tratta in km
+         * 
+         * @return int 
+         */
+        int get_railway_length() const;
 
         /**
          * @brief Restuisce un puntatore alla railway inversa (se esiste, altrimenti è nullptr)
@@ -213,22 +230,6 @@ class Railway {
          * @param ref 
          */
         void set_reverse_railway(Railway* ref);
-
-        /**
-         * @brief Distanza minima fra due stazioni affinche siano valide
-         * 
-         */
-        static constexpr int MIN_STATION_DISTANCE = 20;
-
-    private:
-        
-        std::vector<std::unique_ptr<Station>> stations;
-        
-        std::string line_description_file_name;
-
-        Railway* reverse_railway {nullptr};
-        
-        TimeTable* reference_to_TimeTable;
 };
 
 /**
