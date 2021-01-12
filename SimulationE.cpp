@@ -1,3 +1,14 @@
+/**
+ * @file SimulationE.cpp
+ * @author Elia Feltrin
+ * @brief part of the simulation functions
+ * @version 0.1
+ * @date 2021-01-12
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #include "Simulation.h"
 #include <string>
 #include <list>
@@ -76,7 +87,7 @@ void Simulation::sort_trains() {
     }
 }
 
-void Simulation::notice_20_km_mark() {
+void Simulation::notice_20_km_mark() const{
     for(int i=0; i<trains.size(); i++){                                     //ciclo sulle  railway
         for(int j=0; j<trains[i].size(); j++){                              //ciclo sui treni
             for(int k=1; k<railway[i].get_station_count(); k++){            //ciclo sulle stazioni (parto dalla seconda perchè devo verificare la distaznza mai prima della prima)
@@ -130,7 +141,7 @@ void Simulation::ending_station() {
     }
 }
 
-bool Simulation::end_simulation(){
+bool Simulation::end_simulation() const{
     if(trains_at_terminal < total_train_count)
         return false;
     return true;

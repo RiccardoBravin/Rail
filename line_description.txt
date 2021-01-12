@@ -1,4 +1,0 @@
-Venezia S. Lucia
-Venezia Porto Marghera 1 100
-Venezia Mestre 0 200
-Padova 0 300

@@ -1,4 +1,13 @@
-//Author: Riccardo Bravin
+/**
+ * @file Train.cpp
+ * @author Bravin Riccardo
+ * @brief all functions implementation of train.h
+ * @version 0.1
+ * @date 2021-01-12
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 
 #include "Train.h"
 #include <iostream>
@@ -370,12 +379,16 @@ ostream& operator<<(ostream& os, const Train& obj){
     }else if(obj.get_type() == Train::type::SuperHighSpeed){
         os << "alta velocita' super";
     }
-    os << " numero: " << obj.get_number() << endl;
-    os << "A distanza " << obj.get_distance() << " ha subito un ritardo di " << obj.get_delay() << " minuti" << endl;
-    os << "e sta procedendo alla velocita di " << obj.get_speed() << " km/h" << endl;
-    if(obj.running()){
-        os << "Il treno sta attualmete percorrendo la tratta" << endl;
-    }else if(obj.parked()){
+    os << " numero: " << obj.get_number() << " a distanza " << obj.get_distance() << "km" << endl;
+    
+    if(obj.get_delay() > 0){
+        os << "E' in ritardo di " << obj.get_delay() << " minuti. ";
+    }else if(obj.get_delay() < 0){
+        os << "E' in anticipo di " << obj.get_delay() << " minuti. ";
+    }
+    
+    os << "Sta procedendo alla velocita di " << obj.get_speed() << " km/h. ";
+    if(obj.parked()){
         os << "Il treno e' attualmente in sosta" << endl;
         os << "Trenitalia si scusa per il disagio" << endl;
     }else if(obj.stationary()){

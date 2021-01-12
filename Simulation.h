@@ -49,7 +49,7 @@ class Simulation {
          * @param st_index the index of the station he is gettin into
          * @return int the delay or advance
          */
-        int calc_delay(int k, int tr_index, int st_index);
+        int calc_delay(int k, int tr_index, int st_index) const;
 
         /**
          * @brief Makes all trains that need to move from the station center start with a speed of 80 and warns the user
@@ -72,7 +72,7 @@ class Simulation {
         /**
          * @brief prints the station in which the train is getting approximately 20 km near to
          */
-        void notice_20_km_mark();
+        void notice_20_km_mark() const;
 
         /**
          * @brief makes all the trains stay 20 kilometers apart and adjustes the speeds accordingly. Also prints their status
@@ -104,7 +104,7 @@ class Simulation {
          * @return true the train is the best choice to let start
          * @return false the train should let another go first
          */
-        bool best_train_in_station(Station* st, Train* t);
+        bool best_train_in_station(Station* st, Train* t) const;
 
         /**
          * @brief decides for each train in the parking lots if they need to stay or go in order to minimize delay
@@ -119,7 +119,7 @@ class Simulation {
          * @param st_index the index of the station in which it needs to look for
          * @return int the index of the train in the same railway
          */
-        int best_train_in_park(int k, int st_index);
+        int best_train_in_park(int k, int st_index) const;
 
 
         /**
@@ -129,7 +129,7 @@ class Simulation {
          * @param st_index the index of the station in which it needs to look for
          * @return int the index of the train in the same railway
          */
-        int best_regional_in_park(int k , int st_index);
+        int best_regional_in_park(int k , int st_index) const;
 
         /**
          * @brief finds the nearest train that is behind the specified train that is not parked or inside a station  
@@ -138,7 +138,7 @@ class Simulation {
          * @param tr_index the index of the train 
          * @return int the index of the previous train
          */
-        int prev_train_index(int k, int tr_index); 
+        int prev_train_index(int k, int tr_index) const; 
 
 
         /**
@@ -149,12 +149,9 @@ class Simulation {
          * @return true if it is slowing down something
          * @return false it is not slowing down something
          */
-        bool slowing_down_trains(int k, int tr_index);
+        bool slowing_down_trains(int k, int tr_index) const;
 
 
-        //questa è la funzione magica che decide chi far passare in entrata alla stazione
-        //se il ritardo di a + (a.pos - b.pos)/b.vel > (next_station.lenght/b.vel)-(next_station.lenght/b.vel)+ ritardo di b
-        //allora fai procedere a altrimenti metti a nel parcheggio
         /**
          * @brief calculates with a function whether or not is convenient for the train to go for his route or wait for the train behind to pass
          * 
@@ -167,7 +164,7 @@ class Simulation {
          * @return true if it is free to go
          * @return false if it should let the previous train pass
          */
-        bool smart_train_function(int k, int tr_index, int st_index);
+        bool smart_train_function(int k, int tr_index, int st_index)const;
 
         /**
          * @brief stops the train that need to unload passangers
@@ -238,7 +235,7 @@ class Simulation {
          * @return true if the simulation is done
          * @return false if the simulation has to continue
          */
-        bool end_simulation();
+        bool end_simulation() const;
         
         
 

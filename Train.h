@@ -1,4 +1,12 @@
-//Author: Riccardo Bravin
+/**
+ * @file Train.h
+ * @author Bravin Riccardo
+ * @brief Train implementation
+ * @version 0.1
+ * @date 2021-01-12
+ * 
+ * @copyright Copyright (c) 2021
+ */
 
 #ifndef Train_h
 #define Train_h

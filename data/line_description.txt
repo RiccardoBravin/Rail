@@ -1,4 +1,12 @@
-Venezia S. Lucia
-Venezia Porto Marghera 0 50
-Venezia Mestre 1 120
-Padova 0 320
+Alderaan
+Coruscant 0 100
+Dagobah 0 200
+Endor 1 30
+Hoth 0 215
+Jakku 1 275
+Kashyyyk 0 350
+Mustafar 0 450
+Naboo 1 600
+Starkiller Base 1 700
+Yavin 0 800
+Death Star 1 810    

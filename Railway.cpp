@@ -254,19 +254,19 @@ void Railway::remove_station(int i){
     stations.erase(stations.begin() + i);
 }
 
-Station& Railway::get_beginning_station() {
+Station& Railway::get_beginning_station() const{
     return *(stations[0]);
 }
 
-Station& Railway::get_terminal_station() {
+Station& Railway::get_terminal_station() const{
     return *(stations[stations.size()-1]);
 }
 
-Station& Railway::get_station(int i) {
+Station& Railway::get_station(int i) const{
     return *(stations[i]);
 }
 
-Station& Railway::get_next_principal(int this_station_index) {
+Station& Railway::get_next_principal(int this_station_index) const{
     int i = this_station_index + 1;
     while(stations[i]->get_type() == Station::type::Secondary) {
         i++;
