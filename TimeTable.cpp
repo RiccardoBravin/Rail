@@ -1,5 +1,6 @@
 #include "TimeTable.h"
 #include "Train.h"
+#include "utility.h"
 #include <fstream>
 #include <exception>
 #include <string>
@@ -252,7 +253,7 @@ std::ostream& operator<<(std::ostream& os, const timetable_element& tte){
     }
 
     for(int i=0; i< tte.time_at_station.size(); i++){
-        os << "[" << i << "]: " << tte.time_at_station[i] << endl;
+        os << "[" << i << "]: " << mtoh(tte.time_at_station[i]) << endl;
     }
 
     return os;

@@ -84,8 +84,8 @@ void Simulation::notice_20_km_mark() {
                 if(trains[i][j]->prev_distance() < railway[i].get_station(k).get_distance() - 20 && trains[i][j]->get_distance() > railway[i].get_station(k).get_distance() - 20){
                     cout  << "Il treno "; //regionale n. " << trains[i][j]->get_number() << " si trova a 20 km dalla stazione " << railway[i].get_station(k).get_name() << endl;
                     if(trains[i][j]->get_type() == Train::type::Regional) cout << "regionale ";
-                    else if(trains[i][j]->get_type() == Train::type::HighSpeed) cout << "alta velocità ";
-                    else cout << "super alta velocità ";
+                    else if(trains[i][j]->get_type() == Train::type::HighSpeed) cout << "alta velocita'";
+                    else cout << "super alta velocita' ";
 
                     cout << trains[i][j]->get_number() << " si trova a 20 km dalla stazione " << railway[i].get_station(k).get_name() << endl;
                 
