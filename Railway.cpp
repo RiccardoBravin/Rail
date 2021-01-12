@@ -207,7 +207,7 @@ void Railway::verify_correct_timing(TimeTable* tt) {
             }
         }
     }
-    if(mod) cout << "TIME TABLE AGGIORNATA:" << endl << *tt << endl;                                    
+    //if(mod) cout << "TIME TABLE AGGIORNATA:" << endl << *tt << endl;                                    
 }
 
 int Railway::secondary_treats_length(int ind, bool fw) {            

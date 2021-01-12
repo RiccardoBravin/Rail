@@ -11,7 +11,8 @@ string mtoh(int minute) {
     string s;
     int hour = temp/60;
     int min = temp%60;
-
+    if(hour/10 == 0)
+        s += "0";
     s = to_string(hour) + ":";
     if(min/10 == 0)
         s += "0";
