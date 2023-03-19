@@ -1,6 +1,4 @@
-Railway management project
-
-Project performed for the Advanced Programming course in UniPD
+Railway management project performed for the Advanced Programming course in UniPD
 
 
 Il lavoro è stato così diviso:
