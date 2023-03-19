@@ -1,3 +1,8 @@
+#Railway management project
+
+Project performed for the Advanced Programming course in UniPD
+
+
 Il lavoro è stato così diviso:
 Elia: Railway, Timetable, SimulationE
 Riccardo: Train, SimulationR
