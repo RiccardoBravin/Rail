@@ -1,4 +1,4 @@
-#Railway management project
+Railway management project
 
 Project performed for the Advanced Programming course in UniPD
 
